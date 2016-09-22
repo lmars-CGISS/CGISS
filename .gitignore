@@ -40,6 +40,8 @@ local.properties
 *.suo
 *.user
 *.sln.docstates
+*.vshost.exe
+*.vshost.exe.manifest
 
 # Build results
 middle/
@@ -77,6 +79,7 @@ build/
 *.pidb
 *.log
 *.scc
+*.exp
 
 # Visual C++ cache files
 ipch/
