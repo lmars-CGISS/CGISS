@@ -3,4 +3,4 @@
 
 * 百度[baidu](http://www.baidu.com)
 
-![图像](resources/doc/res/not_avg_contrast.jpg)
+![图像](png/MutipleWorker.png)
