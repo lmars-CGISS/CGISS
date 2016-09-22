@@ -1,2 +1,5 @@
 # CGISS
-公益项目Chinese Geographic information-Storage Specification
+Chinese Geographic information-Storage Specification
+
+地理空间数据交换工具
+

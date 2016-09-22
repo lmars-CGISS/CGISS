@@ -5,7 +5,7 @@
 			<Value>..\Res\data.ico</Value>
 		</Config>
 		<Config Name="Caption" Description="窗口标题" Type="System.String">
-			<Value>地理空间数据交换与共享工具</Value>
+			<Value>地理空间数据交换工具</Value>
 		</Config>
 		<Config Name="Menu" Description="菜单配置" Type="System.String">
 			<Config Name="File" Description="文件菜单" Type="System.Windows.Forms.ToolStripMenuItem">
