@@ -1,2 +1,2 @@
-# CGISS
-公益项目Chinese Geographic information-Storage Specification
+# 源代码目录
+包含了插件、主程序代码
