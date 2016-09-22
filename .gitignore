@@ -80,6 +80,7 @@ build/
 *.log
 *.scc
 *.exp
+*.metagen
 
 # Visual C++ cache files
 ipch/
