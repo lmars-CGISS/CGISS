@@ -1,0 +1,462 @@
+<Config Name="\" Description="根配置" Type="System.String">
+	<!-- 编辑使用 XMLSpy v2006 U (http://www.altova.com) 由 any (any) -->
+	<Config Name="Application" Description="应用程序整体的配置项" Type="System.String">
+		<Config Name="Icon" Description="窗口标题" Type="System.String">
+			<Value>..\Res\data.ico</Value>
+		</Config>
+		<Config Name="Caption" Description="窗口标题" Type="System.String">
+			<Value>地理空间数据交换与共享工具</Value>
+		</Config>
+		<Config Name="Menu" Description="菜单配置" Type="System.String">
+			<Config Name="File" Description="文件菜单" Type="System.Windows.Forms.ToolStripMenuItem">
+				<Config Name="Caption" Description="窗口标题" Type="System.String">
+					<Value>文件</Value>
+				</Config>
+				<Config Name="SubTool" Description="子工具" Type="System.String">
+					<Config Name="Exit" Description="名称" Type="System.Windows.Forms.ToolStripMenuItem">
+						<Config Name="Caption" Description="名称" Type="System.String">
+							<Value>退出</Value>
+						</Config>
+						<Config Name="Image" Description="名称" Type="System.String">
+							<Value>..\Res\exit.png</Value>
+						</Config>
+					</Config>
+					<Value>文件</Value>
+				</Config>
+			</Config>
+			<Config Name="Translate" Description="转换菜单" Type="System.Windows.Forms.ToolStripMenuItem">
+				<Config Name="Caption" Description="窗口标题" Type="System.String">
+					<Value>转换</Value>
+				</Config>
+				<Config Name="SubTool" Description="子工具" Type="System.String">
+					<Config Name="ImportVector" Description="名称" Type="System.Windows.Forms.ToolStripMenuItem">
+						<Config Name="Caption" Description="名称" Type="System.String">
+							<Value>导入矢量</Value>
+						</Config>
+						<Config Name="DisplayStyle" Description="名称" Type="System.String">
+							<Value>ImageAndText</Value>
+						</Config>
+						<Config Name="Image" Description="名称" Type="System.String">
+							<Value>..\Res\ImportVector.png</Value>
+						</Config>
+					</Config>
+					<Config Name="ExportVector" Description="名称" Type="System.Windows.Forms.ToolStripMenuItem">
+						<Config Name="Caption" Description="名称" Type="System.String">
+							<Value>导出矢量</Value>
+						</Config>
+						<Config Name="DisplayStyle" Description="名称" Type="System.String">
+							<Value>ImageAndText</Value>
+						</Config>
+						<Config Name="Image" Description="名称" Type="System.String">
+							<Value>..\Res\ExportVector.png</Value>
+						</Config>
+					</Config>
+					<Config Name="ImportRaster" Description="名称" Type="System.Windows.Forms.ToolStripMenuItem">
+						<Config Name="Caption" Description="名称" Type="System.String">
+							<Value>导入栅格</Value>
+						</Config>
+						<Config Name="DisplayStyle" Description="名称" Type="System.String">
+							<Value>ImageAndText</Value>
+						</Config>
+						<Config Name="Image" Description="名称" Type="System.String">
+							<Value>..\Res\ImportRaster.png</Value>
+						</Config>
+					</Config>
+					<Config Name="ExportRaster" Description="名称" Type="System.Windows.Forms.ToolStripMenuItem">
+						<Config Name="Caption" Description="名称" Type="System.String">
+							<Value>导出栅格</Value>
+						</Config>
+						<Config Name="DisplayStyle" Description="名称" Type="System.String">
+							<Value>ImageAndText</Value>
+						</Config>
+						<Config Name="Image" Description="名称" Type="System.String">
+							<Value>..\Res\ExportRaster.png</Value>
+						</Config>
+					</Config>
+				</Config>
+			</Config>
+			<Config Name="View" Description="视图菜单" Type="System.Windows.Forms.ToolStripMenuItem">
+				<Config Name="Caption" Description="窗口标题" Type="System.String">
+					<Value>视图</Value>
+				</Config>
+				<Config Name="SubTool" Description="子工具" Type="System.String">
+					<Config Name="Pan" Description="名称" Type="System.Windows.Forms.ToolStripMenuItem">
+						<Config Name="Group" Description="名称" Type="System.String">
+							<Value>Screen</Value>
+						</Config>
+						<Config Name="Caption" Description="名称" Type="System.String">
+							<Value>漫游</Value>
+						</Config>
+						<Config Name="DisplayStyle" Description="名称" Type="System.String">
+							<Value>ImageAndText</Value>
+						</Config>
+						<Config Name="Image" Description="名称" Type="System.String">
+							<Value>..\Res\pan.png</Value>
+						</Config>
+						<Config Name="Checked" Description="名称" Type="System.String">
+							<Value>true</Value>
+						</Config>
+					</Config>
+					<Config Name="ZoomIn" Description="名称" Type="System.Windows.Forms.ToolStripMenuItem">
+						<Config Name="Group" Description="名称" Type="System.String">
+							<Value>Screen</Value>
+						</Config>
+						<Config Name="Caption" Description="名称" Type="System.String">
+							<Value>放大</Value>
+						</Config>
+						<Config Name="DisplayStyle" Description="名称" Type="System.String">
+							<Value>ImageAndText</Value>
+						</Config>
+						<Config Name="Image" Description="名称" Type="System.String">
+							<Value>..\Res\zoom_in.png</Value>
+						</Config>
+					</Config>
+					<Config Name="ZoomOut" Description="名称" Type="System.Windows.Forms.ToolStripMenuItem">
+						<Config Name="Group" Description="名称" Type="System.String">
+							<Value>Screen</Value>
+						</Config>
+						<Config Name="Caption" Description="名称" Type="System.String">
+							<Value>缩小</Value>
+						</Config>
+						<Config Name="DisplayStyle" Description="名称" Type="System.String">
+							<Value>ImageAndText</Value>
+						</Config>
+						<Config Name="Image" Description="名称" Type="System.String">
+							<Value>..\Res\zoom_out.png</Value>
+						</Config>
+					</Config>
+					<Config Name="FullMap" Description="名称" Type="System.Windows.Forms.ToolStripMenuItem">
+						<Config Name="Caption" Description="名称" Type="System.String">
+							<Value>全图</Value>
+						</Config>
+						<Config Name="DisplayStyle" Description="名称" Type="System.String">
+							<Value>ImageAndText</Value>
+						</Config>
+						<Config Name="Image" Description="名称" Type="System.String">
+							<Value>..\Res\FullMap.png</Value>
+						</Config>
+					</Config>
+					<Config Name="Update" Description="名称" Type="System.Windows.Forms.ToolStripMenuItem">
+						<Config Name="Caption" Description="名称" Type="System.String">
+							<Value>刷新</Value>
+						</Config>
+						<Config Name="DisplayStyle" Description="名称" Type="System.String">
+							<Value>ImageAndText</Value>
+						</Config>
+						<Config Name="Image" Description="名称" Type="System.String">
+							<Value>..\Res\Refresh32.png</Value>
+						</Config>
+					</Config>
+				</Config>
+			</Config>
+			<Config Name="工具" Description="工具菜单" Type="System.Windows.Forms.ToolStripMenuItem">
+				<Config Name="Caption" Description="窗口标题" Type="System.String">
+					<Value>工具</Value>
+				</Config>
+				<Config Name="SubTool" Description="子工具" Type="System.String">
+					<Config Name="Query" Description="名称" Type="System.Windows.Forms.ToolStripMenuItem">
+						<Config Name="Group" Description="名称" Type="System.String">
+							<Value>Screen</Value>
+						</Config>
+						<Config Name="Caption" Description="名称" Type="System.String">
+							<Value>查询</Value>
+						</Config>
+						<Config Name="DisplayStyle" Description="名称" Type="System.String">
+							<Value>ImageAndText</Value>
+						</Config>
+						<Config Name="Image" Description="名称" Type="System.String">
+							<Value>..\Res\Query.png</Value>
+						</Config>
+					</Config>
+					<Config Description="名称" Type="System.Windows.Forms.ToolStripSeparator"/>
+					<Config Name="AddonManager" Description="名称" Type="System.Windows.Forms.ToolStripMenuItem">
+						<Config Name="Caption" Description="名称" Type="System.String">
+							<Value>插件管理</Value>
+						</Config>
+						<Config Name="DisplayStyle" Description="名称" Type="System.String">
+							<Value>ImageAndText</Value>
+						</Config>
+						<Config Name="Image" Description="名称" Type="System.String">
+							<Value>..\Res\AddonManager.png</Value>
+						</Config>
+					</Config>
+				</Config>
+			</Config>
+			<Config Name="Help" Description="帮助菜单" Type="System.Windows.Forms.ToolStripMenuItem">
+				<Config Name="Caption" Description="窗口标题" Type="System.String">
+					<Value>帮助</Value>
+				</Config>
+				<Config Name="SubTool" Description="子工具" Type="System.String">
+					<Config Name="About" Description="名称" Type="System.Windows.Forms.ToolStripMenuItem">
+						<Config Name="Caption" Description="名称" Type="System.String">
+							<Value>关于</Value>
+						</Config>
+					</Config>
+					<Config Name="Help" Description="名称" Type="System.Windows.Forms.ToolStripMenuItem">
+						<Config Name="Caption" Description="名称" Type="System.String">
+							<Value>用户手册</Value>
+						</Config>
+					</Config>
+				</Config>
+			</Config>
+		</Config>
+		<Config Name="ToolBar" Description="工具栏配置" Type="System.String">
+			<Config Name="ImportVector" Description="名称" Type="System.Windows.Forms.ToolStripButton">
+				<Config Name="Caption" Description="名称" Type="System.String">
+					<Value>导入矢量</Value>
+				</Config>
+				<Config Name="DisplayStyle" Description="名称" Type="System.String">
+					<Value>Image</Value>
+				</Config>
+				<Config Name="Image" Description="名称" Type="System.String">
+					<Value>..\Res\ImportVector.png</Value>
+				</Config>
+			</Config>
+			<Config Name="ExportVector" Description="名称" Type="System.Windows.Forms.ToolStripButton">
+				<Config Name="Caption" Description="名称" Type="System.String">
+					<Value>导出矢量</Value>
+				</Config>
+				<Config Name="DisplayStyle" Description="名称" Type="System.String">
+					<Value>Image</Value>
+				</Config>
+				<Config Name="Image" Description="名称" Type="System.String">
+					<Value>..\Res\ExportVector.png</Value>
+				</Config>
+			</Config>
+			<Config Name="ImportRaster" Description="名称" Type="System.Windows.Forms.ToolStripButton">
+				<Config Name="Caption" Description="名称" Type="System.String">
+					<Value>导入栅格</Value>
+				</Config>
+				<Config Name="DisplayStyle" Description="名称" Type="System.String">
+					<Value>Image</Value>
+				</Config>
+				<Config Name="Image" Description="名称" Type="System.String">
+					<Value>..\Res\ImportRaster.png</Value>
+				</Config>
+			</Config>
+			<Config Name="ExportRaster" Description="名称" Type="System.Windows.Forms.ToolStripButton">
+				<Config Name="Caption" Description="名称" Type="System.String">
+					<Value>导出栅格</Value>
+				</Config>
+				<Config Name="DisplayStyle" Description="名称" Type="System.String">
+					<Value>Image</Value>
+				</Config>
+				<Config Name="Image" Description="名称" Type="System.String">
+					<Value>..\Res\ExportRaster.png</Value>
+				</Config>
+			</Config>
+			<Config Name="BatchTranslate" Description="名称" Type="System.Windows.Forms.ToolStripButton">
+				<Config Name="Caption" Description="名称" Type="System.String">
+					<Value>批量转换</Value>
+				</Config>
+				<Config Name="DisplayStyle" Description="名称" Type="System.String">
+					<Value>Image</Value>
+				</Config>
+				<Config Name="Image" Description="名称" Type="System.String">
+					<Value>..\Res\batch.png</Value>
+				</Config>
+			</Config>
+			<Config Description="名称" Type="System.Windows.Forms.ToolStripSeparator"/>
+			<Config Name="Pan" Description="名称" Type="System.Windows.Forms.ToolStripButton">
+				<Config Name="Group" Description="名称" Type="System.String">
+					<Value>Screen</Value>
+				</Config>
+				<Config Name="Caption" Description="名称" Type="System.String">
+					<Value>漫游</Value>
+				</Config>
+				<Config Name="DisplayStyle" Description="名称" Type="System.String">
+					<Value>Image</Value>
+				</Config>
+				<Config Name="Image" Description="名称" Type="System.String">
+					<Value>..\Res\pan.png</Value>
+				</Config>
+				<Config Name="Checked" Description="名称" Type="System.String">
+					<Value>true</Value>
+				</Config>
+			</Config>
+			<Config Name="ZoomIn" Description="名称" Type="System.Windows.Forms.ToolStripButton">
+				<Config Name="Group" Description="名称" Type="System.String">
+					<Value>Screen</Value>
+				</Config>
+				<Config Name="Caption" Description="名称" Type="System.String">
+					<Value>放大</Value>
+				</Config>
+				<Config Name="DisplayStyle" Description="名称" Type="System.String">
+					<Value>Image</Value>
+				</Config>
+				<Config Name="Image" Description="名称" Type="System.String">
+					<Value>..\Res\zoom_in.png</Value>
+				</Config>
+			</Config>
+			<Config Name="ZoomOut" Description="名称" Type="System.Windows.Forms.ToolStripButton">
+				<Config Name="Group" Description="名称" Type="System.String">
+					<Value>Screen</Value>
+				</Config>
+				<Config Name="Caption" Description="名称" Type="System.String">
+					<Value>缩小</Value>
+				</Config>
+				<Config Name="DisplayStyle" Description="名称" Type="System.String">
+					<Value>Image</Value>
+				</Config>
+				<Config Name="Image" Description="名称" Type="System.String">
+					<Value>..\Res\zoom_out.png</Value>
+				</Config>
+			</Config>
+			<Config Name="FullMap" Description="名称" Type="System.Windows.Forms.ToolStripButton">
+				<Config Name="Caption" Description="名称" Type="System.String">
+					<Value>全图</Value>
+				</Config>
+				<Config Name="DisplayStyle" Description="名称" Type="System.String">
+					<Value>Image</Value>
+				</Config>
+				<Config Name="Image" Description="名称" Type="System.String">
+					<Value>..\Res\FullMap.png</Value>
+				</Config>
+			</Config>
+			<Config Name="Update" Description="名称" Type="System.Windows.Forms.ToolStripButton">
+				<Config Name="Caption" Description="名称" Type="System.String">
+					<Value>刷新</Value>
+				</Config>
+				<Config Name="DisplayStyle" Description="名称" Type="System.String">
+					<Value>Image</Value>
+				</Config>
+				<Config Name="Image" Description="名称" Type="System.String">
+					<Value>..\Res\Refresh32.png</Value>
+				</Config>
+			</Config>
+			<Config Description="名称" Type="System.Windows.Forms.ToolStripSeparator"/>
+			<Config Name="Query" Description="名称" Type="System.Windows.Forms.ToolStripButton">
+				<Config Name="Group" Description="名称" Type="System.String">
+					<Value>Screen</Value>
+				</Config>
+				<Config Name="Caption" Description="名称" Type="System.String">
+					<Value>查询</Value>
+				</Config>
+				<Config Name="DisplayStyle" Description="名称" Type="System.String">
+					<Value>Image</Value>
+				</Config>
+				<Config Name="Image" Description="名称" Type="System.String">
+					<Value>..\Res\Query.png</Value>
+				</Config>
+			</Config>
+			<Config Description="名称" Type="System.Windows.Forms.ToolStripSeparator"/>
+			<Config Name="AddonManager" Description="名称" Type="System.Windows.Forms.ToolStripButton">
+				<Config Name="Caption" Description="名称" Type="System.String">
+					<Value>插件管理</Value>
+				</Config>
+				<Config Name="DisplayStyle" Description="名称" Type="System.String">
+					<Value>Image</Value>
+				</Config>
+				<Config Name="Image" Description="名称" Type="System.String">
+					<Value>..\Res\AddonManager.png</Value>
+				</Config>
+			</Config>
+			<Config Description="名称" Type="System.Windows.Forms.ToolStripSeparator"/>
+			<Config Name="Exit" Description="名称" Type="System.Windows.Forms.ToolStripButton">
+				<Config Name="Caption" Description="名称" Type="System.String">
+					<Value>退出</Value>
+				</Config>
+				<Config Name="DisplayStyle" Description="名称" Type="System.String">
+					<Value>Image</Value>
+				</Config>
+				<Config Name="Image" Description="名称" Type="System.String">
+					<Value>..\Res\exit.png</Value>
+				</Config>
+			</Config>
+		</Config>
+		<Config Name="SearchPath" Description="搜索路径" Type="System.String">
+			<Config Name="1" Description="名称" Type="System.String">
+				<Value>..\OracleClient</Value>
+			</Config>
+			<Config Name="2" Description="名称" Type="System.String">
+				<Value>..\PostgreSQL</Value>
+			</Config>
+			<Config Name="3" Description="名称" Type="System.String">
+				<Value>..\MySQL</Value>
+			</Config>
+		</Config>
+		<Config Name="FileExtension" Description="打开文件的扩展" Type="System.String">
+			<Value>(ESRI shape 文件)*.shp|*.shp|(GMT)*.gmt|*.gmt</Value>
+		</Config>
+		<Config Name="EnvironmentVariable" Description="扩展环境变量" Type="System.String">
+			<Config Name="GDAL_HOME" Description="名称" Type="System.String">
+				<Value>..\oracle\client</Value>
+			</Config>
+		</Config>
+		<Config Name="Cursors" Description="光标" Type="System.String">
+			<Config Name="ZoomIn" Description="名称" Type="System.String">
+				<Value>..\Res\zoomin.cur</Value>
+			</Config>
+			<Config Name="ZoomOut" Description="名称" Type="System.String">
+				<Value>..\Res\Zoomout_01.cur</Value>
+			</Config>
+			<Config Name="ZoomPan" Description="名称" Type="System.String">
+				<Value>Hand</Value>
+			</Config>
+			<Config Name="Drawing" Description="名称" Type="System.String">
+				<Value>Cross</Value>
+			</Config>
+			<Config Name="Query" Description="名称" Type="System.String">
+				<Value>..\Res\identify.cur</Value>
+			</Config>
+		</Config>
+	</Config>
+	<Config Name="FileSystemTree" Description="文件系统窗口" Type="System.String">
+		<Config Name="Folder" Description="视图的上下文菜单" Type="System.String">
+			<Config Name="FCSFilter" Description="解析GeoStar的地物类" Type="GISDataTranslate.GeoStarFeatureClassFactory"/>
+			<Config Name="GPKGFilter" Description="解析GeoStar的地物类" Type="GISDataTranslate.GPKGFeatureClassFactory"/>
+			<Config Name="SHPFilter" Description="解析GeoStar的地物类" Type="GISDataTranslate.ShpFeatureClassFactory"/>
+			<Config Name="RasterFilter" Description="解析GeoStar的地物类" Type="GISDataTranslate.RasterFileFactory"/>
+		</Config>
+		<Config Name="Caption" Description="上下文菜单" Type="System.String">
+			<Value>我的电脑</Value>
+		</Config>
+	</Config>
+	<Config Name="Icons" Description="主窗口地图" Type="System.String">
+		<Config Name="IconFolder" Description="视图的上下文菜单" Type="System.String">
+			<Value>..\Res</Value>
+		</Config>
+	</Config>
+	<Config Name="MainView" Description="主窗口地图" Type="System.String">
+		<Config Name="ContextMenu" Description="视图的上下文菜单" Type="System.String">
+			<Config Name="ViewFullMap" Description="名称" Type="System.Windows.Forms.ToolStripMenuItem">
+				<Config Name="Caption" Description="全图" Type="System.String">
+					<Value>全图</Value>
+				</Config>
+			</Config>
+			<Config Name="sp" Description="名称" Type="System.Windows.Forms.ToolStripSeparator"/>
+			<Config Name="ClearMap" Description="名称" Type="System.Windows.Forms.ToolStripMenuItem">
+				<Config Name="Caption" Description="清空" Type="System.String">
+					<Value>清空</Value>
+				</Config>
+			</Config>
+		</Config>
+		<Config Name="AutoLabelFields" Description="自动标注的字段" Type="System.String">
+			<Config Name="Name" Description="名称" Type="System.String">
+				<Config Name="Color" Description="颜色" Type="System.String">
+					<Value>Red</Value>
+				</Config>
+				<Config Name="Font" Description="字体" Type="System.String">
+					<Value>微软雅黑</Value>
+				</Config>
+				<Config Name="FontSize" Description="字体" Type="System.String">
+					<Value>4</Value>
+				</Config>
+			</Config>
+			<Config Name="GeoGlobe_P" Description="名称" Type="System.String">
+				<Config Name="Color" Description="颜色" Type="System.String">
+					<Value>Blue</Value>
+				</Config>
+				<Config Name="Font" Description="字体" Type="System.String">
+					<Value>微软雅黑</Value>
+				</Config>
+				<Config Name="FontSize" Description="字体" Type="System.String">
+					<Value>4</Value>
+				</Config>
+			</Config>
+		</Config>
+		<Config Name="Caption" Description="窗口标题" Type="System.String">
+			<Value>主窗口视图</Value>
+		</Config>
+	</Config>
+</Config>

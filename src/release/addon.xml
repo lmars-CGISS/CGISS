@@ -1,0 +1,281 @@
+<!-- 编辑使用 XMLSpy v2006 U (http://www.altova.com) 由 any (any) -->
+<!-- 编辑使用 XMLSpy v2006 U (http://www.altova.com) 由 any (any) -->
+<!-- 编辑使用 XMLSpy v2006 U (http://www.altova.com) 由 any (any) -->
+<!-- 编辑使用 XMLSpy v2006 U (http://www.altova.com) 由 any (any) -->
+<Config Name="\" Description="根配置" Type="System.String">
+	<Config Name="1" Type="GISDataTranslate.Addon">
+		<Config Name="Name" Type="String">
+			<Value>Geostar FCS 输出</Value>
+		</Config>
+		<Config Name="Path" Type="String">
+			<Value>.\GeoStar\GeoStarAddon.dll</Value>
+		</Config>
+		<Config Name="Function" Type="String">
+			<Value>ExportGeoStarFCS</Value>
+		</Config>
+		<Config Name="Type" Type="String">
+			<Value>eVectorWriter</Value>
+		</Config>
+		<Config Name="StorageType" Type="String">
+			<Value>eFolderType</Value>
+		</Config>
+		<Config Name="Description" Type="String">
+			<Value>eFolderType</Value>
+		</Config>
+	</Config>
+	<Config Name="2" Type="GISDataTranslate.Addon">
+		<Config Name="Name" Type="String">
+			<Value>FCS 读取</Value>
+		</Config>
+		<Config Name="Path" Type="String">
+			<Value>.\GeoStar\GeoStarAddon.dll</Value>
+		</Config>
+		<Config Name="Function" Type="String">
+			<Value>ImportGeoStarFCS</Value>
+		</Config>
+		<Config Name="Type" Type="String">
+			<Value>eVectorReader</Value>
+		</Config>
+		<Config Name="StorageType" Type="String">
+			<Value>eFolderType</Value>
+		</Config>
+	</Config>
+	<Config Name="3" Type="GISDataTranslate.Addon">
+		<Config Name="Name" Type="String">
+			<Value>DOM 输出</Value>
+		</Config>
+		<Config Name="Path" Type="String">
+			<Value>.\GeoStar\GeoStarAddon.dll</Value>
+		</Config>
+		<Config Name="Function" Type="String">
+			<Value>ExportGeoStarDOM</Value>
+		</Config>
+		<Config Name="Type" Type="String">
+			<Value>eRasterWriter</Value>
+		</Config>
+		<Config Name="StorageType" Type="String">
+			<Value>eFolderType</Value>
+		</Config>
+	</Config>
+	<Config Name="4" Type="GISDataTranslate.Addon">
+		<Config Name="Name" Type="String">
+			<Value>DOM 读取</Value>
+		</Config>
+		<Config Name="Path" Type="String">
+			<Value>.\GeoStar\GeoStarAddon.dll</Value>
+		</Config>
+		<Config Name="Function" Type="String">
+			<Value>ImportGeoStarDOM</Value>
+		</Config>
+		<Config Name="Type" Type="String">
+			<Value>eRasterReader</Value>
+		</Config>
+		<Config Name="StorageType" Type="String">
+			<Value>eFolderType</Value>
+		</Config>
+	</Config>
+	<Config Name="5" Type="GISDataTranslate.Addon">
+		<Config Name="Name" Type="String">
+			<Value>ESRI Personal Database 读取</Value>
+		</Config>
+		<Config Name="Path" Type="String">
+			<Value>.\x86\GeoWay\GeowayGDALDataAddon.dll</Value>
+		</Config>
+		<Config Name="Function" Type="String">
+			<Value>ImportMdb</Value>
+		</Config>
+		<Config Name="Type" Type="String">
+			<Value>eVectorReader</Value>
+		</Config>
+		<Config Name="StorageType" Type="String">
+			<Value>eFileType</Value>
+		</Config>
+	</Config>
+	<Config Name="6" Type="GISDataTranslate.Addon">
+		<Config Name="Name" Type="String">
+			<Value>ESRI FileGDB 读取</Value>
+		</Config>
+		<Config Name="Path" Type="String">
+			<Value>.\x86\GeoWay\GeowayGDALDataAddon.dll</Value>
+		</Config>
+		<Config Name="Function" Type="String">
+			<Value>ImportFgdb</Value>
+		</Config>
+		<Config Name="Type" Type="String">
+			<Value>eVectorReader</Value>
+		</Config>
+		<Config Name="StorageType" Type="String">
+			<Value>eFolderType</Value>
+		</Config>
+	</Config>
+	<Config Name="7" Type="GISDataTranslate.Addon">
+		<Config Name="Name" Type="String">
+			<Value>Esri Shp 读取</Value>
+		</Config>
+		<Config Name="Path" Type="String">
+			<Value>.\x86\GeoWay\GeowayGDALDataAddon.dll</Value>
+		</Config>
+		<Config Name="Function" Type="String">
+			<Value>ImportShp</Value>
+		</Config>
+		<Config Name="Type" Type="String">
+			<Value>eVectorReader</Value>
+		</Config>
+		<Config Name="StorageType" Type="String">
+			<Value>eFolderType</Value>
+		</Config>
+	</Config>
+	<Config Name="8" Type="GISDataTranslate.Addon">
+		<Config Name="Name" Type="String">
+			<Value>Geoway DB 读取</Value>
+		</Config>
+		<Config Name="Path" Type="String">
+			<Value>.\x86\GeoWay\GeowayGDALDataAddon.dll</Value>
+		</Config>
+		<Config Name="Function" Type="String">
+			<Value>ImportGeowayDB</Value>
+		</Config>
+		<Config Name="Type" Type="String">
+			<Value>eVectorReader</Value>
+		</Config>
+		<Config Name="StorageType" Type="String">
+			<Value>eFileType</Value>
+		</Config>
+	</Config>
+	<Config Name="9" Type="GISDataTranslate.Addon">
+		<Config Name="Name" Type="String">
+			<Value>ESRI FileGDB 输出</Value>
+		</Config>
+		<Config Name="Path" Type="String">
+			<Value>.\x86\GeoWay\GeowayGDALDataAddon.dll</Value>
+		</Config>
+		<Config Name="Function" Type="String">
+			<Value>ExportFgdb</Value>
+		</Config>
+		<Config Name="Type" Type="String">
+			<Value>eVectorWriter</Value>
+		</Config>
+		<Config Name="StorageType" Type="String">
+			<Value>eFileType</Value>
+		</Config>
+	</Config>
+	<Config Name="10" Type="GISDataTranslate.Addon">
+		<Config Name="Name" Type="String">
+			<Value>Geoway DB 输出</Value>
+		</Config>
+		<Config Name="Path" Type="String">
+			<Value>.\x86\GeoWay\GeowayGDALDataAddon.dll</Value>
+		</Config>
+		<Config Name="Function" Type="String">
+			<Value>ExportGeowayDB</Value>
+		</Config>
+		<Config Name="Type" Type="String">
+			<Value>eVectorWriter</Value>
+		</Config>
+		<Config Name="StorageType" Type="String">
+			<Value>eFileType</Value>
+		</Config>
+	</Config>
+	<Config Name="11" Type="GISDataTranslate.Addon">
+		<Config Name="Name" Type="String">
+			<Value>Geoway Raster 读取</Value>
+		</Config>
+		<Config Name="Path" Type="String">
+			<Value>.\x86\GeoWay\GeowayGDALDataAddon.dll</Value>
+		</Config>
+		<Config Name="Function" Type="String">
+			<Value>ImportRaster</Value>
+		</Config>
+		<Config Name="Type" Type="String">
+			<Value>eRasterReader</Value>
+		</Config>
+		<Config Name="StorageType" Type="String">
+			<Value>eFileType</Value>
+		</Config>
+	</Config>
+	<Config Name="12" Type="GISDataTranslate.Addon">
+		<Config Name="Name" Type="String">
+			<Value>Geoway Raster 输出</Value>
+		</Config>
+		<Config Name="Path" Type="String">
+			<Value>.\x86\GeoWay\GeowayGDALDataAddon.dll</Value>
+		</Config>
+		<Config Name="Function" Type="String">
+			<Value>ExportRaster</Value>
+		</Config>
+		<Config Name="Type" Type="String">
+			<Value>eRasterWriter</Value>
+		</Config>
+		<Config Name="StorageType" Type="String">
+			<Value>eFileType</Value>
+		</Config>
+	</Config>
+	<Config Name="13" Type="GISDataTranslate.Addon">
+		<Config Name="Name" Type="String">
+			<Value>ESRI SHP 输出</Value>
+		</Config>
+		<Config Name="Path" Type="String">
+			<Value>.\x86\GeoWay\GeowayGDALDataAddon.dll</Value>
+		</Config>
+		<Config Name="Function" Type="String">
+			<Value>ExportShp</Value>
+		</Config>
+		<Config Name="Type" Type="String">
+			<Value>eVectorWriter</Value>
+		</Config>
+		<Config Name="StorageType" Type="String">
+			<Value>eFileType</Value>
+		</Config>
+	</Config>
+	<Config Name="14" Type="GISDataTranslate.Addon">
+		<Config Name="Name" Type="String">
+			<Value>GPKG 标准矢量 读取</Value>
+		</Config>
+		<Config Name="Path" Type="String">
+			<Value>.\GeoStar\GeoStarAddon.dll</Value>
+		</Config>
+		<Config Name="Function" Type="String">
+			<Value>ImportGPKG2GPKG</Value>
+		</Config>
+		<Config Name="Type" Type="String">
+			<Value>eVectorReader</Value>
+		</Config>
+		<Config Name="StorageType" Type="String">
+			<Value>eFolderType</Value>
+		</Config>
+	</Config>
+	<Config Name="15" Type="GISDataTranslate.Addon">
+		<Config Name="Name" Type="String">
+			<Value>VCT格式导入</Value>
+		</Config>
+		<Config Name="Path" Type="String">
+			<Value>.\GeoStar\GeoStarAddon.dll</Value>
+		</Config>
+		<Config Name="Function" Type="String">
+			<Value>ImportVCT2GPKG</Value>
+		</Config>
+		<Config Name="Type" Type="String">
+			<Value>eVectorReader</Value>
+		</Config>
+		<Config Name="StorageType" Type="String">
+			<Value>eFolderType</Value>
+		</Config>
+	</Config>
+	<Config Name="16" Type="GISDataTranslate.Addon">
+		<Config Name="Name" Type="String">
+			<Value>VCT格式导出</Value>
+		</Config>
+		<Config Name="Path" Type="String">
+			<Value>.\GeoStar\GeoStarAddon.dll</Value>
+		</Config>
+		<Config Name="Function" Type="String">
+			<Value>ExportGPKG2VCT</Value>
+		</Config>
+		<Config Name="Type" Type="String">
+			<Value>eVectorWriter</Value>
+		</Config>
+		<Config Name="StorageType" Type="String">
+			<Value>eFolderType</Value>
+		</Config>
+	</Config>
+</Config>
