@@ -230,9 +230,7 @@ namespace GISDataTranslate
         System.IO.StreamWriter m_Log;
         string m_strLogPath;
 
-        System.Diagnostics.Stopwatch m_Watch = new System.Diagnostics.Stopwatch();
-        volatile bool m_DirtyLog = false;
-        System.Windows.Forms.Timer m_TimerLogCommit = new System.Windows.Forms.Timer();
+        System.Diagnostics.Stopwatch m_Watch = new System.Diagnostics.Stopwatch(); 
         public AddonProgress(System.Windows.Forms.RichTextBox box)
         {
             m_Box = box;
@@ -248,10 +246,7 @@ namespace GISDataTranslate
 
             m_strLogPath = System.IO.Path.Combine(strPath, strName + ".log");
             m_Log = new System.IO.StreamWriter(m_strLogPath,false,Encoding.GetEncoding("GBK"));
-            m_TimerLogCommit.Tick += new EventHandler(m_TimerLogCommit_Tick);
-            m_TimerLogCommit.Interval = 5000;
-            m_TimerLogCommit.Start();
-
+            m_Log.AutoFlush = true;
         }
 
        
@@ -314,14 +309,7 @@ namespace GISDataTranslate
             m_Box.SelectionColor = color;
             m_Box.AppendText(text);
             FileLog(text);
-        }
-        void m_TimerLogCommit_Tick(object sender, EventArgs e)
-        {
-            if (!m_DirtyLog)
-                return;
-            m_Log.Flush();
-            m_DirtyLog = false;
-        }
+        } 
         /// <summary>
         /// 写入日志到文件
         /// </summary>
@@ -331,8 +319,7 @@ namespace GISDataTranslate
             if (null == m_Log)
                 return;
             //日志写入到文件
-            m_Log.WriteLine(strLog);
-            m_DirtyLog = true;
+            m_Log.WriteLine(strLog); 
         }
         public void OnLog(string strContent, GIS.ProgressLogLevel level)
         {
