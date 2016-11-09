@@ -29,7 +29,7 @@
 #include "GDAL/include/ogrsf_frmts.h"
 #include "gdal\include\ogr_srs_api.h"
 #include "gdal\include\ogr_openfilegdb.h"
-#include "gdal_pam.h"
+//#include "gdal_pam.h"
 
 #include "..\ieSimpleRaster\ieSimpleRasterIO.h"
 

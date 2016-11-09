@@ -278,20 +278,7 @@ namespace gpkg
 	
 	/// \brief 智能指针
 	typedef std::shared_ptr<geometry_columns> geometry_columns_ptr;
-
-	/// \brief 元表gpkg_data_columns
-	class data_columns:public table
-	{
-	};
-	/// \brief 智能指针
-	typedef std::shared_ptr<data_columns> data_columns_ptr;
-
-	/// \brief 元表gpkg_data_columns_constraints
-	class data_columns_constraints:public table
-	{
-	};
-	/// \brief 智能指针
-	typedef std::shared_ptr<data_columns_constraints> data_columns_constraints_ptr;
+	 
 
 	/// \brief 元表gpkg_tile_matrix
 	class tile_matrix:public table
@@ -314,6 +301,90 @@ namespace gpkg
 	
 	/// \brief 智能指针
 	typedef std::shared_ptr<metadata_reference> metadata_reference_ptr;
+
+	
+	/// \brief 单个符号数据
+	struct symbol
+	{
+		/// \brief 符号标识
+		int id;
+		/// \brief 符号类型。
+		std::string type;
+
+		/// \brief 引用权威机构的符号结构定义URI，
+		/// 如OGC 05-077r4符号的URI值应该是符号模式命名空间http://schemas.opengeospatial.net/se。 
+		std::string sd_standard_uri;
+
+		/// \brief 符号的MIME  编码
+		///			text/xml
+		std::string mime_type;
+
+		/// \brief 符号数据
+		std::vector<unsigned char> data;
+	};
+
+	/// \brief 符号表扩展
+	class symbols:public table
+	{
+	public:
+		symbols(std::shared_ptr<database_handle>& db);
+		
+		/// \brief 增加一个符号
+		bool add(symbol& data);
+
+		/// \brief 删除一个符号
+		bool remove(const symbol& data);
+
+		/// \brief 查询一个符号
+		bool query(symbol& data);
+
+		/// \brief 替换一个符号数据
+		bool replace(const symbol& data);
+
+	};
+	/// \brief 智能指针
+	typedef std::shared_ptr<symbols> symbols_ptr;
+
+
+	/// \brief 符号引用
+	struct symbol_reference
+	{
+		std::string table_name;
+		long long	featureid;
+		std::string filter;
+		long long	symbolid;
+	};
+
+	/// \brief 符号引用
+	class symbols_reference:public table
+	{
+		sqlite_statment_ptr m_ptrQuery;
+	public:
+		symbols_reference(std::shared_ptr<database_handle>& db);
+		
+		/// \brief 增加一个引用
+		bool add(const symbol_reference& data);
+
+		/// \brief 删除一个表中的所有符号引用
+		bool remove(const std::string& table_name);
+
+		/// \brief 删除一个表中某个feature的符号引用
+		bool remove(const std::string& table_name,long long feataureid);
+
+
+		/// \brief 开始查询一个地物类表的符号引用
+		bool query(const char* table_name);
+
+		/// \brief 开始查询一个地物类表中某个featureid的符号
+		bool query(const char* table_name, long long featureid);
+		
+		/// \brief 调用query之后获取下一个引用的查询结果。
+		bool next(symbol_reference& data);
+
+
+	};
+	/// \brief 智能指针
+	typedef std::shared_ptr<symbols_reference> symbols_reference_ptr;
 
 	
 	/// \brief 一条扩展记录
@@ -483,12 +554,22 @@ namespace gpkg
 		/// \brief 几何元信息表
 		geometry_columns_ptr m_ptrGeo;
 		
+		/// \brief 符号表
+		symbols_ptr m_ptrSymbolData;
+
+		/// \brief 符号引用表，记录地物和符号的关系。
+		symbols_reference_ptr m_ptrSymRef;
 	public:
 		/// \brief sqlite的句柄
 		sqlite3* handle();
 		
 		/// \brief 数据库的句柄。
 		database_handle_ptr  DB();
+
+		/// \brief 符号表
+		symbols* symbol_table();
+		/// \brief 符号引用表，记录地物和符号的关系。
+		symbols_reference* symbol_reference_table();
 
 		/// \brief 获取内容元表
 		contents* contents_table();

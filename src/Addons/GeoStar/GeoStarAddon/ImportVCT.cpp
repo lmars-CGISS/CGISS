@@ -369,6 +369,32 @@ public:
 	}
 	void MakeAnn()
 	{
+		//对于单点注记。
+		if(m_Ann.vecAnnoPoint.size() == 1)
+		{
+			if(!m_ptrPoint)
+				m_ptrPoint = new GeoStar::Kernel::GsPoint();
+			VCTAnnoPoint& pt = m_Ann.vecAnnoPoint.front();
+			m_ptrPoint->Set(pt.vctPoint3D.x,pt.vctPoint3D.y,pt.vctPoint3D.z);
+			m_ptrPoint->CoordinateDimension(m_nDim);
+			m_Writer.Write(m_ptrPoint);
+			return;
+		}
+
+		//对于多点注记
+		if(!m_ptrMultiPoint)
+			m_ptrMultiPoint = new GeoStar::Kernel::GsMultiPoint();
+
+		std::vector<VCTPoint3D> vec;
+		vec.reserve(m_Ann.vecAnnoPoint.size());
+		std::vector<VCTAnnoPoint>::iterator it = m_Ann.vecAnnoPoint.begin();
+		for(;it != m_Ann.vecAnnoPoint.end();it++)
+			vec.push_back(it->vctPoint3D);
+
+		m_ptrMultiPoint->CoordinateDimension(3);
+		m_ptrMultiPoint->Set((const GeoStar::Kernel::GsRawPoint3D*)(&vec[0]),vec.size());
+		m_ptrMultiPoint->CoordinateDimension(m_nDim);
+		m_Writer.Write(m_ptrPoint);
 	}
 
 	///用于将Geometry构造成WKB
@@ -550,6 +576,8 @@ bool ImportVCT::ImportOne(VCTParser &parser,VCTFeatureCode& code,gpkg::database_
 		{
 			col.geometry_type_name = "POINT";
 			vecField.push_back(gpkg::field("geometry",gpkg::POINT));
+			//为注记地物类增加注记文本字段。
+			vecField.push_back(gpkg::field("annotaionValue",gpkg::TEXT));
 		}
 
 		VCTFields::iterator it = pStruct->vecFields.begin();
@@ -569,6 +597,18 @@ bool ImportVCT::ImportOne(VCTParser &parser,VCTFeatureCode& code,gpkg::database_
 		db->contents_table()->append(c);
 
 		ptrFeaClass = db->create_feature_table(c,vecField);
+
+		//如果是注记地物类的话则需要在扩展表中添加记录，以标识这个是注记地物类
+		if(code.GeometryType == VCT_ANNOTATION)
+		{
+			gpkg::extension ext;
+			ext.column_name = col.column_name;
+			ext.table_name = c.table_name;
+			ext.extension_name = "gpkgc_annotation";
+			ext.scope = "read-write";
+			ext.definition = "GeoStar";
+			db->extensions_table()->add(ext);
+		}
 	}
 
 	if(!ptrFeaClass)
@@ -596,10 +636,10 @@ bool ImportVCT::ImportOne(VCTParser &parser,VCTFeatureCode& code,gpkg::database_
 		nPos++;
 
 		itAtt = cacheAtt.find(it->first);
-		int nPos = 0;
+		fpos_t nAttPos = 0;
 		if(itAtt != cacheAtt.end())
-			nPos = itAtt->second;
-		feature.Prepare(it->second,nPos);
+			nAttPos = itAtt->second;
+		feature.Prepare(it->second,nAttPos);
 		
 		ptrFeaClass->save(&feature);
 		//合并此地物的矩形范围

@@ -401,6 +401,219 @@ namespace gpkg
 	}
 
 #pragma endregion
+#pragma region symbols
+symbols::symbols(std::shared_ptr<database_handle>& db)
+{
+	m_name = "gpkgc_symbol";
+	m_ptrDB = db;
+	if(exists())
+		return;
+		
+	//没有则创建元表。
+	std::string sql = "CREATE TABLE gpkgc_symbol(\
+								id integer primary key ,\
+								type TEXT,\
+								sd_standard_uri TEXT,\
+								mime_type TEXT,\
+								symboldata BLOB);";
+	db->execute(sql.c_str());
+
+}
+/// \brief 增加一个符号
+bool symbols::add(symbol& data)
+{
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return false;
+
+	std::stringstream ss;
+	ss <<"insert or replace into gpkgc_symbol(type,sd_standard_uri,mime_type,symboldata)\
+			values(?,?,?,?)";
+	sqlite_statment stmt(ptrDB->m_db,ss.str().c_str());
+	stmt.bind(1,data.type.c_str());
+	stmt.bind(2,data.sd_standard_uri.c_str());
+	stmt.bind(3,data.mime_type.c_str());
+	if(!data.data.empty())
+		stmt.bind(4,&data.data[0],data.data.size());
+	else
+		stmt.bind(4);
+
+	if(database_handle::is_error(stmt.step()))
+		return false;
+	//最近的oid
+	data.id = stmt.last_rowid();
+	return true;
+}
+/// \brief 替换一个符号数据
+bool symbols::replace(const symbol& data)
+{
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return false;
+
+	std::stringstream ss;
+	ss <<"insert or replace into gpkgc_symbol values(?,?,?,?,?)";
+	sqlite_statment stmt(ptrDB->m_db,ss.str().c_str());
+	stmt.bind(1,data.id);
+	stmt.bind(2,data.type.c_str());
+	stmt.bind(3,data.sd_standard_uri.c_str());
+	stmt.bind(4,data.mime_type.c_str());
+	if(!data.data.empty())
+		stmt.bind(5,&data.data[0],data.data.size());
+	else
+		stmt.bind(5);
+
+	return !database_handle::is_error(stmt.step());
+}
+/// \brief 删除一个符号
+bool symbols::remove(const symbol& data)
+{
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return  false;
+
+	std::stringstream ss;
+	ss <<"delete from  gpkgc_symbol where  id=?";
+	sqlite_statment stmt(ptrDB->m_db,ss.str().c_str());
+	stmt.bind(1,data.id);
+	return !database_handle::is_error(stmt.step());
+}
+
+/// \brief 查询一个符号
+bool symbols::query(symbol& data)
+{
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return  false;
+
+	std::stringstream ss;
+	ss <<"select * from  gpkgc_symbol where id=?";
+	sqlite_statment stmt(ptrDB->m_db,ss.str().c_str());
+	stmt.bind(1,data.id);
+	if(SQLITE_ROW != stmt.step())
+		return false;
+	data.type = stmt.string_value(1);
+	data.sd_standard_uri = stmt.string_value(2);
+	data.mime_type = stmt.string_value(3);
+	int n;
+	const unsigned char* b = stmt.blob_value(4,n);
+	data.data.clear();
+	if(n >0)
+		data.data.insert(data.data.begin(),b,b+n);
+
+	return true;
+}
+		
+symbols_reference::symbols_reference(std::shared_ptr<database_handle>& db)
+{
+	m_name = "gpkgc_symbol_reference";
+	m_ptrDB = db;
+	if(exists())
+		return;
+		
+	//没有则创建元表。
+	std::string sql = "CREATE TABLE gpkgc_symbol_reference (\
+								table_name TEXT ,\
+								featureid INTEGER,\
+								filter TEXT,\
+								symbolid INTEGER);";
+	db->execute(sql.c_str());
+
+}
+		
+/// \brief 增加一个引用
+bool symbols_reference::add(const symbol_reference& data)
+{
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return false;
+
+	std::stringstream ss;
+	ss <<"insert or replace into gpkgc_symbol_reference values(?,?,?,?)";
+	sqlite_statment stmt(ptrDB->m_db,ss.str().c_str());
+	stmt.bind(1,data.table_name.c_str());
+	stmt.bind(2,data.featureid);
+	stmt.bind(3,data.filter.c_str());
+	stmt.bind(3,data.symbolid);
+
+	return !database_handle::is_error(stmt.step());
+}
+
+/// \brief 删除一个表中的所有符号引用
+bool symbols_reference::remove(const std::string& table_name)
+{
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return false;
+	std::stringstream ss;
+	ss <<"delete from gpkgc_symbol_reference where table_name=?";
+	sqlite_statment stmt(ptrDB->m_db,ss.str().c_str());
+	stmt.bind(1,table_name.c_str());
+	return !database_handle::is_error(stmt.step());
+}
+
+/// \brief 删除一个表中某个feature的符号引用
+bool symbols_reference::remove(const std::string& table_name,long long featureid)
+{
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return false;
+	std::stringstream ss;
+	ss <<"delete from gpkgc_symbol_reference where table_name=? and featureid=?";
+	sqlite_statment stmt(ptrDB->m_db,ss.str().c_str());
+	stmt.bind(1,table_name.c_str());
+	stmt.bind(2,featureid);
+
+	return !database_handle::is_error(stmt.step());
+}
+
+
+/// \brief 开始查询一个地物类表的符号引用
+bool symbols_reference::query(const char* table_name)
+{
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return false;
+
+	std::stringstream ss;
+	ss <<"select  from gpkgc_symbol_reference where table_name=?";
+	m_ptrQuery = std::make_shared<sqlite_statment>(ptrDB->m_db,ss.str().c_str());
+	m_ptrQuery->bind(1,table_name);
+	return m_ptrQuery;
+}
+
+/// \brief 开始查询一个地物类表中某个featureid的符号
+bool symbols_reference::query(const char* table_name, long long featureid)
+{
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return false;
+
+	std::stringstream ss;
+	ss <<"select  from gpkgc_symbol_reference where table_name=? and featureid=?";
+	m_ptrQuery = std::make_shared<sqlite_statment>(ptrDB->m_db,ss.str().c_str());
+	m_ptrQuery->bind(1,table_name);
+	m_ptrQuery->bind(2,featureid);
+	return m_ptrQuery;
+}
+		
+/// \brief 调用query之后获取下一个引用的查询结果。
+bool symbols_reference::next(symbol_reference& data)
+{
+	if(!m_ptrQuery)
+		return false;
+	if(SQLITE_ROW != m_ptrQuery->step())
+		return false;
+	data.table_name = m_ptrQuery->string_value(0);
+	data.featureid = m_ptrQuery->int64_value(1);
+	data.filter  =m_ptrQuery->string_value(2);
+	data.symbolid =m_ptrQuery->int64_value(3);
+
+	return true;
+}
+
+
+#pragma endregion
 #pragma region extensions
 	extensions::extensions(std::shared_ptr<database_handle>& db)
 	{
@@ -1376,7 +1589,24 @@ database_handle_ptr  database::DB()
 {
 	return m_ptrDB;
 }
+/// \brief 符号引用表，记录地物和符号的关系。
+symbols_reference* database::symbol_reference_table()
+{
+	if(m_ptrSymRef.get())
+		return m_ptrSymRef.get();
 
+	m_ptrSymRef.reset(new symbols_reference(m_ptrDB));
+	return m_ptrSymRef.get();
+}
+/// \brief 符号表
+symbols* database::symbol_table()
+{
+	if(m_ptrSymbolData.get())
+		return m_ptrSymbolData.get();
+
+	m_ptrSymbolData.reset(new symbols(m_ptrDB));
+	return m_ptrSymbolData.get();
+}
 //获取内容元表
 contents* database::contents_table()
 {

@@ -280,6 +280,8 @@ void gwAddonFunction::getRasterImportParams(const char* strParameter,string& str
 		DOMNamedNodeMap* pMap = pNode->getAttributes();
 		wchar_t* szkey =  CharToWchar("Key");
 		DOMNode* pAttrNode = pMap->getNamedItem(szkey);
+		delete[] szkey;
+		
 		wchar_t* data = (wchar_t*)pAttrNode->getNodeValue();
 		char* szdata = WcharToChar(data);
 		/*string strdata = szdata;
@@ -897,129 +899,132 @@ int gwAddonFunction::copyLayer(OGRLayer *poSrcLayer,
 	/*      case the target datasource has altered it (e.g. Shapefile       */
 	/*      limited to 10 char field names).                                */
 	/* -------------------------------------------------------------------- */
-	int         nSrcFieldCount = poSrcDefn->GetFieldCount();
-	int         nDstFieldCount = 0;
-	int         iField;
-	vector<string> vec_FieldsName;
-	if(isGDB)
+	if(OID == 0)
 	{
-		if(BuildFielsGDBv10(poSrcLayer,vec_FieldsName)&&vec_FieldsName.size()!=nSrcFieldCount)
-		{
-			//return false;
-		}
-	}
-	
-	// Initialize the index-to-index map to -1's
-
-	/* Caution : at the time of writing, the MapInfo driver */
-	/* returns NULL until a field has been added */
-	OGRFeatureDefn* poDstFDefn = poDstLayer->GetLayerDefn();
-	if (poDstFDefn)
-		nDstFieldCount = poDstFDefn->GetFieldCount();    
-	for( iField = 0; iField < nSrcFieldCount; iField++ )
-	{
-		OGRFieldDefn* poSrcFieldDefn = poSrcDefn->GetFieldDefn(iField);
-		string strFieldName = poSrcFieldDefn->GetNameRef();
-		char* szName = (char*)strFieldName.data();
+		int         nSrcFieldCount = poSrcDefn->GetFieldCount();
+		int         nDstFieldCount = 0;
+		int         iField;
+		vector<string> vec_FieldsName;
 		if(isGDB)
 		{
-			if(iField < vec_FieldsName.size())
-				strFieldName = vec_FieldsName[iField];
-			else
+			if(BuildFielsGDBv10(poSrcLayer,vec_FieldsName)&&vec_FieldsName.size()!=nSrcFieldCount)
 			{
-				char* czName = FromUTF8(strFieldName.data());
-				strFieldName = czName;
+				//return false;
 			}
 		}
+		
+		// Initialize the index-to-index map to -1's
 
-		switch (enCode)
-		{
-		case UTF8ToUTF8:
-			break;
-		case GBKToGBK:
-			break;
-		case UTF8ToGBK:
-			szName = FromUTF8(strFieldName.data());
-			break;
-		case GBKToUTF8:
-			szName = ToUTF8(strFieldName.data());
-			break;
-		}
-		
-		
-		/*if(!bIsUTF8)
-			szName = ToUTF8(strFieldName.data());*/
-		//poSrcFieldDefn->SetName(szName);
-		OGRFieldDefn oFieldDefn( poSrcFieldDefn );
-		if(isGDB )
-		{
-			poSrcFieldDefn->SetName(szName);
-		}
-		oFieldDefn.SetName(szName);
-		if(enCode == UTF8ToGBK ||
-			enCode == GBKToUTF8)
-			CPLFree(szName);
-		/* The field may have been already created at layer creation */
-		int iDstField = -1;
+		/* Caution : at the time of writing, the MapInfo driver */
+		/* returns NULL until a field has been added */
+		OGRFeatureDefn* poDstFDefn = poDstLayer->GetLayerDefn();
 		if (poDstFDefn)
-			iDstField = poDstFDefn->GetFieldIndex(oFieldDefn.GetNameRef());
-		if (iDstField >= 0)
+			nDstFieldCount = poDstFDefn->GetFieldCount();    
+		for( iField = 0; iField < nSrcFieldCount; iField++ )
 		{
-			
-		}
-		else if (poDstLayer->CreateField( &oFieldDefn ) == OGRERR_NONE)
-		{
-			/* now that we've created a field, GetLayerDefn() won't return NULL */
-			if (poDstFDefn == NULL)
-				poDstFDefn = poDstLayer->GetLayerDefn();
-
-			/* Sanity check : if it fails, the driver is buggy */
-			if (poDstFDefn != NULL &&
-				poDstFDefn->GetFieldCount() != nDstFieldCount + 1)
+			OGRFieldDefn* poSrcFieldDefn = poSrcDefn->GetFieldDefn(iField);
+			string strFieldName = poSrcFieldDefn->GetNameRef();
+			char* szName = (char*)strFieldName.data();
+			if(isGDB)
 			{
-				CPLError(CE_Warning, CPLE_AppDefined,
-					"The output driver has claimed to have added the %s field, but it did not!",
-					oFieldDefn.GetNameRef() );
+				if(iField < vec_FieldsName.size())
+					strFieldName = vec_FieldsName[iField];
+				else
+				{
+					char* czName = FromUTF8(strFieldName.data());
+					strFieldName = czName;
+					CPLFree(czName);
+				}
 			}
-			else
+
+			switch (enCode)
+			{
+			case UTF8ToUTF8:
+				break;
+			case GBKToGBK:
+				break;
+			case UTF8ToGBK:
+				szName = FromUTF8(strFieldName.data());
+				break;
+			case GBKToUTF8:
+				szName = ToUTF8(strFieldName.data());
+				break;
+			}
+			
+			
+			/*if(!bIsUTF8)
+				szName = ToUTF8(strFieldName.data());*/
+			//poSrcFieldDefn->SetName(szName);
+			OGRFieldDefn oFieldDefn( poSrcFieldDefn );
+			if(isGDB )
+			{
+				poSrcFieldDefn->SetName(szName);
+			}
+			oFieldDefn.SetName(szName);
+			if(enCode == UTF8ToGBK ||
+				enCode == GBKToUTF8)
+				CPLFree(szName);
+			/* The field may have been already created at layer creation */
+			int iDstField = -1;
+			if (poDstFDefn)
+				iDstField = poDstFDefn->GetFieldIndex(oFieldDefn.GetNameRef());
+			if (iDstField >= 0)
 			{
 				
-				nDstFieldCount ++;
 			}
-			/*if (poDstFDefn)
-				iDstField = poDstFDefn->GetFieldIndex(oFieldDefn.GetNameRef());
-			if(iDstField == -1)
+			else if (poDstLayer->CreateField( &oFieldDefn ) == OGRERR_NONE)
 			{
-				string strName = oFieldDefn.GetNameRef();
-				if(strName.length() > 10)
+				/* now that we've created a field, GetLayerDefn() won't return NULL */
+				if (poDstFDefn == NULL)
+					poDstFDefn = poDstLayer->GetLayerDefn();
+
+				/* Sanity check : if it fails, the driver is buggy */
+				if (poDstFDefn != NULL &&
+					poDstFDefn->GetFieldCount() != nDstFieldCount + 1)
 				{
-					strName = strName.substr(0,10);
-					poSrcFieldDefn->SetName(strName.data());
+					CPLError(CE_Warning, CPLE_AppDefined,
+						"The output driver has claimed to have added the %s field, but it did not!",
+						oFieldDefn.GetNameRef() );
 				}
-			}*/
+				else
+				{
+					
+					nDstFieldCount ++;
+				}
+				/*if (poDstFDefn)
+					iDstField = poDstFDefn->GetFieldIndex(oFieldDefn.GetNameRef());
+				if(iDstField == -1)
+				{
+					string strName = oFieldDefn.GetNameRef();
+					if(strName.length() > 10)
+					{
+						strName = strName.substr(0,10);
+						poSrcFieldDefn->SetName(strName.data());
+					}
+				}*/
+			}
+		}
+
+		/* -------------------------------------------------------------------- */
+		/*      Create geometry fields.                                         */
+		/* -------------------------------------------------------------------- */
+		if( poSrcDefn->GetGeomFieldCount() > 1 &&
+			pDestSource->TestCapability(ODsCCreateGeomFieldAfterCreateLayer) )
+		{
+			int nSrcGeomFieldCount = poSrcDefn->GetGeomFieldCount();
+			for( iField = 0; iField < nSrcGeomFieldCount; iField++ )
+			{
+				poDstLayer->CreateGeomField( poSrcDefn->GetGeomFieldDefn(iField) );
+			}
 		}
 	}
 
-	/* -------------------------------------------------------------------- */
-	/*      Create geometry fields.                                         */
-	/* -------------------------------------------------------------------- */
-	if( poSrcDefn->GetGeomFieldCount() > 1 &&
-		pDestSource->TestCapability(ODsCCreateGeomFieldAfterCreateLayer) )
-	{
-		int nSrcGeomFieldCount = poSrcDefn->GetGeomFieldCount();
-		for( iField = 0; iField < nSrcGeomFieldCount; iField++ )
-		{
-			poDstLayer->CreateGeomField( poSrcDefn->GetGeomFieldDefn(iField) );
-		}
-	}
 
 	/* -------------------------------------------------------------------- */
 	/*      Check if the destination layer supports transactions and set a  */
 	/*      default number of features in a single transaction.             */
 	/* -------------------------------------------------------------------- */
-	int nGroupTransactions = 0;
-	if( poDstLayer->TestCapability( OLCTransactions ) )
-		nGroupTransactions = 10000;
+	
 
 	/* -------------------------------------------------------------------- */
 	/*      Transfer features.                                              */
@@ -1042,13 +1047,7 @@ int gwAddonFunction::copyLayer(OGRLayer *poSrcLayer,
 	int idx = 0;
 	while((poFeature = poSrcLayer->GetNextFeature())!=NULL)
 	{
-		if(nIndex == 3000000)
-		{
-			nIndex = poFeature->GetFID();
-			OGRFeature::DestroyFeature( poFeature );
-			
-			return 0;
-		}
+		
 		nIndex++;
 		OGRFeature      *poDstFeature = NULL;
 		if( poFeature == NULL )
@@ -1077,6 +1076,14 @@ int gwAddonFunction::copyLayer(OGRLayer *poSrcLayer,
 			poDstLayer->CommitTransaction();
 			poDstLayer->StartTransaction();
 		}*/
+		if(nIndex == 500000)
+		{
+			nIndex = poFeature->GetFID();
+			OGRFeature::DestroyFeature( poFeature );
+			OGRFeature::DestroyFeature( poDstFeature );
+		//	poDstLayer->CommitTransaction();
+			return 0;
+		}
 		OGRFeature::DestroyFeature( poFeature );
 		OGRFeature::DestroyFeature( poDstFeature );
 		idx++;
@@ -1096,7 +1103,10 @@ OGRErr gwAddonFunction::SetFieldsFrom( OGRFeature * poSrcFeature, OGRFeature* po
 	{
 		string strFieldName = poSrcFeature->GetFieldDefnRef(iField)->GetNameRef();
 		char* szName = NULL;// (char*)strFieldName.data();
-
+		if(stricmp(strFieldName.data(),"TestString")==0 )
+		{
+			strFieldName = "annotaionValue";
+		}
 
 		switch (enCode)
 		{
@@ -1121,7 +1131,13 @@ OGRErr gwAddonFunction::SetFieldsFrom( OGRFeature * poSrcFeature, OGRFeature* po
 		if(nIdx == -1)
 		{
 			string strName = szName;
-			if(strName.length() > 10)
+			if(stricmp(strName.data(),"annotaionValue")==0)
+			{
+				strName = "TestString";
+			}
+			nIdx = poDestFeature->GetFieldIndex(strName.data() );
+			
+			if(nIdx == -1 && strName.length() > 10)
 			{
 				strName = strName.substr(0,10);
 				nIdx = poDestFeature->GetFieldIndex(strName.data() );
@@ -1478,9 +1494,160 @@ OGRwkbGeometryType gwGeometryTypeToOGRGeometryType(int eGeoType ,int bHasZ)
 
 	
 }
+bool gwAddonFunction::InnitMetadataTable(const string& strGPKGPath,const string& strPath)
+{
+	char *pszErrMsg = NULL;
+	sqlite3* hDB = NULL;
+	std::string strGPKG = strGPKGPath;
+	char* szUtf8Conn = ToUTF8(strGPKG.data());
+	int rc = sqlite3_open_v2(szUtf8Conn, &hDB, SQLITE_OPEN_READWRITE, NULL);
+	delete[] szUtf8Conn;
+	RegisterTable(hDB,"Metadata");
+	RegisterTable(hDB,"Meatadata_Reference");
+	CreateTable(hDB);
+	string strXMLPath = strPath;
 
+	/*if(strPath.find_last_of(".") != -1)
+		strXMLPath = strXMLPath.replace(strXMLPath.find_last_of("."),strXMLPath.length() - strXMLPath.find_last_of("."),".xml");
+	else
+	{
+		strXMLPath = strXMLPath + ".xml";
+	}*/
+	DOMDocument *m_pDoc = Parse(strXMLPath);
+	if(m_pDoc == NULL)
+	{
+		
+		std::cout<<"转换失败"<<std::endl;
+		return false;
+	}
+	std::string strMeta = SaveXML(m_pDoc,true);
+	char * pszSQL = sqlite3_mprintf(
+		"INSERT INTO Metadata "
+		"(md_scope,md_standard_URI,mime_type,metadata)"
+		" VALUES "
+		"('dataset','http://schemas.opengeospatial.net/se','xml/text','%s')",
+		strMeta.data());
+	char* szSQL = ToUTF8(pszSQL);
+	rc = sqlite3_exec( hDB, szSQL, NULL, NULL, &pszErrMsg );
+	CPLFree(szSQL);
+	if( rc != SQLITE_OK )
+	{
 
+		sqlite3_free( pszErrMsg );
+		return false;
+	}
+	sqlite3_free(pszSQL);
+	pszSQL = sqlite3_mprintf(
+		"INSERT INTO Meatadata_Reference "
+		"(reference_scope,md_file_id)"
+		" VALUES "
+		"('dataset','1')");
 
+	 rc = sqlite3_exec( hDB, pszSQL, NULL, NULL, &pszErrMsg );
+	if( rc != SQLITE_OK )
+	{
+
+		sqlite3_free( pszErrMsg );
+		return false;
+	}
+	sqlite3_free(pszSQL);
+	if(hDB != NULL)
+		sqlite3_close(hDB);
+}
+bool gwAddonFunction::RegisterTable(sqlite3* hDB,const string& strTableName)
+{
+	CPLString osCommand;
+	
+	char *pszErrMsg = NULL;
+	sqlite3_stmt* pStmt = NULL;
+	const char* pszTail = NULL;
+	int rc = 0;
+	if (SQLITE_OK != rc)
+	{
+		if(hDB != NULL)
+			sqlite3_close(hDB);
+		return false;
+	}
+	char * pszSQL = sqlite3_mprintf(
+		"INSERT INTO gpkg_contents "
+		"(table_name,data_type,identifier,last_change,srs_id)"
+		" VALUES "
+		"('%q','features','%q',strftime('%%Y-%%m-%%dT%%H:%%M:%%fZ',CURRENT_TIMESTAMP),%d)",
+		strTableName.data(), strTableName.data(), 0);
+	rc = sqlite3_exec( hDB, pszSQL, NULL, NULL, &pszErrMsg );
+	if( rc != SQLITE_OK )
+	{
+
+		sqlite3_free( pszErrMsg );
+		return false;
+	}
+	pszSQL = sqlite3_mprintf(
+		"INSERT INTO gpkg_geometry_columns "
+		"(table_name,column_name,geometry_type_name,srs_id,z,m)"
+		" VALUES "
+		"('%q','%q','%q',%d,%d,%d)",
+		strTableName.data(),"","",
+		0,0,0);
+	rc = sqlite3_exec( hDB, pszSQL, NULL, NULL, &pszErrMsg );
+	if( rc != SQLITE_OK )
+	{
+
+		sqlite3_free( pszErrMsg );
+		return false;
+	}
+	sqlite3_free(pszSQL);
+	sqlite3_free( pszErrMsg );
+	
+	return true;
+}
+bool gwAddonFunction::CreateTable(sqlite3* hDB)
+{
+	CPLString osCommand;
+	char *pszErrMsg = NULL;
+	sqlite3_stmt* pStmt = NULL;
+	const char* pszTail = NULL;
+	int rc = 0;
+
+	if (SQLITE_OK != rc)
+	{
+		if(hDB != NULL)
+			sqlite3_close(hDB);
+		return false;
+	}
+	osCommand =
+		"CREATE TABLE Metadata ("
+		"     fid INTEGER PRIMARY KEY AUTOINCREMENT, "
+		"     md_scope VARCHAR, "
+		"     md_standard_URI VARCHAR, "
+		"     mime_type VARCHAR, "
+		"     metadata TEXT)";
+	rc = sqlite3_exec( hDB, osCommand, NULL, NULL, &pszErrMsg );
+	if( rc != SQLITE_OK )
+	{
+
+		sqlite3_free( pszErrMsg );
+		return false;
+	}
+	sqlite3_free( pszErrMsg );
+	osCommand =
+		"CREATE TABLE Meatadata_Reference ("
+		"     fid INTEGER PRIMARY KEY AUTOINCREMENT, "
+		"     reference_scope VARCHAR, "
+		"     table_Name VARCHAR, "
+		"     column_name VARCHAR, "
+		"     row_id_value INTEGER,"
+		"     timestamp VARCHAR,"
+		"     md_file_id  INTEGER,"
+		"     md_parent_id INTEGER)";
+	rc = sqlite3_exec( hDB, osCommand, NULL, NULL, &pszErrMsg );
+	if( rc != SQLITE_OK )
+	{
+		sqlite3_free( pszErrMsg );
+		return false;
+	}
+	sqlite3_free( pszErrMsg );
+	return true;
+}
 bool gwAddonFunction::GeowayDB2SQLite(const char* inDir)
 {
 	 CPLString osCommand;
@@ -1817,6 +1984,147 @@ hid_t h5DataType = GDALDataType2PixelDataType(dataType);
 	return false;
 }
 
+OGRLayer* CreateMetadataReferenceLayer(OGRDataSource* pDestSource,OGRSpatialReference* pSpatial)
+{
+	OGRLayer* poSymLayer = pDestSource->CreateLayer( "Meatadata_Reference", pSpatial,
+		wkbNone, NULL );
+	if(poSymLayer == NULL)
+		return NULL;
+
+	OGRFieldDefn oScopeDef("",OFTString) ;
+	oScopeDef.SetName("reference_scope");
+	//oTypeDef.SetNullable(false);
+	oScopeDef.SetType(OFTString);
+	poSymLayer->CreateField(&oScopeDef);
+
+	OGRFieldDefn oNameDef("",OFTString) ;
+	oNameDef.SetName("table_Name");
+	//oNameDef.SetNullable(true);
+	oNameDef.SetType(OFTString);
+	poSymLayer->CreateField(&oNameDef);
+
+	OGRFieldDefn oColDef("",OFTString) ;
+	oColDef.SetName("column_name");
+	//oNameDef.SetNullable(true);
+	oColDef.SetType(OFTString);
+	poSymLayer->CreateField(&oColDef);
+
+	OGRFieldDefn oRowIDDef("",OFTString) ;
+	oRowIDDef.SetName("row_id_value");
+	//oNameDef.SetNullable(true);
+	oRowIDDef.SetType(OFTInteger);
+	poSymLayer->CreateField(&oRowIDDef);
+
+	OGRFieldDefn oTimeDef("",OFTString) ;
+	oTimeDef.SetName("timestamp");
+	//oNameDef.SetNullable(true);
+	oTimeDef.SetType(OFTString);
+	poSymLayer->CreateField(&oTimeDef);
+
+	OGRFieldDefn oMDDef("",OFTString);
+	oMDDef.SetName("md_file_id");
+	//oMimeDef.SetNullable(false);
+	oMDDef.SetType(OFTInteger);
+	poSymLayer->CreateField(&oMDDef);
+
+	OGRFieldDefn oParentDef("",OFTString) ;
+	oParentDef.SetName("md_parent_id");
+	//oSymbolDef.SetNullable(false);
+	oParentDef.SetType(OFTInteger);
+	poSymLayer->CreateField(&oParentDef);
+
+	return poSymLayer;
+
+}
+
+OGRLayer* CreateMetadataLayer(OGRDataSource* pDestSource,OGRSpatialReference* pSpatial)
+{
+	OGRLayer* poSymLayer = pDestSource->CreateLayer( "Meatadata", pSpatial,
+		wkbNone, NULL );
+	if(poSymLayer == NULL)
+		return NULL;
+
+	OGRFieldDefn oScopeDef("",OFTString) ;
+	oScopeDef.SetName("md_scope");
+	//oTypeDef.SetNullable(false);
+	oScopeDef.SetType(OFTString);
+	poSymLayer->CreateField(&oScopeDef);
+
+	OGRFieldDefn oURIDef("",OFTString) ;
+	oURIDef.SetName("md_standard_URI");
+	//oNameDef.SetNullable(true);
+	oURIDef.SetType(OFTString);
+	poSymLayer->CreateField(&oURIDef);
+
+	OGRField oField ;
+	oField.String = "text/xml";
+	OGRFieldDefn oMimeDef("",OFTString);
+	oMimeDef.SetName("mime_type");
+	//oMimeDef.SetNullable(false);
+	oMimeDef.SetDefault(&oField);
+	oMimeDef.SetType(OFTString);
+	poSymLayer->CreateField(&oMimeDef);
+
+	OGRFieldDefn ometadataDef("",OFTString) ;
+	ometadataDef.SetName("metadata");
+	//oSymbolDef.SetNullable(false);
+	ometadataDef.SetType(OFTString);
+	ometadataDef.SetWidth(10240);
+	poSymLayer->CreateField(&ometadataDef);
+
+	return poSymLayer;
+
+}
+OGRLayer* CreateSymbolReferenceLayer(OGRDataSource* pDestSource,OGRSpatialReference* pSpatial)
+{
+	OGRLayer* poSymLayer = pDestSource->CreateLayer( "symbol_reference", NULL,
+		wkbUnknown, NULL );
+	if(poSymLayer == NULL)
+		return NULL;
+
+	OGRField oField;
+	oField.String = "featureclass";
+	OGRFieldDefn oScopeDef("",OFTString) ;
+	oScopeDef.SetName("reference_scope");
+	//oScopeDef.SetNullable(false);
+	oScopeDef.SetType(OFTString);
+	oScopeDef.SetDefault(&oField);
+	poSymLayer->CreateField(&oScopeDef);
+
+	OGRFieldDefn oTableDef("",OFTString) ;
+	oTableDef.SetName("table_name");
+	//oTableDef.SetNullable(true);
+	oTableDef.SetType(OFTString);
+	poSymLayer->CreateField(&oTableDef);
+
+	OGRFieldDefn oRowidDef("",OFTString) ;
+	oRowidDef.SetName("row_id");
+	//oRowidDef.SetNullable(true);
+	oRowidDef.SetType(OFTInteger);
+	poSymLayer->CreateField(&oRowidDef);
+
+	OGRFieldDefn oUriDef("",OFTString) ;
+	oUriDef.SetName("sd_standard_uri");
+	//oUriDef.SetNullable(true);
+	oUriDef.SetType(OFTString);
+	poSymLayer->CreateField(&oUriDef);
+
+	OGRFieldDefn oFilterDef("",OFTString) ;
+	oFilterDef.SetName("filter");
+	//oFilterDef.SetNullable(false);
+	oFilterDef.SetType(OFTString);
+	poSymLayer->CreateField(&oFilterDef);
+
+	OGRFieldDefn oSymbolIDDef("",OFTString) ;
+	oSymbolIDDef.SetName("symbol_id");
+	//oSymbolIDDef.SetNullable(false);
+	oSymbolIDDef.SetType(OFTString);
+	poSymLayer->CreateField(&oSymbolIDDef);
+
+	return poSymLayer;
+
+}
+
 bool gwAddonFunction::copyDataset(const string& strPath,const string& strOutPath, 
 								  const string& strProvier,GIS::Progress * nProgress)
 {
@@ -1894,8 +2202,10 @@ bool gwAddonFunction::copyDataset(const string& strPath,const string& strOutPath
 		strInPath = strPath;
 		
 	}
-
+	
 	m_poDS = OGRSFDriverRegistrar::Open(strInPath.c_str(), false); //true时才能写操作
+	
+	
 
 	//m_poDS = OGRSFDriverRegistrar::Open(strPath.c_str(), false); //true时才能写操作
 	if(m_poDS == NULL)
@@ -1912,6 +2222,8 @@ bool gwAddonFunction::copyDataset(const string& strPath,const string& strOutPath
 	OGRDataSource* poODS = NULL;
 	OGRLayer* pLastLayer = NULL;
 	bool bInTrans = false;
+	string strAnnoName = "";
+	int nDestLayerIdx = -1;
 	try
 	{
 		CPLSetConfigOption("GDAL_FILENAME_IS_UTF8","YES");
@@ -1952,6 +2264,7 @@ bool gwAddonFunction::copyDataset(const string& strPath,const string& strOutPath
 				GBKName = cName;
 				CPLFree(cName);
 			}
+			
 			string strDebug = "数据表 ";
 			strDebug = strDebug + GBKName;
 
@@ -1969,7 +2282,13 @@ bool gwAddonFunction::copyDataset(const string& strPath,const string& strOutPath
 			{
 				szName = gwAddonFunction::ToUTF8(strName.data());
 			}
-
+			
+			if(strstr(strupr((char*)(GBKName.data())),"注记") ||
+				strstr(strupr((char*)(GBKName.data())),"anno"))
+			{
+				strAnnoName = szName;
+				continue;
+			}
 			OGRFeatureDefn *poSrcDefn = poLayer->GetLayerDefn();
 			OGRLayer *poDstLayer = NULL;
 
@@ -1988,8 +2307,9 @@ bool gwAddonFunction::copyDataset(const string& strPath,const string& strOutPath
 			if( poSrcDefn->GetGeomFieldCount() > 1 &&
 				poODS->TestCapability(ODsCCreateGeomFieldAfterCreateLayer) )
 			{
-				
-				poDstLayer = poODS->CreateLayer( szName, NULL, wkbNone, NULL );
+				strAnnoName = szName;
+				continue;
+			//	poDstLayer = poODS->CreateLayer( szName, NULL, wkbNone, NULL );
 			}
 			else
 			{
@@ -2012,16 +2332,18 @@ bool gwAddonFunction::copyDataset(const string& strPath,const string& strOutPath
 			}
 			if(!bIsUTF8)
 				CPLFree(szName);
+			int bCopied = -1;// gwAddonFunction::copyLayer(poLayer,poDstLayer,poODS,enCode,isGDB,nIndex,OID);
 			if(poDstLayer!=NULL)
 			{
 
+				nDestLayerIdx++;
 				if(bInTrans == false)
 				{
 					bInTrans = true;
 					poDstLayer->StartTransaction();
 				}
 				OID = 0;
-				int bCopied = -1;// gwAddonFunction::copyLayer(poLayer,poDstLayer,poODS,enCode,isGDB,nIndex,OID);
+				
 				while(bCopied != 1)
 				{
 					if(bCopied == -1)
@@ -2030,19 +2352,32 @@ bool gwAddonFunction::copyDataset(const string& strPath,const string& strOutPath
 					{
 						OGRDataSource::DestroyDataSource(m_poDS);
 						//OGRDataSource::DestroyDataSource(poODS);
+						//bInTrans = false;
 						m_poDS = NULL;
-						//poODS = NULL;
+					//	poODS = NULL;
 						m_poDS = OGRSFDriverRegistrar::Open(strInPath.c_str(), false); //true时才能写操作
-						/*char* szPath1 = gwAddonFunction::ToUTF8(strOutPath.data());
-						poODS = m_poDriver->Open( szPath1, 1);
-						CPLFree(szPath1);*/
+						//char* szPath1 = gwAddonFunction::ToUTF8(strOutPath.data());
+						//poODS = m_poDriver->Open( szPath1, 1);
+						//CPLFree(szPath1);
 						OGRLayer* poLayer1 = m_poDS->GetLayer(iLayer);
-						//OGRLayer* poDstLayer1 = poODS->GetLayer(iLayer);
+						poDstLayer = poODS->GetLayer(nDestLayerIdx);
+						/*if(poDstLayer != NULL)
+						{
+							bInTrans = true;
+							poDstLayer->StartTransaction();
+						}*/
 						OID = nIndex;
 						nIndex = 0;
 						bCopied = gwAddonFunction::copyLayer(poLayer1,poDstLayer,poODS,enCode,isGDB,nIndex,OID);
-					//	poDstLayer1->StartTransaction();
+						/*if(bCopied == 0)
+							bInTrans = false;
+						else
+						{
+							bInTrans = true;
+							pLastLayer = poDstLayer;
+						}*/
 					}
+					
 				}
 				/*OGRLayer* pDesLayer = poODS->CopyLayer( poLayer, poLayer->GetLayerDefn()->GetName(), 
 					NULL );*/
@@ -2062,7 +2397,8 @@ bool gwAddonFunction::copyDataset(const string& strPath,const string& strOutPath
 					else
 						std::cout<<strDebug.data()<<std::endl;
 				}
-				pLastLayer = poLayer;
+				
+				pLastLayer = poDstLayer;
 				/*if(iLayer == nCount - 1)
 					poDstLayer->CommitTransaction();*/
 
@@ -2083,15 +2419,23 @@ bool gwAddonFunction::copyDataset(const string& strPath,const string& strOutPath
 	catch (std::exception* e)
 	{
 	}
-	if(pLastLayer != NULL && bInTrans)
-		pLastLayer->CommitTransaction();
-	if(poODS == NULL)
+	if(stricmp(strExt.data(),".gpkg"))
 	{
-		if(nProgress != NULL)
-			nProgress->OnLog("转换失败",GIS::LogLevel::eError);
+		CopyOtherLayers(m_poDS,poODS,strAnnoName,enCode,isGDB);
+
+		string strXMLPath = strPath;
+
+		if(strPath.find_last_of(".") != -1)
+			strXMLPath = strXMLPath.replace(strXMLPath.find_last_of("."),strXMLPath.length() - strXMLPath.find_last_of("."),".xml");
 		else
-			std::cout<<"转换失败"<<std::endl;
-		return false;
+		{
+			strXMLPath = strXMLPath + ".xml";
+		}
+
+		if(pLastLayer != NULL && bInTrans)
+			pLastLayer->CommitTransaction();
+
+		gwAddonFunction::InnitMetadataTable(strOutPath,strXMLPath);
 	}
 	OGRDataSource::DestroyDataSource(m_poDS);
 	OGRDataSource::DestroyDataSource(poODS);
@@ -2101,6 +2445,279 @@ bool gwAddonFunction::copyDataset(const string& strPath,const string& strOutPath
 		nProgress->OnLog(m_strResult.data(),GIS::LogLevel::eInfo);
 	else
 		std::cout<<m_strResult.data()<<std::endl;
+
+	return true;
+}
+
+OGRLayer* CreateSymbolLayer(OGRDataSource* pDestSource,OGRSpatialReference* pSpatial)
+{
+	OGRLayer* poSymLayer = pDestSource->CreateLayer( "symbol", pSpatial,
+		wkbUnknown, NULL );
+	if(poSymLayer == NULL)
+		return NULL;
+	
+	OGRFieldDefn oTypeDef("",OFTString) ;
+	oTypeDef.SetName("Type");
+	//oTypeDef.SetNullable(false);
+	oTypeDef.SetType(OFTString);
+	poSymLayer->CreateField(&oTypeDef);
+
+	OGRFieldDefn oNameDef("",OFTString) ;
+	oNameDef.SetName("Name");
+	//oNameDef.SetNullable(true);
+	oNameDef.SetType(OFTString);
+	poSymLayer->CreateField(&oNameDef);
+
+	OGRFieldDefn oDescriptionDef("",OFTString) ;
+	oDescriptionDef.SetName("description");
+	//oDescriptionDef.SetNullable(true);
+	oDescriptionDef.SetType(OFTString);
+	poSymLayer->CreateField(&oDescriptionDef);
+
+	OGRFieldDefn oUriDef("",OFTString) ;
+	oUriDef.SetName("sd_standard_uri");
+	//oUriDef.SetNullable(true);
+	oUriDef.SetType(OFTString);
+	poSymLayer->CreateField(&oUriDef);
+
+	OGRField oField ;
+	oField.String = "text/xml";
+	OGRFieldDefn oMimeDef("",OFTString);
+	oMimeDef.SetName("mime_type");
+	//oMimeDef.SetNullable(false);
+	oMimeDef.SetDefault(&oField);
+	oMimeDef.SetType(OFTString);
+	poSymLayer->CreateField(&oMimeDef);
+
+	OGRFieldDefn oSymbolDef("",OFTString) ;
+	oSymbolDef.SetName("symboldata");
+	//oSymbolDef.SetNullable(false);
+	oSymbolDef.SetType(OFTString);
+	poSymLayer->CreateField(&oSymbolDef);
+
+	return poSymLayer;
+
+}
+
+
+bool gwAddonFunction::CopyOtherLayers(OGRDataSource* pSrcSource, OGRDataSource* pDestSource,const string& strAnnoName, enCodeTrans enCode, bool isGDB)
+{
+	if(strAnnoName.empty())
+		return false;
+	if(pSrcSource == NULL || pDestSource == NULL)
+		return false;
+	char* szGBK = FromUTF8(strAnnoName.data());
+	OGRLayer* poSrcLayer = pSrcSource->GetLayerByName(szGBK);
+	
+	OGRLayer* pSymbolLayer = CreateSymbolLayer(pDestSource,poSrcLayer->GetSpatialRef());
+	OGRLayer* pReferLayer = CreateSymbolReferenceLayer(pDestSource,poSrcLayer->GetSpatialRef());
+	
+	OGRLayer* poDstLayer = pDestSource->CreateLayer( strAnnoName.data(), NULL, wkbPolygon, NULL );
+
+	OGRFeatureDefn *poSrcDefn = poSrcLayer->GetLayerDefn();
+	int         nSrcFieldCount = poSrcDefn->GetFieldCount();
+	int         nDstFieldCount = 0;
+	int         iField;
+	vector<string> vec_FieldsName;
+	if(isGDB)
+	{
+		if(BuildFielsGDBv10(poSrcLayer,vec_FieldsName)&&vec_FieldsName.size()!=nSrcFieldCount)
+		{
+			//return false;
+		}
+	}
+	
+	// Initialize the index-to-index map to -1's
+
+	/* Caution : at the time of writing, the MapInfo driver */
+	/* returns NULL until a field has been added */
+	OGRFeatureDefn* poDstFDefn = poDstLayer->GetLayerDefn();
+	if (poDstFDefn)
+		nDstFieldCount = poDstFDefn->GetFieldCount();    
+	for( iField = 0; iField < nSrcFieldCount; iField++ )
+	{
+		OGRFieldDefn* poSrcFieldDefn = poSrcDefn->GetFieldDefn(iField);
+		string strFieldName = poSrcFieldDefn->GetNameRef();
+		char* szName = (char*)strFieldName.data();
+		if(stricmp(strFieldName.data(),"TestString")==0 )
+		{
+			strFieldName = "annotaionValue";
+		}
+		if(isGDB)
+		{
+			if(iField < vec_FieldsName.size())
+				strFieldName = vec_FieldsName[iField];
+			else
+			{
+				char* czName = FromUTF8(strFieldName.data());
+				strFieldName = czName;
+				CPLFree(czName);
+			}
+		}
+
+		switch (enCode)
+		{
+		case UTF8ToUTF8:
+			break;
+		case GBKToGBK:
+			break;
+		case UTF8ToGBK:
+			szName = FromUTF8(strFieldName.data());
+			break;
+		case GBKToUTF8:
+			szName = ToUTF8(strFieldName.data());
+			break;
+		}
+		
+		OGRFieldDefn oFieldDefn( poSrcFieldDefn );
+		
+		if(isGDB )
+		{
+			poSrcFieldDefn->SetName(szName);
+		}
+		oFieldDefn.SetName(szName);
+		if(enCode == UTF8ToGBK ||
+			enCode == GBKToUTF8)
+			CPLFree(szName);
+		/* The field may have been already created at layer creation */
+		int iDstField = -1;
+		if (poDstFDefn)
+			iDstField = poDstFDefn->GetFieldIndex(oFieldDefn.GetNameRef());
+		if (iDstField >= 0)
+		{
+			
+		}
+		else if (poDstLayer->CreateField( &oFieldDefn ) == OGRERR_NONE)
+		{
+			/* now that we've created a field, GetLayerDefn() won't return NULL */
+			if (poDstFDefn == NULL)
+				poDstFDefn = poDstLayer->GetLayerDefn();
+
+			/* Sanity check : if it fails, the driver is buggy */
+			if (poDstFDefn != NULL &&
+				poDstFDefn->GetFieldCount() != nDstFieldCount + 1)
+			{
+				CPLError(CE_Warning, CPLE_AppDefined,
+					"The output driver has claimed to have added the %s field, but it did not!",
+					oFieldDefn.GetNameRef() );
+			}
+			else
+			{
+				
+				nDstFieldCount ++;
+			}
+			
+		}
+	}
+
+	/* -------------------------------------------------------------------- */
+	/*      Create geometry fields.                                         */
+	/* -------------------------------------------------------------------- */
+	if( poSrcDefn->GetGeomFieldCount() > 1 &&
+		pDestSource->TestCapability(ODsCCreateGeomFieldAfterCreateLayer) )
+	{
+		int nSrcGeomFieldCount = poSrcDefn->GetGeomFieldCount();
+		for( iField = 0; iField < nSrcGeomFieldCount; iField++ )
+		{
+			poDstLayer->CreateGeomField( poSrcDefn->GetGeomFieldDefn(iField) );
+		}
+	}
+	OGRFeature  *poFeature;
+	
+	poSrcLayer->ResetReading();
+	
+	int idx = 0;
+	while((poFeature = poSrcLayer->GetNextFeature())!=NULL)
+	{
+		OGRFeature      *poDstFeature = NULL;
+		if( poFeature == NULL )
+			break;
+		CPLErrorReset();
+		poDstFeature = OGRFeature::CreateFeature( poDstLayer->GetLayerDefn() );
+		OGRFeature* pSymbolFea = OGRFeature::CreateFeature( pSymbolLayer->GetLayerDefn() );
+		OGRFeature* pReferenceFea = OGRFeature::CreateFeature( pReferLayer->GetLayerDefn());
+		if( SetFieldsFrom(poFeature,poDstFeature,true,enCode) != OGRERR_NONE )
+		{
+			OGRFeature::DestroyFeature( poFeature );
+			continue;
+			//return poDstLayer;
+		}
+		pSymbolFea->SetFID(poFeature->GetFID());
+		pSymbolFea->SetField("type","Text");
+		pSymbolFea->SetField("sd_standard_uri","http://schemas.opengeospatial.net/se");
+		pSymbolFea->SetField("mime_type","application/octet-stream");
+		int nIdx = poFeature->GetFieldIndex("Element");
+		if(nIdx == -1)
+			nIdx = poFeature->GetFieldIndex("gw_symbol");
+		if(nIdx != -1)
+			pSymbolFea->SetField("symboldata",poFeature->GetFieldAsString(nIdx));
+		if(pSymbolLayer->CreateFeature(pSymbolFea) != OGRERR_NONE)
+		{
+			
+			OGRFeature::DestroyFeature(pSymbolFea);
+			OGRFeature::DestroyFeature(pReferenceFea);
+			OGRFeature::DestroyFeature( poFeature );
+			OGRFeature::DestroyFeature( poDstFeature );
+			continue;
+		}
+
+	
+
+		//char* szValue = NULL;//(char*)FieldValue.data();
+		//switch (enCode)
+		//{
+		//case UTF8ToUTF8:
+		//case GBKToGBK:
+		//	{
+		//		int len = strAnnoName.length();
+		//		szValue =new char[len+1];
+		//		strcpy(szValue,strAnnoName.c_str());
+		//	}
+		//	break;
+		//case UTF8ToGBK:
+		//	szValue = FromUTF8(strAnnoName.data());
+		//	break;
+		//case GBKToUTF8:
+		//	szValue = ToUTF8(strAnnoName.data());
+		//	break;
+		//}
+
+		pReferenceFea->SetField("reference_scope","row");
+		pReferenceFea->SetField("table_name",strAnnoName.data());
+		/*if(enCode == UTF8ToGBK || enCode == GBKToUTF8)
+			CPLFree(szValue);*/
+		pReferenceFea->SetField("row_id",poFeature->GetFID());
+		pReferenceFea->SetField("symbol_id",poFeature->GetFID());
+		if(pReferLayer->CreateFeature(pReferenceFea) != OGRERR_NONE)
+		{
+			OGRFeature::DestroyFeature(pSymbolFea);
+			OGRFeature::DestroyFeature(pReferenceFea);
+			OGRFeature::DestroyFeature( poFeature );
+			OGRFeature::DestroyFeature( poDstFeature );
+			continue;
+		}
+		//poFeature->GetFieldAsString("Element");
+		//pSymbolFea->SetFID()
+		
+		poDstFeature->SetFID( poFeature->GetFID() );
+		CPLErrorReset();
+		if( poDstLayer->CreateFeature( poDstFeature ) != OGRERR_NONE )
+		{
+			OGRFeature::DestroyFeature(pSymbolFea);
+			OGRFeature::DestroyFeature(pReferenceFea);
+			OGRFeature::DestroyFeature( poFeature );
+			OGRFeature::DestroyFeature( poDstFeature );
+			continue;
+		}
+		OGRFeature::DestroyFeature(pSymbolFea);
+		OGRFeature::DestroyFeature(pReferenceFea);
+		OGRFeature::DestroyFeature( poFeature );
+		OGRFeature::DestroyFeature( poDstFeature );
+	
+	}
+	CPLFree(szGBK);
+
+	
 
 	return true;
 }
@@ -2363,7 +2980,7 @@ bool gwAddonFunction::copyRaster(const string& strPath1,const string& strOutPath
 	poDstDS = NULL;
 	//string strExt = strOutPath.substr(strOutPath.find_last_of("."),strOutPath.length()-strOutPath.find_last_of("."));
 	string strXMLPath = strOutPath;
-	string strTXT = "";
+	string strTXT = strPath;
 	if(strXMLPath.find_last_of(".") != -1)
 		strXMLPath = strXMLPath.replace(strXMLPath.find_last_of("."),strXMLPath.length()-strXMLPath.find_last_of("."),".IOS19163.XML");
 	else

@@ -32,7 +32,7 @@ enum VCT_GEOMETRY_TYPE
 	  VCT_POLYGON = 2,						// 面状要素
 	  VCT_SOLID = 3,						// 体要素			
 	  VCT_ANNOTATION = 5,					// 注记
-	  VCT_AGGREGATION = 6,					// 聚合地物
+	  VCT_COLLECTION = 6,					// 聚合地物
 	  VCT_GEOMETRY_UNSURPORTED = 99			// 不支持
 } ;
 

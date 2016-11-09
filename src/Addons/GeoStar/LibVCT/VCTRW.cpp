@@ -30,7 +30,7 @@ BEGIN_SPECIAL_CASE(VCT_GEOMETRY_TYPE)
 	PUSH2(Polygon,VCT_POLYGON)
 	PUSH2(Solid,VCT_SOLID);
 	PUSH2(Annotation,VCT_ANNOTATION); 
-	PUSH2(Aggregation,VCT_AGGREGATION); 
+	PUSH2(Collection,VCT_COLLECTION); 
 	
 END_SPECIAL_CASE(VCT_GEOMETRY_TYPE)
 
@@ -1424,7 +1424,7 @@ void VCTParser::Cache(VCTEdgeTopo &geo,fpos_t pos)
 
 void VCTParser::Cache(VCTAggregation &geo,fpos_t pos)
 {
-	Cache(VCT_AGGREGATION,geo.ObjHeader.strUserID,geo.ObjHeader.nObjID,pos);
+	Cache(VCT_COLLECTION,geo.ObjHeader.strUserID,geo.ObjHeader.nObjID,pos);
 }
 
 void VCTParser::Cache(VCTAnnotation &geo,fpos_t pos)
@@ -1948,7 +1948,7 @@ VCTFeatureWriter VCTWriter::BeginFeature(VCTFeatureCode& code,VCTTableStructure 
 	case VCT_SOLID:// = 3,						// 体要素			
 		strGeoKey ="Solid";
 		break;
-	case VCT_AGGREGATION:// = 3,						// 聚合			
+	case VCT_COLLECTION:// = 3,						// 聚合			
 		strGeoKey ="Agg";
 		break;
 	case VCT_ANNOTATION:// = 5,					// 注记

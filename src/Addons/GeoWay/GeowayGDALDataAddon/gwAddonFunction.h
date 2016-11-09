@@ -44,5 +44,10 @@ public:
 	 static int GetDirectChildren(std::vector<string>& vChildren,std::vector<string>& vChildFileNames, 
 		 const string& strFileFilter, const string& strPath);
 	 static bool CreateDir(const string& strPath);
+	 static bool CopyOtherLayers(OGRDataSource* pSrcSource,OGRDataSource* pDestSource,
+		 const string& strAnnoName,enCodeTrans enCode, bool isGDB);
+	 static bool RegisterTable(sqlite3* hDB,const string& strTableName);
+	 static bool CreateTable(sqlite3* hDB);
+	 static bool InnitMetadataTable(const string& strGPKGPath,const string& strPath);
 };
 #endif
