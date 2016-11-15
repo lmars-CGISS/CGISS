@@ -34,6 +34,8 @@ namespace GISDataTranslate
             
             textBoxName.TextChanged += new EventHandler(OnTextChanged); 
             textBoxPath.TextChanged += new EventHandler(OnTextChanged);
+            textBoxDesc.TextChanged += new EventHandler(OnTextChanged);
+
             comboBoxFunction.TextChanged += new EventHandler(OnTextChanged);
             comboBoxFunction.SelectedIndexChanged += new EventHandler(comboBoxFunction_SelectedIndexChanged);
             comboBoxType.SelectedIndexChanged += new EventHandler(comboBoxType_SelectedIndexChanged);
@@ -76,6 +78,8 @@ namespace GISDataTranslate
                 tempAdd.Path = box.Text;
             else if (box.Name == "comboBoxFunction")
                 tempAdd.Function = box.Text;
+            else if (box.Name == "textBoxDesc")
+                tempAdd.Description = box.Text;
 
             if (box.Name == "textBoxName")
             {
@@ -115,15 +119,12 @@ namespace GISDataTranslate
             comboBoxFunction.Items.Clear();
             comboBoxFunction.Text = add.Function;
             textBoxPath.Text = add.Path;
+            textBoxDesc.Text = add.Description;
             comboBoxType.SelectedIndex = comboBoxType.Items.IndexOf(new WrapAddonType(add.Type));
             comboBoxStorageType.SelectedIndex = comboBoxStorageType.Items.IndexOf(new WrapStorageType(add.StorageType));
             m_InnerFlag = false;
             
-        }
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            base.OnClosing(e);
-        }
+        } 
         private void buttonDel_Click(object sender, EventArgs e)
         {
             int i = listBoxAddon.SelectedIndex;
@@ -171,6 +172,7 @@ namespace GISDataTranslate
                     add.StorageType = item.StorageType;
                     add.Type = item.Type;
                     add.Function = item.Function;
+                    add.Description = item.Description;
                     FormMain.m_AddonManager.Addons.Add(add);        
                 }
                 else

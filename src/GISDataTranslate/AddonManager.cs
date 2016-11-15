@@ -89,6 +89,9 @@ namespace GISDataTranslate
             Dirty = false;
             Path = config["Path"].Value;
             Name = config["Name"].Value;
+            Description = config["Description"].Value;
+            if (!string.IsNullOrEmpty(Description))
+                Description = Description.Replace("\n\n", "\r\n");
             Function = config["Function"].Value;
             Type = config["Type"].EnumValue<AddonType>(AddonType.eErrorAddon);
             StorageType = config["StorageType"].EnumValue<StorageType>(StorageType.eDatabaseType); 
@@ -97,6 +100,14 @@ namespace GISDataTranslate
         /// 插件设置信息否改动过了，用于插件设置功能。
         /// </summary>
         public bool Dirty
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// 插件的描述信息。
+        /// </summary>
+        public string Description
         {
             get;
             set;
@@ -226,6 +237,7 @@ namespace GISDataTranslate
                 conf.Child("Function").Value = item.Function;
                 conf.Child("Type").Value = item.Type.ToString();
                 conf.Child("StorageType").Value = item.StorageType.ToString();
+                conf.Child("Description").Value = item.Description;
                 conf.TypeString = t.FullName;
             }
 

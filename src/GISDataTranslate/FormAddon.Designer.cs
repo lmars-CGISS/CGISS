@@ -33,6 +33,7 @@
             this.listBoxAddon = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.comboBoxFunction = new System.Windows.Forms.ComboBox();
             this.comboBoxStorageType = new System.Windows.Forms.ComboBox();
             this.comboBoxType = new System.Windows.Forms.ComboBox();
             this.buttonPath = new System.Windows.Forms.Button();
@@ -46,7 +47,8 @@
             this.buttonApply = new System.Windows.Forms.Button();
             this.buttonDel = new System.Windows.Forms.Button();
             this.buttonAdd = new System.Windows.Forms.Button();
-            this.comboBoxFunction = new System.Windows.Forms.ComboBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.textBoxDesc = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -91,6 +93,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.textBoxDesc);
+            this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.comboBoxFunction);
             this.groupBox1.Controls.Add(this.comboBoxStorageType);
             this.groupBox1.Controls.Add(this.comboBoxType);
@@ -109,6 +113,14 @@
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "插件信息";
+            // 
+            // comboBoxFunction
+            // 
+            this.comboBoxFunction.FormattingEnabled = true;
+            this.comboBoxFunction.Location = new System.Drawing.Point(87, 80);
+            this.comboBoxFunction.Name = "comboBoxFunction";
+            this.comboBoxFunction.Size = new System.Drawing.Size(415, 20);
+            this.comboBoxFunction.TabIndex = 5;
             // 
             // comboBoxStorageType
             // 
@@ -227,13 +239,24 @@
             this.buttonAdd.UseVisualStyleBackColor = true;
             this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
             // 
-            // comboBoxFunction
+            // label7
             // 
-            this.comboBoxFunction.FormattingEnabled = true;
-            this.comboBoxFunction.Location = new System.Drawing.Point(87, 80);
-            this.comboBoxFunction.Name = "comboBoxFunction";
-            this.comboBoxFunction.Size = new System.Drawing.Size(415, 20);
-            this.comboBoxFunction.TabIndex = 5;
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(24, 173);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(41, 12);
+            this.label7.TabIndex = 6;
+            this.label7.Text = "说明：";
+            // 
+            // textBoxDesc
+            // 
+            this.textBoxDesc.HideSelection = false;
+            this.textBoxDesc.Location = new System.Drawing.Point(87, 173);
+            this.textBoxDesc.Multiline = true;
+            this.textBoxDesc.Name = "textBoxDesc";
+            this.textBoxDesc.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxDesc.Size = new System.Drawing.Size(415, 174);
+            this.textBoxDesc.TabIndex = 7;
             // 
             // FormAddon
             // 
@@ -286,5 +309,7 @@
         private System.Windows.Forms.Button buttonDel;
         private System.Windows.Forms.Button buttonAdd;
         private System.Windows.Forms.ComboBox comboBoxFunction;
+        private System.Windows.Forms.TextBox textBoxDesc;
+        private System.Windows.Forms.Label label7;
     }
 }
