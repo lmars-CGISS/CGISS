@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibGPKG", "Addons\GeoStar\L
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibVCT", "Addons\GeoStar\LibVCT\LibVCT.vcxproj", "{254FE1F6-2992-425C-844F-9D213475644B}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{4D91624C-D410-43A8-9899-3DDE86B84CC3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -41,6 +43,7 @@ Global
 		{C3FE7FFE-8806-4984-8999-782691B5A433}.Release|x64.Build.0 = Release|x64
 		{F50BF54D-B5DF-4858-BF2B-3B68DCA6E150}.Debug|Win32.ActiveCfg = Debug|Win32
 		{F50BF54D-B5DF-4858-BF2B-3B68DCA6E150}.Debug|Win32.Build.0 = Debug|Win32
+		{F50BF54D-B5DF-4858-BF2B-3B68DCA6E150}.Debug|x64.ActiveCfg = Debug|x64
 		{F50BF54D-B5DF-4858-BF2B-3B68DCA6E150}.Release|Win32.ActiveCfg = Release|Win32
 		{F50BF54D-B5DF-4858-BF2B-3B68DCA6E150}.Release|Win32.Build.0 = Release|Win32
 		{F50BF54D-B5DF-4858-BF2B-3B68DCA6E150}.Release|x64.ActiveCfg = Release|x64
@@ -61,6 +64,10 @@ Global
 		{254FE1F6-2992-425C-844F-9D213475644B}.Release|Win32.Build.0 = Release|Win32
 		{254FE1F6-2992-425C-844F-9D213475644B}.Release|x64.ActiveCfg = Release|x64
 		{254FE1F6-2992-425C-844F-9D213475644B}.Release|x64.Build.0 = Release|x64
+		{4D91624C-D410-43A8-9899-3DDE86B84CC3}.Debug|Win32.ActiveCfg = Debug
+		{4D91624C-D410-43A8-9899-3DDE86B84CC3}.Debug|x64.ActiveCfg = Debug
+		{4D91624C-D410-43A8-9899-3DDE86B84CC3}.Release|Win32.ActiveCfg = Release
+		{4D91624C-D410-43A8-9899-3DDE86B84CC3}.Release|x64.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
