@@ -2218,12 +2218,21 @@ bool gwAddonFunction::copyDataset(const string& strPath,const string& strOutPath
 	}
 	
 	m_poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName(strProvier.data());
+	if(m_poDriver == NULL)
+	{
+		if(nProgress != NULL)
+			nProgress->OnLog("该格式不支持",GIS::LogLevel::eError);
+		else
+			std::cout<<"该格式不支持"<<std::endl;
+		return m_strResult.data();
+	}
 //	m_poDriver->CopyDataSource(m_poDS,strOutPath.data(),NULL);
 	OGRDataSource* poODS = NULL;
 	OGRLayer* pLastLayer = NULL;
 	bool bInTrans = false;
 	string strAnnoName = "";
 	int nDestLayerIdx = -1;
+	int nAnnoLayerIdx = -1;
 	try
 	{
 		CPLSetConfigOption("GDAL_FILENAME_IS_UTF8","YES");
@@ -2286,6 +2295,7 @@ bool gwAddonFunction::copyDataset(const string& strPath,const string& strOutPath
 			if(strstr(strupr((char*)(GBKName.data())),"注记") ||
 				strstr(strupr((char*)(GBKName.data())),"anno"))
 			{
+				nAnnoLayerIdx = iLayer;
 				strAnnoName = szName;
 				continue;
 			}
@@ -2421,7 +2431,7 @@ bool gwAddonFunction::copyDataset(const string& strPath,const string& strOutPath
 	}
 	if(stricmp(strExt.data(),".gpkg"))
 	{
-		CopyOtherLayers(m_poDS,poODS,strAnnoName,enCode,isGDB);
+		CopyOtherLayers(m_poDS,poODS,strAnnoName,nAnnoLayerIdx,enCode,isGDB);
 
 		string strXMLPath = strPath;
 
@@ -2500,15 +2510,17 @@ OGRLayer* CreateSymbolLayer(OGRDataSource* pDestSource,OGRSpatialReference* pSpa
 }
 
 
-bool gwAddonFunction::CopyOtherLayers(OGRDataSource* pSrcSource, OGRDataSource* pDestSource,const string& strAnnoName, enCodeTrans enCode, bool isGDB)
+bool gwAddonFunction::CopyOtherLayers(OGRDataSource* pSrcSource, OGRDataSource* pDestSource,const string& strAnnoName,int nAnnoIdx ,enCodeTrans enCode, bool isGDB)
 {
 	if(strAnnoName.empty())
 		return false;
 	if(pSrcSource == NULL || pDestSource == NULL)
 		return false;
-	char* szGBK = FromUTF8(strAnnoName.data());
-	OGRLayer* poSrcLayer = pSrcSource->GetLayerByName(szGBK);
-	
+	//char* szGBK = FromUTF8(strAnnoName.data());
+	OGRLayer* poSrcLayer = pSrcSource->GetLayer(nAnnoIdx);
+	if(pSrcSource == NULL)
+		return false;
+//	CPLFree(szGBK);
 	OGRLayer* pSymbolLayer = CreateSymbolLayer(pDestSource,poSrcLayer->GetSpatialRef());
 	OGRLayer* pReferLayer = CreateSymbolReferenceLayer(pDestSource,poSrcLayer->GetSpatialRef());
 	
@@ -2715,7 +2727,7 @@ bool gwAddonFunction::CopyOtherLayers(OGRDataSource* pSrcSource, OGRDataSource* 
 		OGRFeature::DestroyFeature( poDstFeature );
 	
 	}
-	CPLFree(szGBK);
+	
 
 	
 
