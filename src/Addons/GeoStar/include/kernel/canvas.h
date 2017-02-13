@@ -11,7 +11,7 @@ struct  GS_API GsColor
 	GsColor(unsigned int c);
 	/// \brief 根据32位整数构造
 	GsColor(int c);
-
+	 
 	/// \brief 根据R，G，B，A通道构造
 	/// \param r 红色通道[0,255]
 	/// \param g 绿色通道[0,255]
@@ -27,6 +27,9 @@ struct  GS_API GsColor
 	/// \brief 交换RGB中R和B的通道
 	void FlipRGB();
 
+	/// \brief 从CSS颜色描述构造
+	static GsColor FromCSS(const char* csscolor);
+	
 	/// \brief 从Win32的RGB颜色构造
 	static GsColor FromCOLORREF(unsigned int rgb);
 	
@@ -75,6 +78,8 @@ struct  GS_API GsColor
 
 	/// \brief 以html的形式返回颜色值#RRGGBB
 	Utility::GsString ToHtml() const;
+	/// \brief 以html的形式返回颜色值rgba(r,g,b,af);
+	Utility::GsString ToHtmlRGBA() const;
 
 	/// \brief 转换为32位无符号整数
 	unsigned int ToUInt() const;
@@ -419,16 +424,17 @@ enum GsBrushStyle
 	eEmptyBrush,
 	eSolidBrush,
 } ; 
-
 /// \brief 字体的式样
 enum GsFontStyle
 {
 	eFontStyleRegular = 0,
-    eFontStyleBold = 1,
-    eFontStyleItalic = 2,
-    eFontStyleBoldItalic = 3,
-    eFontStyleUnderline = 4,
-    eFontStyleStrikeout = 8
+	eFontStyleBlack = 0x01,
+	eFontStyleBold = 0x02,
+	eFontStyleItalic = 0x04,
+	eFontStyleBoldItalic = eFontStyleBold | eFontStyleItalic,
+	eFontStyleBlackItalic = eFontStyleBlack | eFontStyleItalic,
+	eFontStyleUnderline = 0x08,
+    eFontStyleStrikeout = 0x10,
 };
 
 /// \brief 字体的倾斜

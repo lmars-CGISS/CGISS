@@ -8,6 +8,12 @@ class GS_API GsCRT
 {
 public:
 	
+	/// \brief 计算四舍五入的结果
+	static double round(double r); 
+ 	/// \brief 按照进制转换字符串为64位整数
+	/// \param base 进制2,4,8,10,16等
+	static long long  strtoll (const char* str, char** endptr, int base);
+
 	/// \brief 判断double是否是无效值
 	///\return 返回1标示是有效的0标示无效
 	static int _isnan(double x);

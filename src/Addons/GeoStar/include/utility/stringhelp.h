@@ -223,6 +223,9 @@ public:
 	/// \brief 字符串是否以某个之串开头。
 	static bool StartWith(const char* str,const char* strHead,bool bIgnoringCase = true);
 
+	/// \brief 字符串是否以某个之结束。
+	static bool EndWith(const char* str,const char* strTail,bool bIgnoringCase = true);
+
 
 	
 	/// \brief 通配符匹配字符串

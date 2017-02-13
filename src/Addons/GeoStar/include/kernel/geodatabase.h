@@ -129,19 +129,87 @@ struct GS_API GsConnectProperty
 /// \brief 数据集对象类型
 enum GsFeatureType
 {
-	/// \brief 矢量地物类
+	//\brief 矢量地物类
 	eSimpleFeature,
-	/// \brief 瓦片类
+	//\brief 瓦片类
 	eAnnotationFeature,
-	/// \brief 矢量瓦片
+	//\brief 矢量瓦片
 	eVectorTileFeature,
+
 	/// \brief 影像瓦片
-	eImageTileFeature,
+	eImageTileFeature = 8,
 	/// \brief 地形瓦片
-	eTerrainTileFeature,
+	eTerrainTileFeature = 9,
+	
+	/// \brief 模型
+	eModeTileFeature = 10,
+
+	/// \brief 静态矢量
+	ePrevectorTileFeature = 11,
+	/// \brief 动态矢量
+	eDynvectorTileFeature = 12,
+	/// \brief 地名
+	ePlaceNameTileFeature = 13,
+	/// \brief 地势
+	eHypsographyTileFeature = 14,
+	/// \brief 矢量
+	eDlgTileFeature = 15,	
+	
+	/// \brief 实现多时相瓦片数据集将级扩充的
+	eTemporalImageTileFeature = 1000,
+	eTemporalTerrainTileFeature = 1001,
+	eTemporalModleDsTileFeature = 1002,
+	eTemporalPreRaserVectorTileFeature = 1003,
+	eTemporalDynRaserVectorTileFeature = 1004,
+	eTemporalPlaceNameDsTileFeature = 1005,
+	eTemporalColourHypsographyMapTileFeature = 1006,	
 };
 
+//! \brief 瓦片类型，即瓦片文件后缀名
+enum GsTileEncodingType
+{
+	//! \brief jpg
+	eJpgType = 0,
 
+	//! \brief 地形压缩文件
+	eZ7Type = 1,
+
+	//! \brief 自定义三维模型打包文件
+	eX3dType = 2,
+
+	//! \brief png
+	ePngType = 3,
+
+	//! \brief 自定义地名打包文件
+	ePlnType = 4,
+
+	//! \brief bmp
+	eBmpType = 5,
+
+	//! \brief dds
+	eDdsType = 6,
+
+	//! \brief gif
+	eGifType = 7,
+
+	//! \brief tiff
+	eTiffType = 8,
+
+	//! \brief zlib地形压缩文件
+	eZLibType = 9,
+
+	//! \brief Kmz格式
+	eKmzType = 10,
+
+	//! \brief protobuf格式
+	eProtobuffType = 11,
+
+	//! \brief texture of model
+	eModTexType = 99,
+
+	//! \brief 未知类型
+	eUnKnownType = 100
+} ; 
  
 /// \brief 数据集对象类型
 enum GsDataRoomType
@@ -382,6 +450,7 @@ struct GS_API GsField
 	///\brief 是否允许为空
 	bool							IsNullable;
 
+	GsField();
 	///\brief 拷贝构造函数
 	GsField(const GsField& rhs);
 
@@ -565,6 +634,9 @@ public:
 	///\param nColumn 列索引
 	///\param value 无符号64位整数值
 	virtual void Value(int nColumn,unsigned long long  value);
+	/// \brief 设置属性值为空
+	///\param nColumn 列索引
+	virtual void Value(int nColumn);
 
 	/// \brief 根据字段类型设置任意值
 	///\param nColumn 列索引
@@ -594,6 +666,15 @@ protected:
 public:
 	virtual ~GsTile();
 
+	/// \brief 层行列转化为64位Key值，Level占6位，Row占24位，Col占24位
+	static long long ToKey(int nLevel, int nRow, int nCol);
+	/// \brief 64位key值获取Level值
+	static int KeyToLevel(long long nKey);
+	/// \brief 64位key值获取Row值
+	static int KeyToRow(long long nKey);
+	/// \brief 64位key值获取Col值
+	static int KeyToCol(long long nKey);
+
 	/// \brief 获取级别
 	virtual int Level();
 	/// \brief 设置级别
@@ -608,9 +689,9 @@ public:
 	virtual void Col(int c);
 
 	/// \brief 获取瓦片类型
-	virtual GsFeatureType TileType() = 0;
+	virtual GsTileEncodingType TileType() = 0;
 	/// \brief 设置瓦片类型
-	virtual void TileType(GsFeatureType eType) = 0;
+	virtual void TileType(GsTileEncodingType eType) = 0;
 
 	/// \brief 设置瓦片数据
 	virtual void TileData(const unsigned char* pData,int nLen) = 0;
@@ -1232,6 +1313,8 @@ GS_SMARTER_PTR(GsRasterBand);
 /// \brief 栅格数据块
 class GS_API GsRaster:public Utility::GsRefObject
 {
+	/// \brief 数据长度
+	int m_nLength;
 protected:
 	/// \brief 栅格数据指针
 	unsigned char * m_pDataPtr;
@@ -1254,6 +1337,9 @@ public:
 	virtual unsigned char * DataPtr();
 	/// \brief 设置栅格数据指针
 	virtual void DataPtr(unsigned char * pHead);
+
+	/// \brief 设置栅格数据指针，数据会拷贝一份
+	virtual void DataPtr(const unsigned char * pHead,int nLen);
 
 	/// \brief 根据栅格类属性计算的栅格数据长度
 	virtual int DataLength();

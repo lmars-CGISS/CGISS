@@ -17,6 +17,11 @@ protected:
 
 	/// \brief xy的偏移
 	GsRawPoint m_Offset;
+
+	// 间距
+	double m_IntervalX;
+	double m_IntervalY;
+
 protected:
 	
 	/// \brief 当绘制的时候发生
@@ -70,6 +75,11 @@ public:
 	void Offset(const GsRawPoint& val);
 	/// \brief 偏移
 	void Offset(double x,double y);
+
+	void IntervalX(double dblIntervalX);
+	void IntervalY(double dblIntervalY);
+	double IntervalX();
+	double IntervalY();
 
 	/// \brief 点符号的矩形范围
 	virtual GsBox Envelope();
@@ -783,6 +793,7 @@ private:
 	GsItalic  m_pItalic;          //倾斜类型
 	bool m_bBold;                 //加粗标识
 	bool m_Stroke;                //空心标识
+	GsColor m_fillColor;          //填充色
 	Utility::GsString  m_strFont; //字体
 	Utility::GsString  m_strText; //字符内容
 	Utility::GsPTF m_Loc;                  //绘制范围

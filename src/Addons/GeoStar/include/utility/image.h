@@ -279,6 +279,8 @@ class GS_API GsImage:public GsRefObject
 public:
 	/// \brief 析构函数
 	virtual ~GsImage();
+	/// \brief 拷贝
+	virtual bool CopyFrom(GsImage* pImage) { return false;};
 	/// \brief 设置宽度
 	virtual unsigned int Width() = 0;
 	/// \brief 设置高度
@@ -329,9 +331,17 @@ public :
 	GsSimpleBitmap(const char* strFile); 
 	/// \brief 解码内存中的图像
 	GsSimpleBitmap(const unsigned char* blob,int nLen); 
+	/// \brief 保存图像为PNG格式文件
+	virtual bool SavePNG(const char* strFile);
+	
+	/// \brief 保存图像为PNG格式的内存块。
+	virtual bool SavePNG(GsByteBuffer* pBuffer);
+
 
 	/// \brief 析构函数
 	virtual ~GsSimpleBitmap();
+	/// \brief 拷贝
+	virtual bool CopyFrom( GsImage* pImage );
 	/// \brief 设置宽度
 	virtual unsigned int Width();
 	/// \brief 设置高度
@@ -341,6 +351,7 @@ public :
 	
 	/// \brief 图像一行的字节长度
 	virtual unsigned int Stride();
+
 };
 GS_SMARTER_PTR(GsSimpleBitmap);
  

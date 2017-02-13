@@ -1,5 +1,6 @@
 ﻿ #pragma once
 #include "preconfig.h" 
+#include <climits>
 #include <stdlib.h>
 
 UTILITY_NS  

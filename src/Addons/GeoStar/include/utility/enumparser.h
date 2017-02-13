@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <iomanip>
+#include <climits>
 #include "stringhelp.h"
 
 #include "preconfig.h" 
@@ -41,7 +42,7 @@ public:
 				return it->second;
 		}
 		//无法匹配到字符串则将字符串当做数值来处理
-		long nNumValue = LONG_MIN;
+		long nNumValue = INT_MIN;
 		std::istringstream iss(strValue);
 		iss >> nNumValue;
 		//如果此时值不等于LONG_MIN则认为字符串成功解析成一个数字。

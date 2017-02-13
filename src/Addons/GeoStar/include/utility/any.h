@@ -187,13 +187,17 @@ class GS_API GsHash
 {
 public:
 	/// \brief 任意内存块计算64位Hash
-	static unsigned long long Hash64(unsigned char* blob,int nLen);
+	static unsigned long long Hash64(const unsigned char* blob,int nLen);
+	/// \brief 计算字符串的64位Hash
+	static unsigned long long Hash64(const char* str,int nLen = -1);
 
 	/// \brief 任意内存块计算128位Hash
-	static std::pair<unsigned long long,unsigned long long> Hash128(unsigned char* blob,int nLen);
+	static std::pair<unsigned long long,unsigned long long> Hash128(const unsigned char* blob,int nLen);
+	/// \brief 字符串计算128位Hash
+	static std::pair<unsigned long long,unsigned long long> Hash128(const char* str,int nLen = -1);
 
 	/// \brief 任意内存块计算MD5
-	static GsString MD5(unsigned char* blob,int nLen);
+	static GsString MD5(const unsigned char* blob,int nLen);
 
 	/// \brief 计算文件MD5
 	static GsString MD5(const char* strFile);

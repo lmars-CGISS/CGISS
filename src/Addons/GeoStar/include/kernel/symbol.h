@@ -17,6 +17,8 @@ enum GsSymbolType
 	eLineSymbol,
 	/// \brief 面符号
 	eFillSymbol,
+	/// \brief 拔起符号
+	eFillExtrusionSymbol,
 	/// \brief 文本符号
 	eTextSymbol,
 
@@ -355,6 +357,8 @@ enum GsTextStyle
 	eTextStyleRightShrug 
 };
 
+
+
 /// \brief 文本符号
 class GS_API GsTextSymbol : public GsSymbol
 {  
@@ -387,11 +391,12 @@ class GS_API GsTextSymbol : public GsSymbol
 	double					m_shadowOffsetX;				//阴影X偏移
 	double					m_shadowOffsetY;				//阴影Y偏移
 	GsMatrix				m_WordStyleMatrix;				//单个字的式样变换矩阵实现倾斜和缩放。
-
+	int						m_iLabelOffset;					//LineLabelPlacement Offset。
 	Utility::GsSizeF		m_WordSize;
 	Utility::GsSizeF		m_StringSize;
 	GsVector<Utility::GsString> m_SplitWords;
 	bool					m_SimpleDraw;
+	GsSymbolType			m_parentSymbolType;				//从属于符号类型，如线的自动标注
 private:
 	/// \brief 绘制一个文本单元
 	void DrawText(const Utility::GsPTF& loc,double angle,const GsVector<Utility::GsString>& vecWords);
@@ -534,11 +539,21 @@ public:
 	/// \brief 设置注记阴影的Y偏移
 	void ShadowOffsetY(double offset);
 
+	// 标注与线位置
+	int LabelOffset();
+	void LabelOffset(int iLabelOffset);
+
+	//从属于符号
+	GsSymbolType ParentType();
+	void ParentType(GsSymbolType type);
+
 	/// \brief 返回符号的类型
 	virtual GsSymbolType Type();
 	
 	/// \brief 是否有效
 	virtual bool IsValid();
+
+	virtual Utility::GsSmarterPtr<GsSymbol> Clone();
 };
 
 /// \brief GsTextSymbolPtr

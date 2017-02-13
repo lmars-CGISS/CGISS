@@ -68,5 +68,6 @@ template<class type> type geo_min(type a,type b){ return a<b?a:b; }
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
+#else
 
 #endif // !defined(AFX_STDAFX_H__E60C1C58_4017_43C6_853D_C1B94FA88DCF__INCLUDED_)

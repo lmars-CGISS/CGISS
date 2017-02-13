@@ -58,22 +58,22 @@
 #include <memory>
 
 
-#ifdef linux
+#ifdef WIN32
+
+#ifdef _WIN64
+#define INT3264_MAX _I64_MAX
+#else //_WIN64
+#define INT3264_MAX INT_MAX
+#endif //_WIN64
+
+#else //WIN32
 #include "limits.h"
 #ifdef _LP64
 #define INT3264_MAX LONG_LONG_MAX
-#else
+#else //_LP64
 #define INT3264_MAX INT_MAX
-#endif
-  
-
+#endif //_LP64
 
 typedef long long __int64; 
 typedef long __int3264; 
-#else
-#ifdef _WIN64
-#define INT3264_MAX _I64_MAX
-#else
-#define INT3264_MAX INT_MAX
-#endif
 #endif

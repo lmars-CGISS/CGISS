@@ -1492,10 +1492,10 @@ public:
 
 protected:
     char* ParseDeep( char* p, StrPair* endTag );
-
+	virtual ~XMLElement();
 private:
     XMLElement( XMLDocument* doc );
-    virtual ~XMLElement();
+    
     XMLElement( const XMLElement& );	// not supported
     void operator=( const XMLElement& );	// not supported
 

@@ -1,10 +1,12 @@
 ﻿#pragma once
 #include "../utility/preconfig.h"
+#include <memory> 
 #include <utility.h> 
 #include <geometry.h>
 #include <geodatabase.h>
 #include <paintdevice.h>
 #include <label.h>
+#include <memorymanager.h>
 
 #include <symbol.h>
 #include <pointsymbol.h>
@@ -15,6 +17,7 @@
 #include <list>
 #include <map>
 #include <memory>
+
 class AggGraphics;
 KERNEL_NS 
 /// \brief 显示对象
@@ -361,6 +364,9 @@ private:
 protected:
 	/// \brief 图形列表
 	std::vector<GsLayerPtr > m_lstLayers;
+
+	/// \brief 金字塔图层
+	GsLayerPtr m_ptrPyramidLayer;
 	
 	/// \brief 屏幕显示对象
 	GsScreenDisplayPtr m_ptrDisplay;
@@ -415,6 +421,8 @@ public:
 	/// \param pDisp 需要输出数据的Display
 	bool Output(GsDisplay* pDisp,GsTrackCancel* pCancel);
 
+	/// \brief 获取金字塔图层
+	GsLayerPtr GetPyramidLayer() const;
 };
 /// \brief GsMapPtr
 GS_SMARTER_PTR(GsMap);
@@ -635,7 +643,7 @@ class GS_API GsPaletteRasterRenderer : public GsRasterRenderer
 {
 	GsColorTable m_cTable;
 public:
-	GsPaletteRasterRenderer(GsColorTable &table);
+	GsPaletteRasterRenderer(const GsColorTable &table);
 	~GsPaletteRasterRenderer();
 
 	/// \brief 创建颜色绘制对象
@@ -694,20 +702,9 @@ protected:
 	/// \brief 绘制时描述Feature字段值，声明为成员减少构造次数
 	Utility::GsAny m_anyEachFeature;
 
-	/// \brief 渲染符号相关信息
-	struct SymbolUnit
-	{
-		GsSymbolPtr ptrSymbol;
-		std::string strLabel;
-		SymbolUnit(GsSymbol *pSym, const char* srtInLabel)
-		{
-			ptrSymbol = pSym;
-			strLabel = srtInLabel;
-		}
-	};
-
 	/// \brief 渲染符号容器
-	std::map<unsigned long long, SymbolUnit> m_mapSymbols;
+	std::map<unsigned long long, GsSymbolPtr> m_mapSymbols;
+	std::vector<std::pair<unsigned long long,GsSymbolPtr>> m_vecHahSymbol;
 
 protected:
 	/// \brief 渲染器开始绘制游标时发生
@@ -742,6 +739,8 @@ public:
 	void Symbol(int nValue, GsSymbol* pSym);
 	/// \brief 根据字符串型属性值设置符号
 	void Symbol(const char* strValue, GsSymbol* pSym);
+
+	const std::vector<std::pair<unsigned long long, GsSymbolPtr>>& Symbols();
 
 	/// \brief 根据双精度型属性值获取符号
 	GsSymbol* Symbol(double dblValue);
@@ -1000,7 +999,7 @@ class GS_API GsFeatureLayer:public GsLayer
 	GsFeatureRendererPtr m_ptrRenderer;
 	GsFeatureRendererPtr m_ptrSelectionRenderer;
 	GsSelectionSetPtr m_ptrSelectionSet;
-	
+	GsQueryFilterPtr m_ptrDisplayFilter;
 	
 	/// \brief 动态投影的方法
 	GsProjectionStyle m_eProjectionStyle;
@@ -1066,7 +1065,9 @@ public:
 	/// \brief 是否有效
 	virtual bool IsValid();
 
-
+	/// \brief 开图时的过滤条件
+	void DisplayFilter(GsQueryFilter* pFilter);
+	GsQueryFilter *DisplayFilter();
 };
 /// \brief GsFeatureLayerPtr
 GS_SMARTER_PTR(GsFeatureLayer);
@@ -1119,6 +1120,7 @@ GS_SMARTER_PTR(GsRasterLayer);
 /// \brief 瓦片类图层
 class GS_API GsTileLayer:public GsLayer
 {
+protected:
 	GsTileClassPtr m_ptrTileClass;
 protected:
 	/// \brief 绘制方法入口
@@ -1364,6 +1366,296 @@ public:
 };
 /// \brief GsFileImageCanvasPtr
 GS_SMARTER_PTR(GsFileImageCanvas);
+
+/// \brief 样式表
+class GS_API GsStyleTable : public Utility::GsRefObject
+{
+protected:
+	GsStyleTable();
+public:
+	virtual ~GsStyleTable();
+	/// \brief 获取式样的内容
+	virtual bool Content(const char* contentname,Utility::GsByteBuffer* buff) = 0;
+
+	/// \brief 指定范围内的字体产生为Protobuffer格式的栅格。
+	virtual bool GenerateRasterGlyph(const char* fontFamily,const char* style,float size,int nStartCode,int nEndCode,Utility::GsByteBuffer* buff) = 0;
+
+	/// \brief 获得样式表名字
+	/// \returns 返回样式表名字
+	Utility::GsString Name();
+
+	/// \brief 获得样式表版本
+	/// \returns 返回样式表版本
+	Utility::GsString Version();
+
+	/// \brief 保存样式表为本地json文件
+	virtual void SaveJson(const char *strPath);
+	/// \brief 保存样式表为本地xml文件
+	virtual void SaveXml(const char *strPath);
+	/// \brief 保存样式表为本地地图定义文件
+	virtual void SaveMapDefine(const char *strPath);
+
+protected:
+	Utility::GsString m_sName;
+	Utility::GsString m_sVersion;
+};
+/// \brief GsStyleTablePtr
+GS_SMARTER_PTR(GsStyleTable);
+
+/// \brief 样式表类厂
+/// \details 通过载入各种格式的文件创建样式表对象实例。
+class GS_API GsStyleTableFactory : public Utility::GsRefObject
+{
+public:
+	GsStyleTableFactory(){}
+	virtual ~GsStyleTableFactory(){}
+	/// \brief 从Zip包二进制文件打开
+	GsStyleTablePtr OpenFromZip(const unsigned char* blob,int nLen);
+	/// \brief 从Zip包二进制文件打开
+	GsStyleTablePtr OpenFromZip(const char* strFile);
+	/// \brief 从文件夹打开
+	GsStyleTablePtr OpenFromFolder(const char* strFolder);
+
+	/// \brief 从json文件构造样式表实例
+	GsStyleTablePtr OpenFromJson(const char *strJson,bool bIsFile = false);
+	/// \brief 从xml构造样式表实例
+	GsStyleTablePtr OpenFromXml(const char *strXML,bool bIsFile = false);
+	/// \brief 从地图定义文件构造样式表实例
+	GsStyleTablePtr OpenFromMapDefine(const char *strFilePath, GsPyramid* pPyramid = 0);
+};
+/// \brief GsStyleTableFactoryPtr
+GS_SMARTER_PTR(GsStyleTableFactory);
+
+/// \brief 绘制矢量瓦片数据Renderer的抽象基类
+class GS_API GsVectorTileRenderer : public Utility::GsRefObject
+{
+protected:
+	GsVectorTileRenderer(GsImageCanvas *pImageCanvas, GsPyramid *pGsPyramid);
+	GsVectorTileRenderer(int nWidth, int nHeight, GsPyramid *pGsPyramid);
+	
+	virtual GsDisplayTransformationPtr CreateDisplay(int l,int r,int c);
+
+public:
+	virtual ~GsVectorTileRenderer();
+
+	/// \brief 清空画布。
+	void ClearCanvas(const GsColor &c = GsColor(255, 255, 255, 0));
+
+	/// \brief 返回画布指针
+	GsImageCanvas *ImageCanvas();
+
+	/// \brief 绘制瓦片类型矢量数据。
+	virtual bool DrawVectorTile(GsTile *pTile);
+
+	/// \brief 绘制瓦片类型矢量数据。
+	virtual bool DrawVectorTile(const unsigned char* pData,int nLen,int l,int r,int c) = 0;
+
+
+protected:
+	GsImageCanvasPtr m_ptrImageCanvas;
+	GsPyramidPtr m_ptrPyramid;
+	GsDisplayTransformationPtr m_ptrDT;
+};
+/// \brief GsVectorTileRendererPtr
+GS_SMARTER_PTR(GsVectorTileRenderer);
+
+/// \brief 基于样式表绘制矢量数据的Renderer
+/// \details 样式表在本类中默认为json格式，但可扩展为其他多种格式。根据样式表创建符号，并用符号绘制传入的矢量数据，最终在内存中创建栅格图片。
+class GS_API GsStyledVectorTileRenderer: public GsVectorTileRenderer
+{
+public:
+	/// \brief 通过画布和金字塔构造Renderer
+	GsStyledVectorTileRenderer(GsImageCanvas *pImageCanvas, GsPyramid *pGsPyramid,GsStyleTable *pStyleTable = NULL);
+
+	/// \brief 通过画布长，宽和金字塔构造Renderer
+	GsStyledVectorTileRenderer(int nWidth, int nHeight, GsPyramid *pGsPyramid,GsStyleTable *pStyleTable = NULL);
+	virtual ~GsStyledVectorTileRenderer();
+
+	/// \brief 设置样式表实例
+	void StyleTable(GsStyleTable *pStyleTable);
+	/// \brief 获取样式表实例
+	GsStyleTable * StyleTable();
+
+	 
+	/// \brief 绘制瓦片类型矢量数据。
+	virtual bool DrawVectorTile(const unsigned char* pData,int nLen,int l,int r,int c) ;
+
+	/// \brief 绘制瓦片类型矢量数据。
+	virtual bool DrawVectorTile(GsTile *pTile);
+
+protected:
+	GsStyleTablePtr m_ptrStyleTable;
+};
+/// \brief GsVectorStyleRenderer
+GS_SMARTER_PTR(GsStyledVectorTileRenderer);
+
+
+/// \brief 简单矢量瓦片Render
+/// \details 无样式配置的简单矢量瓦片渲染器，创建随机颜色样式的符号矢量数据
+class GS_API GsSimpleVectorTileRenderer : public GsVectorTileRenderer
+{
+public:
+	/// \brief 通过画布和金字塔构造Renderer
+	GsSimpleVectorTileRenderer(GsImageCanvas* pImageCanvas, GsPyramid* pGsPyramid);
+
+	/// \brief 通过画布长，宽和金字塔构造Renderer
+	GsSimpleVectorTileRenderer(int nWidth, int nHeight, GsPyramid* pGsPyramid);
+	virtual ~GsSimpleVectorTileRenderer();
+	
+	/// \brief 绘制瓦片类型矢量数据。
+	virtual bool DrawVectorTile(const unsigned char* pData,int nLen,int l,int r,int c) ;
+private: 
+	// 根据名称和几何类型获取符号
+	GsSymbol* GetSymbol(const char* szLyrName, GsGeometryType eType);
+private:
+	// 符号缓存
+	std::map<std::string, GsSymbolPtr> m_mapSimpleSymbols;
+};
+/// \brief GsSimpleVectorTileRendererPtr
+GS_SMARTER_PTR(GsSimpleVectorTileRenderer);
+
+
+/// \brief GsVectorTileLayer
+/// \details 矢量瓦片图层
+class GS_API GsVectorTileLayer : public GsTileLayer
+{
+protected:
+	/// \brief 绘制方法入口
+	virtual bool InnerDraw( GsDisplay* pDisplay,GsTrackCancel* pCancel,GsDrawPhase eDrawPhase );
+public:
+	GsVectorTileLayer(GsTileClass* pTileClass, int nMaxTileCache=100);
+	virtual ~GsVectorTileLayer();
+
+	/// \brief 获取Renderer对象
+	GsVectorTileRenderer* Renderer();
+
+	/// \brief 设置Renderer对象
+	void Renderer(GsVectorTileRenderer* pRender);
+
+	/// \brief 清空
+	void ClearCache();
+
+private:
+	// 渲染瓦片成图片
+	Utility::GsImagePtr RenderTileImage(GsTile* pTile);
+
+private:
+	typedef std::pair<Utility::GsImagePtr, unsigned long long> ImagePair;
+
+	int m_nMaxTileCache;
+	// 矢量样式渲染对象
+	GsVectorTileRendererPtr m_ptrRender;
+	
+	// 瓦片缓存
+	std::list<ImagePair> m_lsTileImage;
+	// 瓦片缓存索引
+	std::map<unsigned long long, std::list<ImagePair>::iterator> m_mapTileIndex;
+};
+/// \brief GsVectorTileLayerPtr
+GS_SMARTER_PTR(GsVectorTileLayer);
+
+
+/// \brief GsPyramidLayer
+/// \details 金字塔网格图层
+class GS_API GsPyramidLayer : public GsLayer
+{
+public:
+	/// \brief 内部绘制入口
+	/// \details 子类通过覆盖此函数实现绘制。
+	virtual bool InnerDraw(GsDisplay* pDisplay,GsTrackCancel* pCancel,GsDrawPhase eDrawPhase);
+
+	/// \brief 图层的地理范围
+	/// \param pTargetSR 以该空间参考返回范围
+	virtual GsBox Extent(GsSpatialReference* pTargetSR = 0);
+
+	/// \brief 图层是否存在选择集
+	virtual bool HasSelection();
+
+	/// \brief 是否有效
+	virtual bool IsValid();
+
+	GsPyramidLayer(GsPyramid* pPyramid = 0);
+	virtual ~GsPyramidLayer();
+
+	/// \brief 设置金字塔对象
+	void Pyramid(GsPyramid* pPyramid);
+	/// \brief 设置金字塔对象
+	GsPyramid* Pyramid();
+
+	/// \brief 设置网格线颜色
+	void GridColor(const GsColor& color);
+
+	/// \brief 获取网格线颜色
+	GsColor GridColor();
+
+private:
+	GsPyramidPtr m_ptrPyramid;
+	GsColor m_LineColor;
+};
+/// \brief GsPyramidLayerPtr
+GS_SMARTER_PTR(GsPyramidLayer);
+
+
+/// \brief 字体对象
+class GS_API GsFontFamily:public Utility::GsRefObject
+{
+protected:
+	GsFontFamily(){}
+public:
+	virtual ~GsFontFamily(){};
+
+	/// \brief 从字体名称和式样构造
+	static Utility::GsSmarterPtr<GsFontFamily> CreateFontFamily(const char* fontname,GsFontStyle style);
+	/// \brief 从字体文件构造
+	/// \param fontfile 字体文件,*.ttf,*.ttc,*.font等
+	static Utility::GsSmarterPtr<GsFontFamily> CreateFontFamily(const char* fontfile);
+	/// \brief 从内存块构造
+	static Utility::GsSmarterPtr<GsFontFamily> CreateFontFamily(const unsigned char* blob,int nlen);
+	
+	/// \brief 将枚举的值字符串类型的式样
+	static Utility::GsString ConvertToString(GsFontStyle style);
+
+	
+	/// \brief 将字符串的式样转换为枚举值
+	static GsFontStyle ConvertToStyle(const Utility::GsString& style);
+	/// \brief 将字符串的式样转换为枚举值
+	static GsFontStyle ConvertToStyle(const char* style);
+
+
+	/// \brief 式样和字体自身的式样匹配程度
+	virtual int MatchStyle(GsFontStyle style) = 0;
+
+	/// \brief 获取内部指针
+	virtual void* Handle() = 0;
+	
+	/// \brief 获取字体的名称
+	virtual Utility::GsString FontName() = 0;
+	
+	/// \brief 获取字体的式样
+	virtual GsFontStyle Style() = 0;
+
+	/// \brief 获取字体文件的路径
+	/// \details 从内存中创建的字体将没有路径
+	virtual Utility::GsString FileName() = 0;
+};
+GS_SMARTER_PTR(GsFontFamily);
+
+/// \brief 字体集合 
+class GS_API GsFontCollection 
+{
+public:
+	GsFontCollection();
+	~GsFontCollection(void);
+	/// \brief 枚举系统中有多少的字体
+	int FamilyCount();
+	
+	/// \brief 获取所有的字体
+	GsVector<GsFontFamilyPtr> Families();
+	
+	/// \brief 根据索引获取字体
+	GsFontFamilyPtr Familiy(int nIndex);
+};
+
 
 
 KERNEL_ENDNS

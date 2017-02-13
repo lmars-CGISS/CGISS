@@ -62,9 +62,14 @@ public:
 	GsFile(const GsFile& rhs);
 
 	/// \brief 文件的完整路径构造对象
-	/// \brief strName文件完整路径
+	/// \param strName文件完整路径
 	GsFile(const char* strName);
 	virtual ~GsFile();
+	
+	
+	/// \brief 获取文件的内部字符串路径
+    ///\return 返回路径字符串指针
+	const char* Path() const; 
 
 	/// \brief 获取文件名称，不包含路径
     ///\return 返回文件的名称
@@ -91,6 +96,15 @@ public:
 	/// \brief rhs其他文件
     ///\return 自身
 	GsFile& operator = (const GsFile& rhs) ;
+
+	/// \brief bool操作符 
+	operator bool();
+
+	/// \brief 赋值
+	/// \brief rhs其他文件
+    ///\return 自身
+	GsFile& operator = (const char* file) ;
+
 
 	/// \brief 文件所在的目录
     ///\return 分返文件所在的目录
@@ -132,7 +146,10 @@ public:
 	/// \brief strName目录完整路径
 	GsDir(const char* strDirPath);
 	virtual ~GsDir();
-	
+	/// \brief 获取目录的内部字符串路径
+	///\return 返回目录字符串指针
+	const char* Path() const;
+
 	/// \brief 如果文件夹不存在则创建文件夹
 	bool Create();
 
@@ -203,7 +220,10 @@ public:
 	/// \brief rhs对象
     ///\return 自身
 	GsDir& operator = (const GsString& strDirPath) ;
- 
+	
+	/// \brief bool操作符 
+	operator bool();
+
 
 	/// \brief 删除当前目录
 	/// \brief param recursive 是否删除子目录

@@ -26,6 +26,7 @@
 
 #include "enumparser.h"
 #include "xml.h"
+#include "zipfile.h"
 
 UTILITY_NS
 

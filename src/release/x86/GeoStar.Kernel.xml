@@ -397,8 +397,94 @@ Shp文件类工厂
         <member name="T:GeoStar.Kernel.GsMapDefine">
 \brief 地图定义文件读写类
 </member>
+        <member name="M:GeoStar.Kernel.GsFontCollection.Familiy(System.Int32)">
+\brief 根据索引获取字体
+</member>
+        <member name="M:GeoStar.Kernel.GsFontCollection.Families">
+\brief 获取所有的字体
+</member>
+        <member name="M:GeoStar.Kernel.GsFontCollection.FamilyCount">
+\brief 枚举系统中有多少的字体
+</member>
+        <member name="T:GeoStar.Kernel.GsFontCollection">
+\brief 字体集合 
+</member>
+        <member name="M:GeoStar.Kernel.GsFontFamily.FileName">
+\brief 获取字体文件的路径
+\details 从内存中创建的字体将没有路径
+</member>
+        <member name="M:GeoStar.Kernel.GsFontFamily.Style">
+\brief 获取字体的式样
+</member>
+        <member name="M:GeoStar.Kernel.GsFontFamily.FontName">
+\brief 获取字体的名称
+</member>
+        <member name="M:GeoStar.Kernel.GsFontFamily.Handle">
+\brief 获取内部指针
+</member>
+        <member name="M:GeoStar.Kernel.GsFontFamily.MatchStyle(GeoStar.Kernel.GsFontStyle)">
+\brief 式样和字体自身的式样匹配程度
+</member>
+        <member name="M:GeoStar.Kernel.GsFontFamily.ConvertToStyle(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+\brief 将字符串的式样转换为枚举值
+</member>
+        <member name="M:GeoStar.Kernel.GsFontFamily.ConvertToStyle(std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte&gt;&gt;!System.Runtime.CompilerServices.IsConst*!System.Runtime.CompilerServices.IsImplicitlyDereferenced)">
+\brief 将字符串的式样转换为枚举值
+</member>
+        <member name="M:GeoStar.Kernel.GsFontFamily.ConvertToString(GeoStar.Kernel.GsFontStyle)">
+\brief 将枚举的值字符串类型的式样
+</member>
+        <member name="M:GeoStar.Kernel.GsFontFamily.CreateFontFamily(System.Byte!System.Runtime.CompilerServices.IsConst*,System.Int32)">
+\brief 从内存块构造
+</member>
+        <member name="M:GeoStar.Kernel.GsFontFamily.CreateFontFamily(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+\brief 从字体文件构造
+\param fontfile 字体文件,*.ttf,*.ttc,*.font等
+</member>
+        <member name="M:GeoStar.Kernel.GsFontFamily.CreateFontFamily(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,GeoStar.Kernel.GsFontStyle)">
+\brief 从字体名称和式样构造
+</member>
+        <member name="T:GeoStar.Kernel.GsFontFamily">
+\brief 字体对象
+</member>
+        <member name="D:GeoStar.Kernel.GsPyramidLayerPtr">
+\brief GsPyramidLayerPtr
+</member>
+        <member name="M:GeoStar.Kernel.GsPyramidLayer.GridColor">
+\brief 获取网格线颜色
+</member>
+        <member name="M:GeoStar.Kernel.GsPyramidLayer.GridColor(GeoStar.Kernel.GsColor!System.Runtime.CompilerServices.IsConst*!System.Runtime.CompilerServices.IsImplicitlyDereferenced)">
+\brief 设置网格线颜色
+</member>
+        <member name="M:GeoStar.Kernel.GsPyramidLayer.Pyramid">
+\brief 设置金字塔对象
+</member>
+        <member name="M:GeoStar.Kernel.GsPyramidLayer.Pyramid(GeoStar.Kernel.GsPyramid*)">
+\brief 设置金字塔对象
+</member>
+        <member name="M:GeoStar.Kernel.GsPyramidLayer.IsValid">
+\brief 是否有效
+</member>
+        <member name="M:GeoStar.Kernel.GsPyramidLayer.HasSelection">
+\brief 图层是否存在选择集
+</member>
+        <member name="M:GeoStar.Kernel.GsPyramidLayer.Extent(GeoStar.Kernel.GsSpatialReference*)">
+\brief 图层的地理范围
+\param pTargetSR 以该空间参考返回范围
+</member>
+        <member name="M:GeoStar.Kernel.GsPyramidLayer.InnerDraw(GeoStar.Kernel.GsDisplay*,GeoStar.Kernel.GsTrackCancel*,GeoStar.Kernel.GsDrawPhase)">
+\brief 内部绘制入口
+\details 子类通过覆盖此函数实现绘制。
+</member>
+        <member name="T:GeoStar.Kernel.GsPyramidLayer">
+\brief GsPyramidLayer
+\details 金字塔网格图层
+</member>
         <member name="D:GeoStar.Kernel.GsVectorTileLayerPtr">
 \brief GsVectorTileLayerPtr
+</member>
+        <member name="M:GeoStar.Kernel.GsVectorTileLayer.ClearCache">
+\brief 清空
 </member>
         <member name="M:GeoStar.Kernel.GsVectorTileLayer.Renderer(GeoStar.Kernel.GsVectorTileRenderer*)">
 \brief 设置Renderer对象
@@ -416,8 +502,8 @@ Shp文件类工厂
         <member name="D:GeoStar.Kernel.GsSimpleVectorTileRendererPtr">
 \brief GsSimpleVectorTileRendererPtr
 </member>
-        <member name="M:GeoStar.Kernel.GsSimpleVectorTileRenderer.DrawVectorTile(GeoStar.Kernel.GsTile*)">
-绘制瓦片类型矢量数据
+        <member name="M:GeoStar.Kernel.GsSimpleVectorTileRenderer.DrawVectorTile(System.Byte!System.Runtime.CompilerServices.IsConst*,System.Int32,System.Int32,System.Int32,System.Int32)">
+\brief 绘制瓦片类型矢量数据。
 </member>
         <member name="M:GeoStar.Kernel.GsSimpleVectorTileRenderer.#ctor(System.Int32,System.Int32,GeoStar.Kernel.GsPyramid*)">
 \brief 通过画布长，宽和金字塔构造Renderer
@@ -435,13 +521,19 @@ Shp文件类工厂
         <member name="M:GeoStar.Kernel.GsStyledVectorTileRenderer.DrawVectorTile(GeoStar.Kernel.GsTile*)">
 \brief 绘制瓦片类型矢量数据。
 </member>
+        <member name="M:GeoStar.Kernel.GsStyledVectorTileRenderer.DrawVectorTile(System.Byte!System.Runtime.CompilerServices.IsConst*,System.Int32,System.Int32,System.Int32,System.Int32)">
+\brief 绘制瓦片类型矢量数据。
+</member>
+        <member name="M:GeoStar.Kernel.GsStyledVectorTileRenderer.StyleTable">
+\brief 获取样式表实例
+</member>
         <member name="M:GeoStar.Kernel.GsStyledVectorTileRenderer.StyleTable(GeoStar.Kernel.GsStyleTable*)">
 \brief 设置样式表实例
 </member>
-        <member name="M:GeoStar.Kernel.GsStyledVectorTileRenderer.#ctor(System.Int32,System.Int32,GeoStar.Kernel.GsPyramid*)">
+        <member name="M:GeoStar.Kernel.GsStyledVectorTileRenderer.#ctor(System.Int32,System.Int32,GeoStar.Kernel.GsPyramid*,GeoStar.Kernel.GsStyleTable*)">
 \brief 通过画布长，宽和金字塔构造Renderer
 </member>
-        <member name="M:GeoStar.Kernel.GsStyledVectorTileRenderer.#ctor(GeoStar.Kernel.GsImageCanvas*,GeoStar.Kernel.GsPyramid*)">
+        <member name="M:GeoStar.Kernel.GsStyledVectorTileRenderer.#ctor(GeoStar.Kernel.GsImageCanvas*,GeoStar.Kernel.GsPyramid*,GeoStar.Kernel.GsStyleTable*)">
 \brief 通过画布和金字塔构造Renderer
 </member>
         <member name="T:GeoStar.Kernel.GsStyledVectorTileRenderer">
@@ -450,6 +542,9 @@ Shp文件类工厂
 </member>
         <member name="D:GeoStar.Kernel.GsVectorTileRendererPtr">
 \brief GsVectorTileRendererPtr
+</member>
+        <member name="M:GeoStar.Kernel.GsVectorTileRenderer.DrawVectorTile(System.Byte!System.Runtime.CompilerServices.IsConst*,System.Int32,System.Int32,System.Int32,System.Int32)">
+\brief 绘制瓦片类型矢量数据。
 </member>
         <member name="M:GeoStar.Kernel.GsVectorTileRenderer.DrawVectorTile(GeoStar.Kernel.GsTile*)">
 \brief 绘制瓦片类型矢量数据。
@@ -466,14 +561,23 @@ Shp文件类工厂
         <member name="D:GeoStar.Kernel.GsStyleTableFactoryPtr">
 \brief GsStyleTableFactoryPtr
 </member>
-        <member name="M:GeoStar.Kernel.GsStyleTableFactory.OpenFromMapDefine(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+        <member name="M:GeoStar.Kernel.GsStyleTableFactory.OpenFromMapDefine(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,GeoStar.Kernel.GsPyramid*)">
 \brief 从地图定义文件构造样式表实例
 </member>
-        <member name="M:GeoStar.Kernel.GsStyleTableFactory.OpenFromXml(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+        <member name="M:GeoStar.Kernel.GsStyleTableFactory.OpenFromXml(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.Boolean)">
 \brief 从xml构造样式表实例
 </member>
-        <member name="M:GeoStar.Kernel.GsStyleTableFactory.OpenFromJson(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+        <member name="M:GeoStar.Kernel.GsStyleTableFactory.OpenFromJson(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.Boolean)">
 \brief 从json文件构造样式表实例
+</member>
+        <member name="M:GeoStar.Kernel.GsStyleTableFactory.OpenFromFolder(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+\brief 从文件夹打开
+</member>
+        <member name="M:GeoStar.Kernel.GsStyleTableFactory.OpenFromZip(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+\brief 从Zip包二进制文件打开
+</member>
+        <member name="M:GeoStar.Kernel.GsStyleTableFactory.OpenFromZip(System.Byte!System.Runtime.CompilerServices.IsConst*,System.Int32)">
+\brief 从Zip包二进制文件打开
 </member>
         <member name="T:GeoStar.Kernel.GsStyleTableFactory">
 \brief 样式表类厂
@@ -498,6 +602,12 @@ Shp文件类工厂
         <member name="M:GeoStar.Kernel.GsStyleTable.Name">
 \brief 获得样式表名字
 \returns 返回样式表名字
+</member>
+        <member name="M:GeoStar.Kernel.GsStyleTable.GenerateRasterGlyph(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.Single,System.Int32,System.Int32,GeoStar.Utility.GsByteBuffer*)">
+\brief 指定范围内的字体产生为Protobuffer格式的栅格。
+</member>
+        <member name="M:GeoStar.Kernel.GsStyleTable.Content(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,GeoStar.Utility.GsByteBuffer*)">
+\brief 获取式样的内容
 </member>
         <member name="T:GeoStar.Kernel.GsStyleTable">
 \brief 样式表
@@ -1099,9 +1209,6 @@ Shp文件类工厂
         <member name="F:GeoStar.Kernel.GsUniqueValueRenderer.m_mapSymbols">
 \brief 渲染符号容器
 </member>
-        <member name="T:GeoStar.Kernel.GsUniqueValueRenderer.SymbolUnit">
-\brief 渲染符号相关信息
-</member>
         <member name="F:GeoStar.Kernel.GsUniqueValueRenderer.m_anyEachFeature">
 \brief 绘制时描述Feature字段值，声明为成员减少构造次数
 </member>
@@ -1328,6 +1435,9 @@ Shp文件类工厂
         <member name="D:GeoStar.Kernel.GsMapPtr">
 \brief GsMapPtr
 </member>
+        <member name="M:GeoStar.Kernel.GsMap.GetPyramidLayer">
+\brief 获取金字塔图层
+</member>
         <member name="M:GeoStar.Kernel.GsMap.Output(GeoStar.Kernel.GsDisplay*,GeoStar.Kernel.GsTrackCancel*)">
 \brief 将地图数据绘制到输入的Display上。
 \details 调用者需要在外部输入启动Display的StartDraw，并在输出结束后调用EndDraw。
@@ -1382,6 +1492,9 @@ Shp文件类工厂
 </member>
         <member name="F:GeoStar.Kernel.GsMap.m_ptrDisplay">
 \brief 屏幕显示对象
+</member>
+        <member name="F:GeoStar.Kernel.GsMap.m_ptrPyramidLayer">
+\brief 金字塔图层
 </member>
         <member name="F:GeoStar.Kernel.GsMap.m_lstLayers">
 \brief 图形列表
@@ -1943,6 +2056,9 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
         <member name="M:GeoStar.Kernel.GsRaster.DataLength">
 \brief 根据栅格类属性计算的栅格数据长度
 </member>
+        <member name="M:GeoStar.Kernel.GsRaster.DataPtr(System.Byte!System.Runtime.CompilerServices.IsConst*,System.Int32)">
+\brief 设置栅格数据指针，数据会拷贝一份
+</member>
         <member name="M:GeoStar.Kernel.GsRaster.DataPtr(System.Byte*)">
 \brief 设置栅格数据指针
 </member>
@@ -1966,6 +2082,9 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
 </member>
         <member name="F:GeoStar.Kernel.GsRaster.m_pDataPtr">
 \brief 栅格数据指针
+</member>
+        <member name="F:GeoStar.Kernel.GsRaster.m_nLength">
+\brief 数据长度
 </member>
         <member name="T:GeoStar.Kernel.GsRaster">
 \brief 栅格数据块
@@ -2482,7 +2601,7 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
         <member name="M:GeoStar.Kernel.GsTile.TileData(System.Byte!System.Runtime.CompilerServices.IsConst*,System.Int32)">
 \brief 设置瓦片数据
 </member>
-        <member name="M:GeoStar.Kernel.GsTile.TileType(GeoStar.Kernel.GsFeatureType)">
+        <member name="M:GeoStar.Kernel.GsTile.TileType(GeoStar.Kernel.GsTileEncodingType)">
 \brief 设置瓦片类型
 </member>
         <member name="M:GeoStar.Kernel.GsTile.TileType">
@@ -2506,17 +2625,17 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
         <member name="M:GeoStar.Kernel.GsTile.Level">
 \brief 获取级别
 </member>
-        <member name="M:GeoStar.Kernel.GsTile.TileToCol(System.UInt64)">
+        <member name="M:GeoStar.Kernel.GsTile.KeyToCol(System.Int64)">
 \brief 64位key值获取Col值
 </member>
-        <member name="M:GeoStar.Kernel.GsTile.TileToRow(System.UInt64)">
+        <member name="M:GeoStar.Kernel.GsTile.KeyToRow(System.Int64)">
 \brief 64位key值获取Row值
 </member>
-        <member name="M:GeoStar.Kernel.GsTile.TileToLevel(System.UInt64)">
+        <member name="M:GeoStar.Kernel.GsTile.KeyToLevel(System.Int64)">
 \brief 64位key值获取Level值
 </member>
-        <member name="M:GeoStar.Kernel.GsTile.TileToKey(System.UInt32,System.UInt32,System.UInt32)">
-\brief 层行列转化为64位Key值，Level占6位，Row占29位，Col占29位
+        <member name="M:GeoStar.Kernel.GsTile.ToKey(System.Int32,System.Int32,System.Int32)">
+\brief 层行列转化为64位Key值，Level占6位，Row占24位，Col占24位
 </member>
         <member name="T:GeoStar.Kernel.GsTile">
 \brief 瓦片对象
@@ -2963,20 +3082,32 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
         <member name="T:GeoStar.Kernel.GsFeatureType">
 \brief 数据集对象类型
 </member>
+        <member name="F:eTemporalImageTileFeature">
+\brief 实现多时相瓦片数据集将级扩充的
+</member>
+        <member name="F:eDlgTileFeature">
+\brief 矢量
+</member>
+        <member name="F:eHypsographyTileFeature">
+\brief 地势
+</member>
+        <member name="F:ePlaceNameTileFeature">
+\brief 地名
+</member>
+        <member name="F:eDynvectorTileFeature">
+\brief 动态矢量
+</member>
+        <member name="F:ePrevectorTileFeature">
+\brief 静态矢量
+</member>
+        <member name="F:eModeTileFeature">
+\brief 模型
+</member>
         <member name="F:eTerrainTileFeature">
 \brief 地形瓦片
 </member>
         <member name="F:eImageTileFeature">
 \brief 影像瓦片
-</member>
-        <member name="F:eVectorTileFeature">
-\brief 矢量瓦片
-</member>
-        <member name="F:eAnnotationFeature">
-\brief 瓦片类
-</member>
-        <member name="F:eSimpleFeature">
-\brief 矢量地物类
 </member>
         <member name="M:GeoStar.Kernel.GsConnectProperty.#ctor(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.Int32,GeoStar.Kernel.GsDataSourceType)">
 \brief 根据服务器地址、数据库和用户名密码、端口、数据源类型构造
@@ -3100,6 +3231,28 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
 </member>
         <member name="F:eUnknownDataSource">
 \brief 未知数据源类型
+</member>
+        <member name="M:GeoStar.Kernel.GsBuildingFillSymbol.OnEndDrawing">
+\brief 当结束绘制时发生
+</member>
+        <member name="M:GeoStar.Kernel.GsBuildingFillSymbol.OnStartDrawing">
+\brief 当开始绘制的时候发生
+</member>
+        <member name="M:GeoStar.Kernel.GsBuildingFillSymbol.DrawTop(GeoStar.Kernel.GsGeometry*)">
+\brief 绘制顶部
+</member>
+        <member name="M:GeoStar.Kernel.GsBuildingFillSymbol.IsValid">
+\brief 符号是否有效
+\details 符号是否会在画布上绘制内容，如果符号不会在画布上绘制任何的内容则不需要执行绘制过程。
+</member>
+        <member name="M:GeoStar.Kernel.GsBuildingFillSymbol.Style(GeoStar.Kernel.GsBrushStyle)">
+\brief 画笔的式样
+</member>
+        <member name="M:GeoStar.Kernel.GsBuildingFillSymbol.Style">
+\brief 画笔的式样
+</member>
+        <member name="T:GeoStar.Kernel.GsBuildingFillSymbol">
+\brief 建筑符号
 </member>
         <member name="M:GeoStar.Kernel.GsGradsFillSymbol.OnEndDrawing">
 \brief 当结束绘制时发生
@@ -5020,6 +5173,9 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
         <member name="F:eTextSymbol">
 \brief 文本符号
 </member>
+        <member name="F:eFillExtrusionSymbol">
+\brief 拔起符号
+</member>
         <member name="F:eFillSymbol">
 \brief 面符号
 </member>
@@ -5852,6 +6008,9 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
         <member name="M:GeoStar.Kernel.GsColor.ToUInt">
 \brief 转换为32位无符号整数
 </member>
+        <member name="M:GeoStar.Kernel.GsColor.ToHtmlRGBA">
+\brief 以html的形式返回颜色值rgba(r,g,b,af);
+</member>
         <member name="M:GeoStar.Kernel.GsColor.ToHtml">
 \brief 以html的形式返回颜色值#RRGGBB
 </member>
@@ -5901,6 +6060,9 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
 </member>
         <member name="M:GeoStar.Kernel.GsColor.FromCOLORREF(System.UInt32)">
 \brief 从Win32的RGB颜色构造
+</member>
+        <member name="M:GeoStar.Kernel.GsColor.FromCSS(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+\brief 从CSS颜色描述构造
 </member>
         <member name="M:GeoStar.Kernel.GsColor.FlipRGB">
 \brief 交换RGB中R和B的通道
@@ -6294,6 +6456,54 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
         <member name="T:GeoStar.Kernel.GsSpatialIndexQuery">
 \brief 粗查空间索引对象抽象基类
 </member>
+        <member name="D:GeoStar.Kernel.GsBD09ToWGS84CoordinateTransformationPtr">
+\brief GsBD09ToWGS84CoordinateTransformationPtr
+</member>
+        <member name="M:GeoStar.Kernel.GsBD09ToWGS84CoordinateTransformation.Transformation(System.Double*,System.Double*,System.Double*,System.Int32,System.Int32)">
+\brief 对x数组和y数组以及Z数组分别转换
+</member>
+        <member name="M:GeoStar.Kernel.GsBD09ToWGS84CoordinateTransformation.#ctor(System.Double)">
+\brief 从转换精度构造
+\param dblPrecision 反转的精确度，单位米
+</member>
+        <member name="T:GeoStar.Kernel.GsBD09ToWGS84CoordinateTransformation">
+\brief 转从BD09(百度）坐标系反转为WGS84
+\details https://en.wikipedia.org/wiki/Restrictions_on_geographic_data_in_China
+</member>
+        <member name="D:GeoStar.Kernel.GsWGS84ToBD09CoordinateTransformationPtr">
+\brief GsWGS84ToGCJ02CoordinateTransformationPtr
+</member>
+        <member name="M:GeoStar.Kernel.GsWGS84ToBD09CoordinateTransformation.Transformation(System.Double*,System.Double*,System.Double*,System.Int32,System.Int32)">
+\brief 对x数组和y数组以及Z数组分别转换
+</member>
+        <member name="T:GeoStar.Kernel.GsWGS84ToBD09CoordinateTransformation">
+\brief 从WGS84坐标系转BD09(百度）坐标系。
+\details https://en.wikipedia.org/wiki/Restrictions_on_geographic_data_in_China
+</member>
+        <member name="D:GeoStar.Kernel.GsGCJ02ToWGS84CoordinateTransformationPtr">
+\brief GsGCJ02ToWGS84CoordinateTransformationPtr
+</member>
+        <member name="M:GeoStar.Kernel.GsGCJ02ToWGS84CoordinateTransformation.Transformation(System.Double*,System.Double*,System.Double*,System.Int32,System.Int32)">
+\brief 对x数组和y数组以及Z数组分别转换
+</member>
+        <member name="M:GeoStar.Kernel.GsGCJ02ToWGS84CoordinateTransformation.#ctor(System.Double)">
+\brief 从转换精度构造
+\param dblPrecision 反转的精确度，单位米
+</member>
+        <member name="T:GeoStar.Kernel.GsGCJ02ToWGS84CoordinateTransformation">
+\brief 转从GCJ02(火星）坐标系反转为WGS84
+\details https://en.wikipedia.org/wiki/Restrictions_on_geographic_data_in_China
+</member>
+        <member name="D:GeoStar.Kernel.GsWGS84ToGCJ02CoordinateTransformationPtr">
+\brief GsWGS84ToGCJ02CoordinateTransformationPtr
+</member>
+        <member name="M:GeoStar.Kernel.GsWGS84ToGCJ02CoordinateTransformation.Transformation(System.Double*,System.Double*,System.Double*,System.Int32,System.Int32)">
+\brief 对x数组和y数组以及Z数组分别转换
+</member>
+        <member name="T:GeoStar.Kernel.GsWGS84ToGCJ02CoordinateTransformation">
+\brief 从WGS84坐标系转GCJ02(火星）坐标系。
+\details https://en.wikipedia.org/wiki/Restrictions_on_geographic_data_in_China
+</member>
         <member name="D:GeoStar.Kernel.GsAffineCoordinateTransformationPtr">
 \brief GsAffineCoordinateTransformationPtr
 </member>
@@ -6309,19 +6519,73 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
         <member name="M:GeoStar.Kernel.GsAffineCoordinateTransformation.IdenticalPointCount">
 \brief 同名点数量
 </member>
+        <member name="M:GeoStar.Kernel.GsAffineCoordinateTransformation.Matrix">
+\brief 获取访射变换矩阵指针
+\details 访射变换矩阵为6个double 每个元素的意义如下：[a1][b1][a2][b2][a0][b0]
+</member>
         <member name="M:GeoStar.Kernel.GsAffineCoordinateTransformation.Elements(System.Double*)">
 \brief 获取仿射变换矩阵的值。
 \param m 用于输出矩阵值得数组，长度6
+\details 访射变换矩阵为6个double 每个元素的意义如下：[a1][b1][a2][b2][a0][b0]
 </member>
         <member name="M:GeoStar.Kernel.GsAffineCoordinateTransformation.Parameter(System.Double*,System.Double*,System.Int32)">
 \brief 设置同名点参数
 </member>
+        <member name="M:GeoStar.Kernel.GsAffineCoordinateTransformation.#ctor(System.Double*)">
+\brief 根据访射变换矩阵构造
+\details 访射变换矩阵为6个double 每个元素的意义如下：[a1][b1][a2][b2][a0][b0]
+</member>
         <member name="M:GeoStar.Kernel.GsAffineCoordinateTransformation.#ctor(System.Double*,System.Double*,System.Int32)">
 \brief 根据源和目标同名点组构成仿射变换参数
-\details 最低需要3个点的坐标。
+\details 最低需要3个点的坐标,即nLen为6。
 </member>
         <member name="T:GeoStar.Kernel.GsAffineCoordinateTransformation">
 \brief 仿射坐标转换
+\details 推导过程 
+ XL = A0 + A1 * XD + A2 * YD
+ YL = B0 + B1 * XD + B2 * YD
+</member>
+        <member name="D:GeoStar.Kernel.GsParameterProjectCoordinateTransformationPtr">
+\brief GsParameterProjectCoordinateTransformationPtr
+</member>
+        <member name="M:GeoStar.Kernel.GsParameterProjectCoordinateTransformation.Parameter(GeoStar.Kernel.GsCoordinateTransformationMethod,System.Double*)">
+\brief 设置坐标转换的方法和参数值。
+</member>
+        <member name="M:GeoStar.Kernel.GsParameterProjectCoordinateTransformation.Method">
+\brief 获取数据转换的方法
+</member>
+        <member name="M:GeoStar.Kernel.GsParameterProjectCoordinateTransformation.#ctor(GeoStar.Kernel.GsSpatialReference*,GeoStar.Kernel.GsSpatialReference*,GeoStar.Kernel.GsCoordinateTransformationMethod,System.Double*)">
+\brief 从转换方法和转换参数构造
+</member>
+        <member name="F:GeoStar.Kernel.GsParameterProjectCoordinateTransformation.m_eMethod">
+\brief 转换参数。
+</member>
+        <member name="F:GeoStar.Kernel.GsParameterProjectCoordinateTransformation.m_vecParam">
+\brief 转换参数。
+</member>
+        <member name="T:GeoStar.Kernel.GsParameterProjectCoordinateTransformation">
+\brief 参数化的投影坐标转换
+\details 定义不同投影间的转换方法和转换参数
+\details 从一个大地经纬度坐标系变换到另一个大地经纬度坐标系一般需要经过三个环节：大地经纬度坐标系到空间直角坐标系&gt;空间直角坐标系到空间直角坐标系&gt;空间直角坐标系到大地经纬度坐标系。
+\details 其中的中间环节，空间直角坐标到空间直角坐标采用七参数赫尔默特（Helmert）转换法，其转换矩阵为著名的布尔沙-沃尔夫（Bursa-Wolf）公式,或者三参数等不同的转换方法
+</member>
+        <member name="T:GeoStar.Kernel.GsCoordinateTransformationMethod">
+\brief 坐标换换方法
+</member>
+        <member name="F:eGeocentricTranslation">
+\brief 基于地心的三参数转换法。
+</member>
+        <member name="F:eCoordinateFrame">
+\brief 坐标框架法
+\details 七参数赫尔默特（Helmert）转换法，依据布尔莎（Bursa-Wolf）公式
+\details 由EPSG（欧洲石油勘探组织）定义
+\details 与位置矢量法不同的是7参数中三个旋转参数的方向相反。
+</member>
+        <member name="F:ePositionVector">
+\brief 位置矢量法
+\details 七参数赫尔默特（Helmert）转换法，依据布尔莎（Bursa-Wolf）公式
+\details 由国际大地测量协会（IAG）通过ISO19111标准定义
+\details 与坐标框架法不同的是7参数中三个旋转参数的方向相反。
 </member>
         <member name="D:GeoStar.Kernel.GsProjectCoordinateTransformationPtr">
 \brief GsProjectCoordinateTransformationPtr
@@ -6356,6 +6620,9 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
         <member name="T:GeoStar.Kernel.GsCoordinateTransformation">
 \brief 坐标转换基类
 </member>
+        <member name="M:GeoStar.Kernel.GsSpatialReferenceManager.SpecialCategory(GeoStar.Kernel.GsSpatialReferenceManager.GsSpecialCategory)">
+\brief 获取特殊的空间参考分类。
+</member>
         <member name="M:GeoStar.Kernel.GsSpatialReferenceManager.Category(System.Int32)">
 \brief 获取空间参考的一个分类
 </member>
@@ -6380,12 +6647,126 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
         <member name="T:GeoStar.Kernel.GsSpatialReferenceManager.GsSpatialReferenceCategory">
 \brief 空间参考的分类。
 </member>
+        <member name="F:eAliasOfEPSG">
+\brief EPSG别名分类
+</member>
+        <member name="F:eStandardEPSG">
+\brief 标准EPSG分类
+</member>
+        <member name="T:GeoStar.Kernel.GsSpatialReferenceManager.GsSpecialCategory">
+\brief 特殊分类
+</member>
         <member name="T:GeoStar.Kernel.GsSpatialReferenceManager">
 \brief 空间参考管理对象。
 \details 枚举现有的空间参考，增加新空间参考等等能力。
 </member>
+        <member name="M:GeoStar.Kernel.GsGeodesicPolygon.Compute(System.Boolean,System.Boolean,System.Double*,System.Double*)">
+\brief 计算多边形的球面面积以及周长
+\param bReverse 是否反向，如果为true（反向）则认为逆时针多边形得到负的面积值。(标准积分面积逆时针方向的点返回正面积）
+\param bSign  是否带符号返回面积，如果时则在方向正确时返回正面积不正确时返回负面积， 否则将返回多边形外的地球面积。
+\param pArea  当构造时使用非Polyline参数则返回球面面积，否则不返回
+\param pPerimeter    返回多边形或者polyline的周长
+\return 返回多边形或者折线有多少个点
+</member>
+        <member name="M:GeoStar.Kernel.GsGeodesicPolygon.AddEdge(System.Double,System.Double)">
+\brief 以方位角、长度增加一条边
+</member>
+        <member name="M:GeoStar.Kernel.GsGeodesicPolygon.AddPoint(System.Double,System.Double)">
+\brief 增加一个边界点
+\param lon 经度
+\param lat 纬度
+</member>
+        <member name="M:GeoStar.Kernel.GsGeodesicPolygon.op_Assign(GeoStar.Kernel.GsGeodesicPolygon!System.Runtime.CompilerServices.IsConst*!System.Runtime.CompilerServices.IsImplicitlyDereferenced)">
+\brief 赋值操作符
+</member>
+        <member name="M:GeoStar.Kernel.GsGeodesicPolygon.#ctor(GeoStar.Kernel.GsGeodesicPolygon!System.Runtime.CompilerServices.IsConst*!System.Runtime.CompilerServices.IsImplicitlyDereferenced)">
+\brief 拷贝构造
+</member>
+        <member name="M:GeoStar.Kernel.GsGeodesicPolygon.#ctor(GeoStar.Kernel.GsSpatialReference*,System.Boolean)">
+\brief 构造一个多边形或者Polyline
+</member>
+        <member name="T:GeoStar.Kernel.GsGeodesicPolygon">
+\brief 测地线多边形，以测地线构成的多边形
+</member>
+        <member name="M:GeoStar.Kernel.GsGeodesicLine.Position(System.Double,System.Double*,System.Double*,System.Double*)">
+\brief 根据距离获得测地线上的点坐标
+\param distance 距离起点的距离，单位米
+\param toLatitude 终点的经度
+\param toLongitude 终点的纬度
+\param toAzimuth 终点的方位角
+</member>
+        <member name="M:GeoStar.Kernel.GsGeodesicLine.op_Assign(GeoStar.Kernel.GsGeodesicLine!System.Runtime.CompilerServices.IsConst*!System.Runtime.CompilerServices.IsImplicitlyDereferenced)">
+\brief 赋值操作符
+</member>
+        <member name="M:GeoStar.Kernel.GsGeodesicLine.#ctor(GeoStar.Kernel.GsGeodesicLine!System.Runtime.CompilerServices.IsConst*!System.Runtime.CompilerServices.IsImplicitlyDereferenced)">
+\brief 拷贝构造函数
+</member>
+        <member name="M:GeoStar.Kernel.GsGeodesicLine.#ctor(GeoStar.Kernel.GsSpatialReference*,System.Double,System.Double,System.Double,GeoStar.Kernel.GsGeodesicLine.GeoDMask)">
+\brief 根据空间参考，起点的经纬度和方向角确定一根测地线
+</member>
+        <member name="T:GeoStar.Kernel.GsGeodesicLine.GeoDMask">
+ mask values for the \e caps argument to geod_lineinit().
+********************************************************************
+</member>
+        <member name="T:GeoStar.Kernel.GsGeodesicLine">
+\brief 一根测地线，已经确定了起点终点的大地线
+</member>
+        <member name="M:GeoStar.Kernel.GsGeodesic.Interpolation(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double*,System.Double*,System.Double*)">
+\brief 寻找起点终点大圆上的t对应的点
+\param fromLongitude 开始点经度
+\param fromLatitude 开始点纬度度
+\param toLongitude 终点经度
+\param toLatitude 终点维度
+\param t 参数0~1标示起点和终点，可以小于0或者大于1
+\param Longitude 插值点的经度
+\param Latitude 插值点的维度
+\param Azimuth 插值点的方向角
+</member>
+        <member name="M:GeoStar.Kernel.GsGeodesic.Direct(System.Double,System.Double,System.Double,System.Double,System.Double*,System.Double*,System.Double*)">
+\brief 根据起点经纬度坐标和方位角沿测试线前进一定长度到终点
+\param fromLongitude 开始点经度
+\param fromLatitude 开始点纬度度
+\param fromAzimuth 开始点方位角（以正北为0顺时针旋转的角度，单位度）
+\param lenth12 沿测地线前进的距离（单位米）
+\param toLongitude 输出终点的经度
+\param toLatitude 输出终点的纬度
+\param toLatitude 输出终点的方位角
+</member>
+        <member name="M:GeoStar.Kernel.GsGeodesic.Inverse(System.Double,System.Double,System.Double,System.Double,System.Double*,System.Double*)">
+\brief 计算测地线长度、大圆距离、球面距离
+\param fromLongitude 开始点经度
+\param fromLatitude 开始点纬度度
+\param toLongitude 结束点经度
+\param toLatitude 结束点纬度度
+\param fromAzimuth 输出开始点的方向角
+\param toAzimuth 输出结束点的方向角
+\return 测地线长度，单位米
+</member>
+        <member name="M:GeoStar.Kernel.GsGeodesic.op_Assign(GeoStar.Kernel.GsGeodesic!System.Runtime.CompilerServices.IsConst*!System.Runtime.CompilerServices.IsImplicitlyDereferenced)">
+\brief 赋值操作符
+</member>
+        <member name="M:GeoStar.Kernel.GsGeodesic.#ctor(GeoStar.Kernel.GsGeodesic!System.Runtime.CompilerServices.IsConst*!System.Runtime.CompilerServices.IsImplicitlyDereferenced)">
+\brief 拷贝构造函数
+</member>
+        <member name="M:GeoStar.Kernel.GsGeodesic.#ctor(System.Double,System.Double)">
+\brief 从地球半径和扁率构造
+\param a 赤道半径 
+\param f 扁率
+</member>
+        <member name="M:GeoStar.Kernel.GsGeodesic.#ctor(GeoStar.Kernel.GsSpatialReference*)">
+\brief 从空间参考初始化
+</member>
+        <member name="T:GeoStar.Kernel.GsGeodesic">
+\brief 大地线，计算两个经纬度坐标的测地线长度，或称为大圆距离、球面距离
+</member>
         <member name="D:GeoStar.Kernel.GsSpatialReferencePtr">
 \brief GsSpatialReferencePtr
+</member>
+        <member name="M:GeoStar.Kernel.GsSpatialReference.Axis(System.Int32,GeoStar.Kernel.GsAxisOrientation*)">
+\brief 获取坐标轴的方向信息
+\param i 坐标轴的顺序（0或者1） 
+\param peOrientation 输出坐标轴的方向
+\return  返回坐标轴的名称或者空字符串
 </member>
         <member name="M:GeoStar.Kernel.GsSpatialReference.Projection">
 \brief 投影名称
@@ -6416,6 +6797,9 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
 </member>
         <member name="M:GeoStar.Kernel.GsSpatialReference.IsLocalCS">
 \brief 是否是本地坐标系
+</member>
+        <member name="M:GeoStar.Kernel.GsSpatialReference.IsSameParameter(GeoStar.Kernel.GsSpatialReference*)">
+\brief 是否是相同的空间参数，可以作为空间参考是否相同的依据，但不绝对
 </member>
         <member name="M:GeoStar.Kernel.GsSpatialReference.IsSameGeogCS(GeoStar.Kernel.GsSpatialReference*)">
 \brief 是否是相同的地理坐标系
@@ -6452,6 +6836,13 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
 </member>
         <member name="M:GeoStar.Kernel.GsSpatialReference.#ctor(System.Int32)">
 \brief 从EPSG编号构造
+\details 使用全局配置项Kernel/SpatialRererence/EPSG设置EPSG.txt所在的路径
+\code{.cpp}
+ GsGlobeConfig::Instance().Child("Kernel/SpatialRererence/EPSG").Value("...SpatialReferenceDataFolder\\EPSG.txt");
+
+GsSpatialReferencePtr ptrSR = new GsSpatialReference(4326);
+{....}
+\endcode
 </member>
         <member name="M:GeoStar.Kernel.GsSpatialReference.#ctor(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,GeoStar.Kernel.GsSpatialReferenceFormat)">
 \brief 从字符串和指定类型进行构造
@@ -6461,6 +6852,30 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
 </member>
         <member name="T:GeoStar.Kernel.GsSpatialReference">
 \brief 空间参考
+</member>
+        <member name="T:GeoStar.Kernel.GsAxisOrientation">
+\brief 坐标轴方向
+</member>
+        <member name="F:eDown">
+\brief 朝下
+</member>
+        <member name="F:eUp">
+\brief 朝上
+</member>
+        <member name="F:eWest">
+\brief 朝西
+</member>
+        <member name="F:eEast">
+\brief 朝东
+</member>
+        <member name="F:eSouth">
+\brief 朝南
+</member>
+        <member name="F:eNorth">
+\brief 朝北
+</member>
+        <member name="F:eOther">
+\brief 不确定方向
 </member>
         <member name="T:GeoStar.Kernel.GsUnits">
 \brief 坐标单位
@@ -6518,6 +6933,123 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
 </member>
         <member name="F:eUnknownFormat">
 \brief 未知的空间参考定义格式
+</member>
+        <member name="T:GeoStar.Utility.GsGZFile">
+\brief GZ压缩功能
+</member>
+        <member name="M:GeoStar.Utility.GsZLib.Uncompress(System.Byte!System.Runtime.CompilerServices.IsConst*,System.UInt32*!System.Runtime.CompilerServices.IsImplicitlyDereferenced,GeoStar.Utility.GsByteBuffer*)">
+\brief 解压一段内存
+\param sourceLen 要解压的内存大小，返回时返回解压了多长的长度。
+</member>
+        <member name="M:GeoStar.Utility.GsZLib.Uncompress(GeoStar.Utility.GsByteBuffer*,GeoStar.Utility.GsByteBuffer*)">
+\brief 解压一段内存
+</member>
+        <member name="M:GeoStar.Utility.GsZLib.Compress(GeoStar.Utility.GsByteBuffer*,GeoStar.Utility.GsByteBuffer*,System.Int32)">
+\brief 压缩一段内存
+\param nLevel 压缩级别0~9,  0标识不压缩，9标识最大压缩
+</member>
+        <member name="M:GeoStar.Utility.GsZLib.Compress(System.Byte!System.Runtime.CompilerServices.IsConst*,System.UInt32,System.Byte*,System.UInt32*!System.Runtime.CompilerServices.IsImplicitlyDereferenced,System.Int32)">
+\brief 压缩一段内存
+\param nLevel 压缩级别0~9,  0标识不压缩，9标识最大压缩
+</member>
+        <member name="T:GeoStar.Utility.GsZLib">
+\brief zlib功能封装
+</member>
+        <member name="M:GeoStar.Utility.GsZipFile.Add(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.Int32)">
+\brief 向Zip文件中内存块作为文件。
+</member>
+        <member name="M:GeoStar.Utility.GsZipFile.Add(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,GeoStar.Utility.GsZipSource*)">
+\brief 向Zip文件中添加自定义源的文件。
+</member>
+        <member name="M:GeoStar.Utility.GsZipFile.Add(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+\brief 向Zip文件中添加一个文件
+</member>
+        <member name="M:GeoStar.Utility.GsZipFile.Entry(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+\brief 根据名称获得一个文件
+</member>
+        <member name="M:GeoStar.Utility.GsZipFile.Entry(System.Int32)">
+\brief 根据索引获得一个文件
+</member>
+        <member name="M:GeoStar.Utility.GsZipFile.EntryCount">
+\brief zip文件中打包文件的数量
+</member>
+        <member name="M:GeoStar.Utility.GsZipFile.#ctor(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+\brief 从文件解压或者创建新的zip文件
+</member>
+        <member name="M:GeoStar.Utility.GsZipFile.#ctor(GeoStar.Utility.GsZipSource*)">
+\brief 从自定义源中解压zip文件
+</member>
+        <member name="M:GeoStar.Utility.GsZipFile.#ctor(System.Byte!System.Runtime.CompilerServices.IsConst*,System.Int32)">
+\brief 从内存中解压zip文件
+</member>
+        <member name="T:GeoStar.Utility.GsZipFile">
+\brief zip文件封装类。
+</member>
+        <member name="M:GeoStar.Utility.GsZipEntry.Delete">
+\brief 删除自身。
+</member>
+        <member name="M:GeoStar.Utility.GsZipEntry.ReadTo(GeoStar.Utility.GsByteBuffer*)">
+\brief 读取所有数据到这个源中
+</member>
+        <member name="M:GeoStar.Utility.GsZipEntry.ReadTo(GeoStar.Utility.GsZipSource*)">
+\brief 读取所有数据到这个源中
+</member>
+        <member name="M:GeoStar.Utility.GsZipEntry.EndRead">
+\brief 读取结束读取
+</member>
+        <member name="M:GeoStar.Utility.GsZipEntry.Read(System.Byte*,System.Int32)">
+\brief 读取一段数据返回读取的字节。返回0标识或者小于输入Buffer长度则标识读取完成。
+</member>
+        <member name="M:GeoStar.Utility.GsZipEntry.BeginRead">
+\brief 开始读取数据
+</member>
+        <member name="M:GeoStar.Utility.GsZipEntry.op_Implicit~System.Boolean">
+\brief 是否有效
+</member>
+        <member name="M:GeoStar.Utility.GsZipEntry.IsValid">
+\brief 是否有效
+</member>
+        <member name="M:GeoStar.Utility.GsZipEntry.IsFolder">
+\brief 是否是目录
+</member>
+        <member name="M:GeoStar.Utility.GsZipEntry.Path">
+\brief 路径
+</member>
+        <member name="M:GeoStar.Utility.GsZipEntry.CompressedSize">
+\brief 压缩后大小
+</member>
+        <member name="M:GeoStar.Utility.GsZipEntry.UncompressedSize">
+\brief 未压缩大小
+</member>
+        <member name="M:GeoStar.Utility.GsZipEntry.Index">
+\brief 文件索引
+</member>
+        <member name="F:GeoStar.Utility.GsZipEntry.m_Handle">
+\brief 解压文件时的读取句柄。
+</member>
+        <member name="F:GeoStar.Utility.GsZipEntry.m_CompSize">
+\brief 文件的压缩大小
+</member>
+        <member name="F:GeoStar.Utility.GsZipEntry.m_Size">
+\brief 文件的实际大小
+</member>
+        <member name="F:GeoStar.Utility.GsZipEntry.m_Name">
+\brief 路径和名称
+</member>
+        <member name="F:GeoStar.Utility.GsZipEntry.m_Index">
+\brief 压缩文件的索引
+</member>
+        <member name="T:GeoStar.Utility.GsZipEntry">
+\brief zip压缩文件内的一个文件或者目录。
+</member>
+        <member name="T:GeoStar.Utility.GsZipSource">
+\brief Zip数据源。
+</member>
+        <member name="T:GeoStar.Utility.GsZipCommand">
+\brief GsZipSource操作命令
+</member>
+        <member name="T:GeoStar.Utility.GsZipContext">
+\brief ZIP文件上下文。
 </member>
         <member name="M:GeoStar.Utility.GsXmlWriter.WriteEndDocument">
 \brief 结束写入一个文档
@@ -6982,6 +7514,12 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
         <member name="M:GeoStar.Utility.GsSimpleBitmap.Dispose">
 \brief 析构函数
 </member>
+        <member name="M:GeoStar.Utility.GsSimpleBitmap.SavePNG(GeoStar.Utility.GsByteBuffer*)">
+\brief 保存图像为PNG格式的内存块。
+</member>
+        <member name="M:GeoStar.Utility.GsSimpleBitmap.SavePNG(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+\brief 保存图像为PNG格式文件
+</member>
         <member name="M:GeoStar.Utility.GsSimpleBitmap.#ctor(System.Byte!System.Runtime.CompilerServices.IsConst*,System.Int32)">
 \brief 解码内存中的图像
 </member>
@@ -7312,6 +7850,9 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
 \brief param recursive 是否删除子目录
 \return 返回是否成功
 </member>
+        <member name="M:GeoStar.Utility.GsDir.op_Implicit~System.Boolean">
+\brief bool操作符 
+</member>
         <member name="M:GeoStar.Utility.GsDir.op_Assign(std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte&gt;&gt;!System.Runtime.CompilerServices.IsConst*!System.Runtime.CompilerServices.IsImplicitlyDereferenced)">
 \brief 赋值
 \brief rhs对象
@@ -7381,6 +7922,10 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
         <member name="M:GeoStar.Utility.GsDir.Create">
 \brief 如果文件夹不存在则创建文件夹
 </member>
+        <member name="M:GeoStar.Utility.GsDir.Path">
+\brief 获取目录的内部字符串路径
+\return 返回目录字符串指针
+</member>
         <member name="M:GeoStar.Utility.GsDir.#ctor(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
 \brief 目录的完整路径构造对象
 \brief strName目录完整路径
@@ -7418,6 +7963,14 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
 \brief 文件所在的目录
 \return 分返文件所在的目录
 </member>
+        <member name="M:GeoStar.Utility.GsFile.op_Assign(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+\brief 赋值
+\brief rhs其他文件
+\return 自身
+</member>
+        <member name="M:GeoStar.Utility.GsFile.op_Implicit~System.Boolean">
+\brief bool操作符 
+</member>
         <member name="M:GeoStar.Utility.GsFile.op_Assign(GeoStar.Utility.GsFile!System.Runtime.CompilerServices.IsConst*!System.Runtime.CompilerServices.IsImplicitlyDereferenced)">
 \brief 赋值
 \brief rhs其他文件
@@ -7444,9 +7997,13 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
 \brief 获取文件名称，不包含路径
 \return 返回文件的名称
 </member>
+        <member name="M:GeoStar.Utility.GsFile.Path">
+\brief 获取文件的内部字符串路径
+\return 返回路径字符串指针
+</member>
         <member name="M:GeoStar.Utility.GsFile.#ctor(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
 \brief 文件的完整路径构造对象
-\brief strName文件完整路径
+\param strName文件完整路径
 </member>
         <member name="M:GeoStar.Utility.GsFile.#ctor(GeoStar.Utility.GsFile!System.Runtime.CompilerServices.IsConst*!System.Runtime.CompilerServices.IsImplicitlyDereferenced)">
 \brief 拷贝构造函数
@@ -7536,6 +8093,13 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
         <member name="M:GeoStar.Utility.GsCRT._isnan(System.Double)">
 \brief 判断double是否是无效值
 \return 返回1标示是有效的0标示无效
+</member>
+        <member name="M:GeoStar.Utility.GsCRT.strtoll(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte**,System.Int32)">
+\brief 按照进制转换字符串为64位整数
+\param base 进制2,4,8,10,16等
+</member>
+        <member name="M:GeoStar.Utility.GsCRT.round(System.Double)">
+\brief 计算四舍五入的结果
 </member>
         <member name="T:GeoStar.Utility.GsCRT">
 \brief 封装c的运行时函数CRT 
@@ -7990,13 +8554,19 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
         <member name="M:GeoStar.Utility.GsHash.MD5(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
 \brief 计算文件MD5
 </member>
-        <member name="M:GeoStar.Utility.GsHash.MD5(System.Byte*,System.Int32)">
+        <member name="M:GeoStar.Utility.GsHash.MD5(System.Byte!System.Runtime.CompilerServices.IsConst*,System.Int32)">
 \brief 任意内存块计算MD5
 </member>
-        <member name="M:GeoStar.Utility.GsHash.Hash128(System.Byte*,System.Int32)">
+        <member name="M:GeoStar.Utility.GsHash.Hash128(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.Int32)">
+\brief 字符串计算128位Hash
+</member>
+        <member name="M:GeoStar.Utility.GsHash.Hash128(System.Byte!System.Runtime.CompilerServices.IsConst*,System.Int32)">
 \brief 任意内存块计算128位Hash
 </member>
-        <member name="M:GeoStar.Utility.GsHash.Hash64(System.Byte*,System.Int32)">
+        <member name="M:GeoStar.Utility.GsHash.Hash64(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.Int32)">
+\brief 计算字符串的64位Hash
+</member>
+        <member name="M:GeoStar.Utility.GsHash.Hash64(System.Byte!System.Runtime.CompilerServices.IsConst*,System.Int32)">
 \brief 任意内存块计算64位Hash
 </member>
         <member name="T:GeoStar.Utility.GsHash">
@@ -8243,6 +8813,9 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
 \details 通过 *a  来匹配   aaaa或者bbba或者ccca等，*代表1到N个字符，？代表1个字符
 \param  pattern 通配符匹配模式如（*?abc)
 \param str 要匹配的字符串
+</member>
+        <member name="M:GeoStar.Utility.GsStringHelp.EndWith(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.Boolean)">
+\brief 字符串是否以某个之结束。
 </member>
         <member name="M:GeoStar.Utility.GsStringHelp.StartWith(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.Boolean)">
 \brief 字符串是否以某个之串开头。
@@ -10460,5 +11033,10 @@ RGBA颜色转换器，将其他的颜色转换为RGBA颜色。
         <!-- 丢弃成员“T:Json.StyledWriter”的格式错误的 XML 文档注释。 -->
         <!-- 丢弃成员“T:Json.StyledStreamWriter”的格式错误的 XML 文档注释。 -->
         <!-- 丢弃成员“T:GeoStar.Utility.GsStringStream”的格式错误的 XML 文档注释。 -->
+        <!-- 丢弃成员“F:GeoStar.Kernel.GsGeodesic.geodesic.f1”的格式错误的 XML 文档注释。 -->
+        <!-- 丢弃成员“F:GeoStar.Kernel.GsGeodesicLine.geodesicline.b”的格式错误的 XML 文档注释。 -->
+        <!-- 丢弃成员“F:GeoStar.Kernel.GsGeodesicLine.geodesicline.caps”的格式错误的 XML 文档注释。 -->
+        <!-- 丢弃成员“F:GeoStar.Kernel.GsGeodesicPolygon.GeoDPolygon.lat0”的格式错误的 XML 文档注释。 -->
+        <!-- 丢弃成员“F:GeoStar.Kernel.GsGeodesicPolygon.GeoDPolygon.num”的格式错误的 XML 文档注释。 -->
     </members>
 </doc>

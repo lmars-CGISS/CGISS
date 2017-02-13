@@ -336,4 +336,52 @@ protected:
 GS_SMARTER_PTR(GsGradsFillSymbol);
 DECLARE_CLASS_CREATE(GsGradsFillSymbol);
 
+/// \brief 建筑符号
+class GS_API GsBuildingFillSymbol:public GsFillSymbol
+{
+	int m_iHeight;
+	int m_iAngle;
+	GsBrushStyle m_Style;
+	GsSolidBrushPtr m_ptrBrush;
+	GsSimpleFillSymbolPtr m_ptrWallFillSym;
+	GsSimpleLineSymbolPtr m_ptrWallLineSym;
+	GsSimpleFillSymbolPtr m_ptrTopFillSym;
+public:
+	GsBuildingFillSymbol();
+	int ViewAngle();
+	void ViewAngle(int iAngle);
+
+	int ExtrusionBase();
+
+	int ExtrusionHeight();
+	void ExtrusionHeight(int iHeight);
+
+	virtual GsSymbolType Type();	
+
+	/// \brief 画笔的式样
+	GsBrushStyle  Style();
+	/// \brief 画笔的式样
+	void Style(GsBrushStyle eStyle);
+	
+	/// \brief 符号是否有效
+	/// \details 符号是否会在画布上绘制内容，如果符号不会在画布上绘制任何的内容则不需要执行绘制过程。
+	virtual bool IsValid();
+
+	/// \brief 绘制顶部
+	virtual void DrawTop(GsGeometry* pGeo);
+
+protected:
+	virtual void OnDraw(GsGraphicsPath* pPath,SPATIALANALYSIS_NS::path* pGeoPath);
+	/// \brief 当开始绘制的时候发生
+	virtual void OnStartDrawing();
+	/// \brief 当结束绘制时发生
+	virtual void OnEndDrawing();
+
+protected:
+	bool IsViewVisible(double x1, double y1, double x2, double y2, int iAngle, bool bClockWise);	
+	void DrawPolygon(std::vector<double>& vecCoord, GsFillSymbol* ptrSym);
+};
+GS_SMARTER_PTR(GsBuildingFillSymbol);
+DECLARE_CLASS_CREATE(GsBuildingFillSymbol);
+
 KERNEL_ENDNS

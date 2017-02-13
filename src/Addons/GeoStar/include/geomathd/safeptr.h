@@ -14,6 +14,11 @@ GEO_NAMESPACE_BEGIN
 #ifdef _LP64
 #define GEOMATHD64
 #endif
+
+#ifdef __x86_64
+#define GEOMATHD64
+#endif
+
 #endif
 
 #ifdef GEOMATHD64
