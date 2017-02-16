@@ -597,6 +597,14 @@ struct VCTPairEx
 	std::string strKey;
 	std::string strValue;
 	std::vector<std::string> strVecAlias;
+	VCTPairEx()
+	{
+	}
+	VCTPairEx(const std::string& k,const std::string& v)
+	{
+		strKey = k;
+		strValue = v;
+	}
 };
 struct VCTRelationTable
 {

@@ -4,8 +4,32 @@
 #include "GeoStarDLGAddonBase.h"
 #include <VCTRW.h>
 
+//缓存存储到vect中的式样。
+class StyleCache
+{
+	VCTWriter* m_Writer;
+	int m_nIndex;
+	std::map<long long,std::string> m_StyleName;
+
+	void SaveStyle(GeoStar::Kernel::GsPointSymbol* pSym,const std::string& name);
+	void SaveStyle(GeoStar::Kernel::GsLineSymbol* pSym,const std::string& name);
+	void SaveStyle(GeoStar::Kernel::GsFillSymbol* pSym,const std::string& name);
+	void SaveStyle(GeoStar::Kernel::GsTextSymbol* pSym,const std::string& name);
+
+public:
+	StyleCache();
+	void Attach(VCTWriter* w);
+	//根据符号id查询style的名称
+	std::string StyleName(long long symID);
+	//存储一个符号为style，返回sytle的明恒
+	std::string SaveStyle(gpkg::symbol &sym);
+
+
+};
+
 class ExportVCT:public GIS::AddonBase
 {
+	StyleCache m_StyleCache;
 	//输出到VCT文件中。
 	void WriteTo(VCTWriter& w,gpkg::content& content,gpkg::database_ptr db,GIS::Progress * nProgress,VCTID& id);
 

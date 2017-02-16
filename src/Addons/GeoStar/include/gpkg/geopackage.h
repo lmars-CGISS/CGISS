@@ -310,7 +310,10 @@ namespace gpkg
 		int id;
 		/// \brief 符号类型。
 		std::string type;
-
+		/// \brief 符号名称。
+		std::string name;
+		/// \brief 符号描述。
+		std::string description;
 		/// \brief 引用权威机构的符号结构定义URI，
 		/// 如OGC 05-077r4符号的URI值应该是符号模式命名空间http://schemas.opengeospatial.net/se。 
 		std::string sd_standard_uri;
@@ -349,10 +352,11 @@ namespace gpkg
 	/// \brief 符号引用
 	struct symbol_reference
 	{
+		std::string reference_scope;
 		std::string table_name;
-		long long	featureid;
+		long long	row_id;
 		std::string filter;
-		long long	symbolid;
+		long long	symbol_id;
 	};
 
 	/// \brief 符号引用
@@ -369,14 +373,14 @@ namespace gpkg
 		bool remove(const std::string& table_name);
 
 		/// \brief 删除一个表中某个feature的符号引用
-		bool remove(const std::string& table_name,long long feataureid);
+		bool remove(const std::string& table_name,long long rowid);
 
 
 		/// \brief 开始查询一个地物类表的符号引用
 		bool query(const char* table_name);
 
 		/// \brief 开始查询一个地物类表中某个featureid的符号
-		bool query(const char* table_name, long long featureid);
+		bool query(const char* table_name, long long rowid);
 		
 		/// \brief 调用query之后获取下一个引用的查询结果。
 		bool next(symbol_reference& data);

@@ -153,6 +153,7 @@ public:
 	bool ParseObject(fpos_t pos,VCTAggregation& obj);
 	bool ParseObject(fpos_t pos,VCTEdgeTopo& obj);
 	bool ParseObject(fpos_t pos,VCTNodeTopo& obj); 
+	bool ParseObject(fpos_t pos,VCTStyle& obj); 
 
 	/// \brief 文件类型
 	VCT_FILE_FORMAT FileFormat();
@@ -189,12 +190,12 @@ public:
 
 enum VCTTempFileType
 {
-	ePointFile,
-	eLineFile,
-	ePolygonFile,
-	eSolidFile,
-	eAnnotationFile,
-	eAggregationFile,
+	ePointFile = 0,
+	eLineFile = 1,
+	ePolygonFile = 2,
+	eSolidFile = 3,
+	eAnnotationFile = 5,
+	eAggregationFile = 6,
 	eAttributeFile,
 	eStyleFile,
 	eRelationTableFile,

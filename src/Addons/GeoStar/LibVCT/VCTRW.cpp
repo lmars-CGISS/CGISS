@@ -1590,6 +1590,13 @@ bool VCTParser::ParseObject(fpos_t pos,VCTAggregation& obj)
 	if(!ReadToNoneEmpty()) return false;
 	return ParseAggregation(obj);
 }
+bool VCTParser::ParseObject(fpos_t pos,VCTStyle& obj)
+{
+	m_fs.seekg(pos);
+	if(m_fs.tellg().seekpos() != pos) return false;
+	if(!ReadToNoneEmpty()) return false;
+	return ParseRepresentation(obj);
+}
 bool VCTParser::ParseObject(fpos_t pos,VCTNodeTopo& obj)
 {
 	m_fs.seekg(pos);
@@ -2014,7 +2021,7 @@ void VCTWriter::Write(VCTRelationTable& tab)
 		}
 		ptrTemp->FS<<std::endl;
 	}
-	ptrTemp->FS<<"\0"<<std::endl;
+	ptrTemp->FS<<"0"<<std::endl;
 
 }
 void VCTWriter::Write(const char* key,const char* value)
@@ -2064,7 +2071,7 @@ void VCTWriter::Write(VCTStyle& style)
 		}
 		ptrTemp->FS<<std::endl;
 	}
-	ptrTemp->FS<<"\0"<<std::endl;
+	ptrTemp->FS<<"0"<<std::endl<<std::endl;
 }
 VCTHead& VCTWriter::Head()
 {

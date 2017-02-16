@@ -12,11 +12,13 @@
 #pragma comment(lib,"gsspatialreferenced.lib")
 #pragma comment(lib,"gsgeometryd.lib")
 #pragma comment(lib,"gsutilityd.lib")
+#pragma comment(lib,"gssymbold.lib")
 #else
 #pragma comment(lib,"gsgeodatabase.lib")
 #pragma comment(lib,"gsspatialreference.lib")
 #pragma comment(lib,"gsgeometry.lib")
 #pragma comment(lib,"gsutility.lib")
+#pragma comment(lib,"gssymbol.lib")
 #endif
 
 #pragma comment(lib,"libgpkg.lib")

@@ -9,6 +9,279 @@ std::string ToUtf8(const char* str)
 {
 	return GeoStar::Utility::GsCW2A(GeoStar::Utility::GsCA2W(str).m_WStr,GeoStar::Utility::eCP_UTF8).m_Str;
 }
+SymbolCache::SymbolCache()
+{
+	m_pSymbols = NULL;
+	m_pSymbolRef = NULL;
+}
+void SymbolCache::Attach(gpkg::database_ptr &db)
+{
+	m_pSymbols = NULL;
+	m_pSymbolRef = NULL;
+	m_DB = db;
+}
+std::string SymbolCache::SymbolToString(GeoStar::Kernel::GsSymbol* pSym)
+{
+	return GeoStar::Kernel::GsSymbolLibrary::ToString(pSym,GeoStar::Kernel::eGenernalFormat);
+}
+std::string SymbolCache::ToPointSymbol(VCTStyle& style)
+{
+	GeoStar::Kernel::GsPointSymbolPtr ptrSym;
+
+	if(ptrSym->Name().empty())
+		ptrSym->Name(style.strID.c_str());
+
+	return SymbolToString(ptrSym);
+}
+std::string SymbolCache::ToLineSymbol(VCTStyle& style)
+{
+	GeoStar::Kernel::GsLineSymbolPtr ptrSym;
+
+	if(ptrSym->Name().empty())
+		ptrSym->Name(style.strID.c_str());
+
+	return SymbolToString(ptrSym);
+}
+std::string SymbolCache::ToFillSymbol(VCTStyle& style)
+{
+	GeoStar::Kernel::GsFillSymbolPtr ptrSym;
+
+	if(ptrSym->Name().empty())
+		ptrSym->Name(style.strID.c_str());
+
+	return SymbolToString(ptrSym);
+}
+std::string SymbolCache::ToTextSymbol(VCTStyle& style)
+{
+	GeoStar::Kernel::GsTextSymbolPtr ptrSym = new GeoStar::Kernel::GsTextSymbol();
+	std::vector<VCTPairEx>::iterator it =	style.vecPairs.begin();
+	for(;it != style.vecPairs.end();it++)
+	{
+		if(stricmp(it->strKey.c_str(),"LAYERNAME")==0)
+			ptrSym->Name(it->strValue.c_str());
+		else if(stricmp(it->strKey.c_str(),"COLOR")==0)
+			ptrSym->Color(GeoStar::Kernel::GsColor(atoi(it->strValue.c_str())));
+		else if(stricmp(it->strKey.c_str(),"FORECOLOR")==0)
+			ptrSym->Color(GeoStar::Kernel::GsColor(atoi(it->strValue.c_str())));
+		else if(stricmp(it->strKey.c_str(),"BACKCOLOR")==0)
+			ptrSym->BackgroundColor(GeoStar::Kernel::GsColor(atoi(it->strValue.c_str())));
+		else if(stricmp(it->strKey.c_str(),"SYMBOLID")==0)
+			ptrSym->Code(atoi(it->strValue.c_str()));
+		else if(stricmp(it->strKey.c_str(),"FONT")==0)
+			ptrSym->Font(it->strValue.c_str());
+		else if(stricmp(it->strKey.c_str(),"ANNOHEIGHT")==0)
+			ptrSym->Height(atoi(it->strValue.c_str()));
+		else if(stricmp(it->strKey.c_str(),"ANNOWIDTH")==0)
+			ptrSym->Width(atoi(it->strValue.c_str()));
+		else if(stricmp(it->strKey.c_str(),"ANNOSPACE")==0)
+		{
+			ptrSym->VerticalExtra(atoi(it->strValue.c_str()));
+			ptrSym->HorizonExtra(atoi(it->strValue.c_str()));
+		}
+		else if(stricmp(it->strKey.c_str(),"ANNOWEIGHT")==0)
+		{ 
+			//注记线划的粗细程度，以 0～1000 的整数表示，如 400 代表正常体，700 代表粗 体字。
+			int nWeight = atoi(it->strValue.c_str());
+			ptrSym->Bold(nWeight>=700);
+		}
+		else if(stricmp(it->strKey.c_str(),"ANNOSTYLE")==0)
+		{ 
+			GeoStar::Kernel::GsTextStyle style = GeoStar::Kernel::eTextStyleNormal;
+			int nStyle = atoi(it->strValue.c_str());
+			//注记形状，0 代表正体，1 代表左斜，2 代表右斜，3 代表左耸，4 代表右耸
+			switch(nStyle)
+			{
+			case 1:
+				style = GeoStar::Kernel::eTextStyleLeftItalic;
+				break;
+			case 2:
+				style = GeoStar::Kernel::eTextStyleRightItalic;
+				break;
+			case 3:
+				style = GeoStar::Kernel::eTextStyleLeftShrug;
+				break;
+			case 4:
+				style = GeoStar::Kernel::eTextStyleRightShrug;
+				break;
+			default:
+				break;
+			}
+			ptrSym->TextStyle(style);
+		}
+		else if(stricmp(it->strKey.c_str(),"ANNOUNDERLINE")==0)
+		{
+			//注记是否有下划线，0 表示没有下划线，1 表示有下划线。 
+			if(atoi(it->strValue.c_str()))
+				ptrSym->UnderLine(true);
+			else
+				ptrSym->UnderLine(false);
+		}
+		else if(stricmp(it->strKey.c_str(),"ANNOSTRIKE")==0)
+		{
+			//注记是否有删除线，0 代表没有删除线，1 代表有单删除线，2 代表有双删除线。 
+			if(atoi(it->strValue.c_str()))
+				ptrSym->StrikeOut(true);
+			else
+				ptrSym->StrikeOut(false);
+		}
+		else if(stricmp(it->strKey.c_str(),"ANNOSHADOW")==0)
+		{
+			//注记是否有阴影，0 表示没有阴影，1 表示有阴影。 
+			
+			if(atoi(it->strValue.c_str()))
+				ptrSym->ShadowColor(GeoStar::Kernel::GsColor::Black);
+			else
+				ptrSym->ShadowColor(GeoStar::Kernel::GsColor(0));
+		}
+		else if(stricmp(it->strKey.c_str(),"ANNOHOLE")==0)
+		{
+			//注记是否为空心，0 表示没有空心，1 表示有空心。 
+			if(atoi(it->strValue.c_str()))
+				ptrSym->Hollow(true);
+			else
+				ptrSym->Hollow(false);
+		}
+		else if(stricmp(it->strKey.c_str(),"ANNOALIGNMENT")==0)
+		{
+			//注记对齐方式
+			//LB 代表左下，LC 代表左中，LT 代表左上，CT 代表中上，RT 代表右上，RC 代表右中，RB 代表右下，CB 代表中下， CC 代 表中中
+			//    -------------
+			//    |LT |CT |RT |
+			//    ------------
+			//	  |LC |CC |RC |
+			//    -------------
+			//    |LB |CB |RB |
+			//    -------------
+			if(it->strValue.empty())
+				it->strValue = "CC";
+			if(it->strValue.size() == 1)
+				it->strValue.push_back(it->strValue.back());
+			switch(it->strValue.front())
+			{
+				case 'L':
+				case 'l':
+					ptrSym->HorizonAlign(GeoStar::Kernel::eStringAlignmentNear);
+					break;
+				case 'C':
+				case 'c':
+					ptrSym->HorizonAlign(GeoStar::Kernel::eStringAlignmentCenter);
+					break;
+				case 'R':
+				case 'r':
+					ptrSym->HorizonAlign(GeoStar::Kernel::eStringAlignmentFar);
+					break;
+				default:
+					ptrSym->HorizonAlign(GeoStar::Kernel::eStringAlignmentNear);
+					break;
+			}
+
+			switch(it->strValue.back())
+			{
+				case 'T':
+				case 't':
+					ptrSym->VerticalAlign(GeoStar::Kernel::eStringAlignmentNear);
+					break;
+				case 'C':
+				case 'c':
+					ptrSym->VerticalAlign(GeoStar::Kernel::eStringAlignmentCenter);
+					break;
+				case 'B':
+				case 'b':
+					ptrSym->VerticalAlign(GeoStar::Kernel::eStringAlignmentFar);
+					break;
+				default:
+					ptrSym->VerticalAlign(GeoStar::Kernel::eStringAlignmentNear);
+					break;
+				}
+			}
+			else if(stricmp(it->strKey.c_str(),"ANNOHORIZONTAL")==0)
+			{
+				//注记是横排或竖排，0 表示横排，1 表示竖排。 
+				//目前不支持
+			}
+			else if(stricmp(it->strKey.c_str(),"ANNOTRANSPARENT")==0)
+			{
+				//注记是透明，0 表示透明，1 表示透明
+				//此功能不明确暂时不支持。
+			}
+	}
+		 
+	if(ptrSym->Name().empty())
+		ptrSym->Name(style.strID.c_str());
+
+	return SymbolToString(ptrSym);
+}
+
+//根据VCT的style查询记录到符号库的符号id。如果没有则返回0
+long long SymbolCache::SymbolIDFromStyle(const char* style)
+{
+	std::map<std::string,long long>::iterator it = m_SymbolID.find(style);
+	if(it != m_SymbolID.end())
+		return it->second;
+	return 0;
+}
+//将一个VCT的style存储为符号，并返回符号的存储id
+long long SymbolCache::StoreStyleToSymbol(VCTStyle& style,VCT_GEOMETRY_TYPE eType)
+{
+	std::string strSymbolXML;
+	if(eType == VCT_POINT)
+		strSymbolXML = ToPointSymbol(style);
+	else if(eType == VCT_LINE)
+		strSymbolXML = ToLineSymbol(style);
+	else if(eType == VCT_POLYGON)
+		strSymbolXML = ToFillSymbol(style);
+	else if(eType == VCT_ANNOTATION)
+		strSymbolXML = ToTextSymbol(style);
+	if(strSymbolXML.empty())
+		return 0;
+	if(!m_pSymbols)
+		m_pSymbols = m_DB->symbol_table();
+	gpkg::symbol sym;
+	sym.name = style.strID;
+	switch(eType)
+	{
+	case VCT_POINT:
+		sym.type= "Point";
+		break;
+	case VCT_LINE:
+		sym.type= "Line";
+		break;
+	case VCT_POLYGON:
+		sym.type= "Polygon";
+		break;
+	case VCT_ANNOTATION:
+		sym.type= "Text";
+		break;
+	}
+	const char* data = strSymbolXML.data();
+	sym.data.insert(sym.data.end(),(const unsigned char*)data,(const unsigned char*)(data + strSymbolXML.length()));
+	sym.mime_type = "text/xml";
+	sym.sd_standard_uri  = "GeoStar XML Symbol";
+	
+	if(!m_pSymbols->add(sym))
+		return 0;
+
+	m_SymbolID[style.strID] = sym.id;
+	return sym.id;
+}
+//存储地物和符号的关系
+void SymbolCache::StoreSymbolRelation(const char* fcsname,long long fid,long long sid,const char* filter)
+{
+	if(!m_pSymbolRef)
+		m_pSymbolRef = m_DB->symbol_reference_table();
+	gpkg::symbol_reference data;
+	data.reference_scope = "featureClass";
+	data.row_id = fid;
+	if(filter)
+		data.filter = filter;
+	if(fcsname)
+		data.table_name = fcsname;
+	data.symbol_id = sid;
+	
+	//存储
+	m_pSymbolRef->add(data);
+
+}
 
 ImportVCT::ImportVCT(void)
 {
@@ -126,16 +399,17 @@ gpkg::field_type ToFieldType(VCT_FIELD_TYPE eType)
 }
 //写入到GPKG中的
 class GPKGWriteFeature:public gpkg::feature
-{
+{ 
 	VCTPoint m_Point;
 	VCTLine  m_Line;
 	VCTPolygon m_Polygon;
 	VCTSolid m_Solid;
 	VCTAnnotation  m_Ann;
+
 	VCTAttributeRow m_Att;
 	VCTParser*	m_pParser;
 	VCTFeatureCode  m_Code;
-	
+
 	GeoStar::Utility::GsGrowByteBuffer m_Geo;
 	GeoStar::Kernel::GsWKBOGCWriter m_Writer;
 	GeoStar::Kernel::GsPointPtr m_ptrPoint;
@@ -155,9 +429,28 @@ public:
 		m_Code = code; 
 		m_pParser = pParser;
 	}
+	//获取地物的式样。
+	const char* Style()
+	{
+		switch(m_Code.GeometryType)
+		{
+		case VCT_POINT:
+			return m_Point.ObjHeader.strStyle.c_str();
+		case VCT_LINE:
+			return m_Line.ObjHeader.strStyle.c_str();
+		case VCT_POLYGON:
+			return m_Polygon.ObjHeader.strStyle.c_str();
+		case VCT_SOLID:
+			return m_Solid.ObjHeader.strStyle.c_str();
+		case VCT_ANNOTATION:
+			return m_Ann.ObjHeader.strStyle.c_str();
+		}
+		return NULL;
+	}
 	//准备读取一个地物。
 	void Prepare(fpos_t pos,fpos_t attpos)
 	{
+		m_FID = 0; 
 		switch(m_Code.GeometryType)
 		{
 		case VCT_POINT:
@@ -172,7 +465,7 @@ public:
 		case VCT_SOLID:
 			m_pParser->ParseObject(pos,m_Solid);
 			break;
-		case VCT_ANNOTATION:
+		case VCT_ANNOTATION: 
 			m_pParser->ParseObject(pos,m_Ann);
 			break;
 		break;
@@ -181,17 +474,24 @@ public:
 		if(attpos >0)
 			m_pParser->ParseObject(attpos,m_Att); 
 
-	}
+		//对于注记地物需要将文本作为特殊的字段加入到第一个属性字段中
+		if(m_Code.GeometryType == VCT_ANNOTATION)
+			m_Att.vecstrFieldValues.insert(m_Att.vecstrFieldValues.begin(),m_Ann.strText);
+		
 
+	}
+	long long m_FID;
+	
 public:
 	/// \brief 设置地物的fid
 	virtual void fid(long long id)
 	{
+		m_FID =  id;
 	}
 	/// \brief 获取地物的fid
 	virtual long long fid()
 	{
-		return 0;
+		return m_FID;
 	}
 		
 	/// \brief geometry的数据长度
@@ -500,7 +800,10 @@ public:
 };
 
 /// \brief 导入文件中的一个地物类
-bool ImportVCT::ImportOne(VCTParser &parser,VCTFeatureCode& code,gpkg::database_ptr& db,GIS::Progress * pProgress)
+bool ImportVCT::ImportFeatureCode(VCTParser &parser,
+									VCTFeatureCode& code,
+									gpkg::database_ptr& db,
+									GIS::Progress * pProgress)
 {
 	std::stringstream ss;
 	ss<<"准备导入地物类："<<code.strUserID;
@@ -622,14 +925,13 @@ bool ImportVCT::ImportOne(VCTParser &parser,VCTFeatureCode& code,gpkg::database_
 	IDCache::iterator itAtt;
 	IDCache::iterator it = cache.begin();
 
-	
 	std::string strTitle = "导入地物";
 	std::string strContent = code.strUserID;
 	long long nPos = 0;
 	long long nMax = cache.size();
 	std::auto_ptr<gpkg::transaction> ptrTans(new  gpkg::transaction(db));
 	clock_t t = clock();
-
+	 
 	for(;it != cache.end();it++)
 	{
 		pProgress->OnProgress(nPos,nMax,strTitle.c_str(),strContent.c_str());
@@ -640,8 +942,31 @@ bool ImportVCT::ImportOne(VCTParser &parser,VCTFeatureCode& code,gpkg::database_
 		if(itAtt != cacheAtt.end())
 			nAttPos = itAtt->second;
 		feature.Prepare(it->second,nAttPos);
-		
+		//保存地物
 		ptrFeaClass->save(&feature);
+		//式样名称
+		const char* style = feature.Style();
+		//如果存在式样的话则
+		if(style)
+		{
+			//根据Style获取对应的符号id
+			long long nSymID = m_SymbolCache.SymbolIDFromStyle(style);
+			//如果符号id小于等于0则标示还没有存储这个符号。
+			if(nSymID <= 0)
+			{
+				//查询style并将style存储为符号。
+				KeyCache::iterator itStyle = parser.StyleIndex().find(style);
+				if(itStyle != parser.StyleIndex().end()) //如果style能够查到的话
+				{
+					VCTStyle vStyle;
+					if(parser.ParseObject(itStyle->second,vStyle))//如果成功解析到style则存储为符号
+						nSymID = m_SymbolCache.StoreStyleToSymbol(vStyle,code.GeometryType);
+				}
+			}
+			//如果符号id有效则存储关系
+			if(nSymID >0)
+				m_SymbolCache.StoreSymbolRelation(ptrFeaClass->name(),feature.fid(),nSymID);
+		}
 		//合并此地物的矩形范围
 		feature.UnionExtent(c.min_x,c.min_y,c.max_x,c.max_y);
 		if(clock() - t >100000) //100秒提交一次。
@@ -666,26 +991,29 @@ bool ImportVCT::ImportOne(VCTParser &parser,VCTFeatureCode& code,gpkg::database_
 	return true;
 }
 
-/// \brief 执行插件
-bool ImportVCT::ImportOne(GeoStar::Utility::GsFile& file,gpkg::database_ptr& db,GIS::Progress * pProgress)
+/// \brief 导入一个VCT文件的内容。
+bool ImportVCT::ImportVCTFile(GeoStar::Utility::GsFile& file,gpkg::database_ptr& db,GIS::Progress * pProgress)
 {
 	std::stringstream ss;
 	
 	ss<<"准备导入文件："<<file.FullPath();
 	pProgress->OnLog(ss.str().c_str(),GIS::LogLevel::eInfo);
 	
+	//解析整个VCT文件。
 	VCTParser parser(file.FullPath().c_str());
 	{
 		VCTFileProgress progress(file.Size(),"解析VCT",file.Name().c_str(),pProgress);
 		parser.Progress(&progress);
 		parser.Parse();
 		parser.Progress(NULL);
-
 	}
+
+	//顺序读取所有的FeatureCode
 	std::vector<VCTFeatureCode>::iterator it =  parser.FeatureCodes().begin();
 	for(;it != parser.FeatureCodes().end();it++)
 	{
-		ImportOne(parser,*it,db,pProgress);
+		//一个FeatureCode导出为一个地物类。
+		ImportFeatureCode(parser,*it,db,pProgress);
 	}
 
 	return true;
@@ -746,11 +1074,14 @@ const char* ImportVCT::Execute(const char* strParameter,GIS::Progress * pProgres
 	std::stringstream ss;
 	ss<<"准备转换"<<vec.size()<<"个VCT文件";
 	pProgress->OnLog(ss.str().c_str(),GIS::LogLevel::eInfo);
+	
+	//准备好符号缓存，如果后面需要的话
+	m_SymbolCache.Attach(db);
 
 	GsVector<GeoStar::Utility::GsFile>::iterator it = vec.begin();
 	for(;it != vec.end();it++)
 	{
-		ImportOne(*it,db,pProgress);
+		ImportVCTFile(*it,db,pProgress);
 	}
 	
 	return NULL;
