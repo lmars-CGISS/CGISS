@@ -10,14 +10,15 @@ class StyleCache
 	VCTWriter* m_Writer;
 	int m_nIndex;
 	std::map<long long,std::string> m_StyleName;
-
+	std::shared_ptr<GeoStar::Kernel::GsSymbolLibrary> m_ptrSymLib;
 	void SaveStyle(GeoStar::Kernel::GsPointSymbol* pSym,const std::string& name);
 	void SaveStyle(GeoStar::Kernel::GsLineSymbol* pSym,const std::string& name);
 	void SaveStyle(GeoStar::Kernel::GsFillSymbol* pSym,const std::string& name);
 	void SaveStyle(GeoStar::Kernel::GsTextSymbol* pSym,const std::string& name);
-
+	std::shared_ptr<GeoStar::Kernel::GsSymbolLibrary> SymbolLib();
 public:
 	StyleCache();
+	void Commit();
 	void Attach(VCTWriter* w);
 	//根据符号id查询style的名称
 	std::string StyleName(long long symID);

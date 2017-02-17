@@ -14,11 +14,44 @@ SymbolCache::SymbolCache()
 	m_pSymbols = NULL;
 	m_pSymbolRef = NULL;
 }
+//绑定VCT文件
+void SymbolCache::BindVCT(const char* vctFile)
+{
+	//清空符号到符号id的缓存，因为对于每个VCT而言，其style名称在VCT文件内才是唯一的。
+	m_SymbolID.clear();
+	m_CacheExtLib.clear();
+
+	m_VCTFile = vctFile;
+}
 void SymbolCache::Attach(gpkg::database_ptr &db)
 {
 	m_pSymbols = NULL;
 	m_pSymbolRef = NULL;
 	m_DB = db;
+}
+std::shared_ptr<GeoStar::Kernel::GsSymbolLibrary> SymbolCache::SymbolLib(const char* libName)
+{
+	std::map<std::string,std::shared_ptr<GeoStar::Kernel::GsSymbolLibrary> >::iterator it = m_CacheExtLib.find(libName);
+	if(it != m_CacheExtLib.end())
+		return it->second;
+	std::string strSymLibFile = libName;
+	//如果符号库的路径不是绝对路径
+	if(!GeoStar::Utility::GsFileSystem::IsPathRooted(libName))
+	{
+		//vct文件所在的目录
+		std::string strFolder = GeoStar::Utility::GsFile(m_VCTFile.c_str()).Parent().Path();
+		//用vct所在的目录和符号库组成绝对路径。
+		strSymLibFile = GeoStar::Utility::GsFileSystem::Combine(strFolder.c_str(),libName);
+	}
+
+	//如果符号库文件是不存在的则返回null
+	if(!GeoStar::Utility::GsFileSystem::Exists(strSymLibFile.c_str()))
+		return NULL;
+
+	std::shared_ptr<GeoStar::Kernel::GsSymbolLibrary> ptrSym(new GeoStar::Kernel::GsSymbolLibrary(strSymLibFile.c_str()));
+
+	m_CacheExtLib[libName] = ptrSym;
+	return ptrSym;
 }
 std::string SymbolCache::SymbolToString(GeoStar::Kernel::GsSymbol* pSym)
 {
@@ -26,29 +59,156 @@ std::string SymbolCache::SymbolToString(GeoStar::Kernel::GsSymbol* pSym)
 }
 std::string SymbolCache::ToPointSymbol(VCTStyle& style)
 {
-	GeoStar::Kernel::GsPointSymbolPtr ptrSym;
-
+	GeoStar::Kernel::GsPointSymbolPtr ptrSym = new GeoStar::Kernel::GsSimplePointSymbol();
 	if(ptrSym->Name().empty())
 		ptrSym->Name(style.strID.c_str());
+	std::string strSymLib;
+	int nSymID = -1;
+	std::vector<VCTPairEx>::iterator it =	style.vecPairs.begin();
+	for(;it != style.vecPairs.end();it++)
+	{
+		if(stricmp(it->strKey.c_str(),"LAYERNAME")==0)
+			ptrSym->Name(ToUtf8(it->strValue.c_str()).c_str());
+		else if(stricmp(it->strKey.c_str(),"COLOR")==0)
+			ptrSym->Color(GeoStar::Kernel::GsColor(atoi(it->strValue.c_str())));
+		else if(stricmp(it->strKey.c_str(),"FORECOLOR")==0)
+			ptrSym->Color(GeoStar::Kernel::GsColor(atoi(it->strValue.c_str())));
+		else if(stricmp(it->strKey.c_str(),"POINTSIZE")==0)
+			ptrSym->Size(atof(it->strValue.c_str()));
+		else if(stricmp(it->strKey.c_str(),"SYMBOLLIBLOCATION")==0)
+			strSymLib = it->strValue;
+		else if(stricmp(it->strKey.c_str(),"SYMBOLID")==0)
+			nSymID = atoi(it->strValue.c_str());
+	}
 
+	//如果存在符号库，且符号id有效则从符号库LoadSymbol
+	if(!strSymLib.empty() && nSymID > 0)
+	{
+		//获取外部符号库
+		std::shared_ptr<GeoStar::Kernel::GsSymbolLibrary> ptrLib = SymbolLib(strSymLib.c_str());
+		if(ptrLib)
+		{
+			//如果成功打开外部符号库则根据code获得符号。
+			GeoStar::Kernel::GsPointSymbolPtr ptrSymFromLib = ptrLib->SymbolByCode(nSymID);
+			if(ptrSymFromLib) //如果成功获取外部符号，则将vct中的相关信息同步到外部符号中并返回外部符号
+			{
+				ptrSymFromLib->Size(ptrSym->Size());
+				ptrSymFromLib->Color(ptrSym->Color());
+				ptrSymFromLib->Name(ptrSym->Name().c_str());
+				return SymbolToString(ptrSymFromLib);
+			}
+		}
+	}
+
+	//到这里证明无法打开外部符号，或者没有引用外部符号，则直接使用简单符号替代。
 	return SymbolToString(ptrSym);
 }
 std::string SymbolCache::ToLineSymbol(VCTStyle& style)
 {
-	GeoStar::Kernel::GsLineSymbolPtr ptrSym;
+	GeoStar::Kernel::GsLineSymbolPtr ptrSym = new GeoStar::Kernel::GsSimpleLineSymbol();
 
 	if(ptrSym->Name().empty())
 		ptrSym->Name(style.strID.c_str());
 
+	std::string strSymLib;
+	int nSymID = -1;
+	std::vector<VCTPairEx>::iterator it =	style.vecPairs.begin();
+	for(;it != style.vecPairs.end();it++)
+	{
+		if(stricmp(it->strKey.c_str(),"LAYERNAME")==0)
+			ptrSym->Name(ToUtf8(it->strValue.c_str()).c_str());
+		else if(stricmp(it->strKey.c_str(),"COLOR")==0)
+			ptrSym->Color(GeoStar::Kernel::GsColor(atoi(it->strValue.c_str())));
+		else if(stricmp(it->strKey.c_str(),"FORECOLOR")==0)
+			ptrSym->Color(GeoStar::Kernel::GsColor(atoi(it->strValue.c_str())));
+		else if(stricmp(it->strKey.c_str(),"LINEWIDTH")==0)
+			ptrSym->Width(atof(it->strValue.c_str()));
+		else if(stricmp(it->strKey.c_str(),"SYMBOLLIBLOCATION")==0)
+			strSymLib = it->strValue;
+		else if(stricmp(it->strKey.c_str(),"SYMBOLID")==0)
+			nSymID = atoi(it->strValue.c_str());
+	}
+
+	//如果存在符号库，且符号id有效则从符号库LoadSymbol
+	if(!strSymLib.empty() && nSymID > 0)
+	{
+		//获取外部符号库
+		std::shared_ptr<GeoStar::Kernel::GsSymbolLibrary> ptrLib = SymbolLib(strSymLib.c_str());
+		if(ptrLib)
+		{
+			//如果成功打开外部符号库则根据code获得符号。
+			GeoStar::Kernel::GsLineSymbolPtr ptrSymFromLib = ptrLib->SymbolByCode(nSymID);
+			if(ptrSymFromLib) //如果成功获取外部符号，则将vct中的相关信息同步到外部符号中并返回外部符号
+			{
+				ptrSymFromLib->Width(ptrSym->Width());
+				ptrSymFromLib->Color(ptrSym->Color());
+				ptrSymFromLib->Name(ptrSym->Name().c_str());
+				return SymbolToString(ptrSymFromLib);
+			}
+		}
+	}
+
+	//到这里证明无法打开外部符号，或者没有引用外部符号，则直接使用简单符号替代。
 	return SymbolToString(ptrSym);
 }
 std::string SymbolCache::ToFillSymbol(VCTStyle& style)
 {
-	GeoStar::Kernel::GsFillSymbolPtr ptrSym;
+	GeoStar::Kernel::GsFillSymbolPtr ptrSym = new GeoStar::Kernel::GsSimpleFillSymbol();
 
 	if(ptrSym->Name().empty())
 		ptrSym->Name(style.strID.c_str());
+	
+	std::string strSymLib;
+	int nSymID = -1;
+	bool bOutWidth = false;
+	bool bOutColor = false;
+	std::vector<VCTPairEx>::iterator it =	style.vecPairs.begin();
+	for(;it != style.vecPairs.end();it++)
+	{
+		if(stricmp(it->strKey.c_str(),"LAYERNAME")==0)
+			ptrSym->Name(ToUtf8(it->strValue.c_str()).c_str());
+		else if(stricmp(it->strKey.c_str(),"COLOR")==0)
+			ptrSym->FillColor(GeoStar::Kernel::GsColor(atoi(it->strValue.c_str())));
+		else if(stricmp(it->strKey.c_str(),"LINEWIDTH")==0)
+		{
+			bOutWidth = true;
+			ptrSym->Outline()->Width(atof(it->strValue.c_str()));
+		}
+		else if(stricmp(it->strKey.c_str(),"FORECOLOR")==0)
+		{
+			bOutColor = true;
+			ptrSym->Outline()->Color(GeoStar::Kernel::GsColor(atoi(it->strValue.c_str())));
+		}
+		else if(stricmp(it->strKey.c_str(),"SYMBOLLIBLOCATION")==0)
+			strSymLib = it->strValue;
+		else if(stricmp(it->strKey.c_str(),"SYMBOLID")==0)
+			nSymID = atoi(it->strValue.c_str());
+	}
 
+	//如果存在符号库，且符号id有效则从符号库LoadSymbol
+	if(!strSymLib.empty() && nSymID > 0)
+	{
+		//获取外部符号库
+		std::shared_ptr<GeoStar::Kernel::GsSymbolLibrary> ptrLib = SymbolLib(strSymLib.c_str());
+		if(ptrLib)
+		{
+			//如果成功打开外部符号库则根据code获得符号。
+			GeoStar::Kernel::GsFillSymbolPtr ptrSymFromLib = ptrLib->SymbolByCode(nSymID);
+			if(ptrSymFromLib) //如果成功获取外部符号，则将vct中的相关信息同步到外部符号中并返回外部符号
+			{
+				if(bOutColor && ptrSymFromLib->Outline())
+					ptrSymFromLib->Outline()->Color(ptrSym->Outline()->Color());
+				if(bOutWidth && ptrSymFromLib->Outline())
+					ptrSymFromLib->Outline()->Width(ptrSym->Outline()->Width());
+				
+				ptrSymFromLib->FillColor(ptrSym->FillColor());
+				ptrSymFromLib->Name(ptrSym->Name().c_str());
+				return SymbolToString(ptrSymFromLib);
+			}
+		}
+	}
+
+	//到这里证明无法打开外部符号，或者没有引用外部符号，则直接使用简单符号替代。
 	return SymbolToString(ptrSym);
 }
 std::string SymbolCache::ToTextSymbol(VCTStyle& style)
@@ -582,7 +742,7 @@ public:
 		m_ptrMultiPoint->CoordinateDimension(3);
 		m_ptrMultiPoint->Set((const GeoStar::Kernel::GsRawPoint3D*)(&m_Point.vecPoint[0]),m_Point.vecPoint.size());
 		m_ptrMultiPoint->CoordinateDimension(m_nDim);
-		m_Writer.Write(m_ptrPoint);
+		m_Writer.Write(m_ptrMultiPoint);
 	}
 	void MakeLine()
 	{
@@ -999,8 +1159,11 @@ bool ImportVCT::ImportVCTFile(GeoStar::Utility::GsFile& file,gpkg::database_ptr&
 	ss<<"准备导入文件："<<file.FullPath();
 	pProgress->OnLog(ss.str().c_str(),GIS::LogLevel::eInfo);
 	
+	//绑定VCT文件的路径到符号缓存。
+	m_SymbolCache.BindVCT(file.Path());
+
 	//解析整个VCT文件。
-	VCTParser parser(file.FullPath().c_str());
+	VCTParser parser(file.Path());
 	{
 		VCTFileProgress progress(file.Size(),"解析VCT",file.Name().c_str(),pProgress);
 		parser.Progress(&progress);

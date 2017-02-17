@@ -36,12 +36,16 @@ END_SPECIAL_CASE(VCT_GEOMETRY_TYPE)
 
 
 #pragma region string help
+	
+std::string Trim(const char* str);
 /// \brief 字符串是否为空或者无效字符串
 bool IsNullOrEmpty(const char* str)
 {
-	return NULL == str || strlen(str) == 0;
+	if(NULL == str) return true;
+	if(str[0] ==0) return true;
+	std::string ss = Trim(str);
+	return ss.empty();
 }
-
 /// \brief 将字符串分割为若干子串
 std::vector<std::string> Split(const std::string& str,const std::string&  sep) 
 {
@@ -130,7 +134,7 @@ bool StartWith(const std::string& str,const std::string& head)
 /// \brief 剔除字符串前面空白字符
 std::string TrimLeft(const char* str)
 {
-	if(IsNullOrEmpty(str))
+	if(!str)
 		return std::string();
 	std::string ss = str;
 	
@@ -143,7 +147,7 @@ std::string TrimLeft(const char* str)
 /// \brief 剔除字符串尾部的空白字符
 std::string TrimRight(const char* str)
 {
-	if(IsNullOrEmpty(str))
+	if(!str)
 		return std::string();
 	std::string ss = str;
 	ss.erase(ss.find_last_not_of(" \n\r\t") + 1);  
@@ -153,7 +157,7 @@ std::string TrimRight(const char* str)
 /// \brief 剔除字符串前面的空白字符
 std::string Trim(const char* str)
 {
-	if(IsNullOrEmpty(str))
+	if(!str)
 		return std::string();
 	std::string ss = TrimLeft(str);
 	return TrimRight(ss.c_str());
@@ -227,6 +231,10 @@ void  VCTParser::Progress(VCTProgress* progress)
 VCTParser::~VCTParser(void)
 {
 }
+const char* VCTParser::Path()
+{
+	return m_strVCTFile.c_str();
+}
 //文件类型
 VCT_FILE_FORMAT VCTParser::FileFormat()
 {
@@ -255,6 +263,10 @@ const char* VCTParser::ReadLine()
 
 	char* pHead = &m_LineCache[0];
 	m_fs.getline(pHead,m_LineCache.size());
+	std::string strTrim = Trim(pHead);
+	if(strlen(pHead) != strTrim.size())
+		strcpy(pHead,strTrim.c_str());
+
 	m_Line = pHead;
 	return pHead;
 } 
@@ -1264,7 +1276,8 @@ void  VCTParser::ParseAttribute()
 		return;
 
 	google::dense_hash_map<VCTID,fpos_t> &cache = m_AttributeIndex[strTableName];
-	cache.set_empty_key(-1);
+	if(cache.empty())
+		cache.set_empty_key(-1);
 	
 	VCTTableStructure* pTabStruct = TableStructure(strTableName.c_str());
 	int nSize = 0;
@@ -1456,9 +1469,8 @@ void VCTParser::Cache(VCT_GEOMETRY_TYPE gType,const std::string& code,VCTID id,f
 }
 /// \brief 获取表名称对应的表结构
 VCTTableStructure* VCTParser::TableStructure(const char* tabname)
-{
-	std::vector<VCTTableStructure>::iterator it = m_TableStructures.begin();
-	for(int i = 0 ;i<m_TableStructures.size();it++)
+{ 
+	for(int i = 0 ;i<m_TableStructures.size();i++)
 	{
 		if(stricmp(m_TableStructures[i].strTableName.c_str(),tabname)==0)
 			return &m_TableStructures[i];
@@ -1622,6 +1634,8 @@ bool VCTParser::Parse()
 	while(!m_fs.eof())
 	{
 		const char* pHead = ReadLine();
+		if(IsNullOrEmpty(pHead))
+			continue;
 		if(stricmp(pHead,"HeadBegin") ==0)
 		{
 			while(!ReadToEndSection())
@@ -1937,6 +1951,12 @@ VCTWriter::VCTWriter(const char* strVCT)
 {
 	m_strVCTFile = strVCT;
 }
+/// \brief vct文件路径。
+const char* VCTWriter::Path()
+{
+	return m_strVCTFile.c_str();
+}
+
 VCTFeatureWriter VCTWriter::BeginFeature(VCTFeatureCode& code,VCTTableStructure tab)
 {
 	m_FeatureCodes.push_back(std::pair<VCTFeatureCode,VCTTableStructure>(code,tab));

@@ -137,7 +137,8 @@ class VCTParser
 public:
 	VCTParser(const char* vct);
 	~VCTParser(void);
-	
+	/// \brief 获取VCT文件路径
+	const char* Path();
 	VCTProgress* Progress();
 	void  Progress(VCTProgress* progress);
 	/// \brief 从文件位置读取一个对象
@@ -254,6 +255,10 @@ class VCTWriter
 public:
 	VCTWriter(const char* strVCT);
 	VCTFeatureWriter BeginFeature(VCTFeatureCode& code,VCTTableStructure tab);
+	
+	/// \brief vct文件路径。
+	const char* Path();
+
 	void Write(VCTStyle& style);
 	void Write(VCTRelationTable& tab);
 	void Write(const char* key,const char* value);

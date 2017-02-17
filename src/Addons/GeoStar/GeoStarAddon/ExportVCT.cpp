@@ -24,29 +24,86 @@ std::string StyleCache::StyleName(long long symID)
 		return it->second;
 	return std::string();
 }
+void StyleCache::Commit()
+{
+	if(!m_ptrSymLib)
+		return;
+	GeoStar::Utility::GsFile f(m_Writer->Path());
+	f.ChangeExtension("symx");
+	m_ptrSymLib->Save(f.Path());
+}
+std::shared_ptr<GeoStar::Kernel::GsSymbolLibrary> StyleCache::SymbolLib()
+{
+	if(m_ptrSymLib) return m_ptrSymLib;
+	m_ptrSymLib = std::make_shared<GeoStar::Kernel::GsSymbolLibrary>();
+	GeoStar::Utility::GsFile f(m_Writer->Path());
+	f.ChangeExtension("symx");
+	m_ptrSymLib->Name(f.Name().c_str());
+	return m_ptrSymLib;
+}
 void StyleCache::SaveStyle(GeoStar::Kernel::GsPointSymbol* pSym,const std::string& name)
 {
+	std::shared_ptr<GeoStar::Kernel::GsSymbolLibrary> ptrLib = SymbolLib();
+	ptrLib->Symbols()->push_back(pSym);
 
+	VCTStyle style;
+	style.strID = name;
+	style.vecPairs.push_back(VCTPairEx("LAYERNAME",FromUtf8(pSym->Name().c_str())));
+	style.vecPairs.push_back(VCTPairEx("SYMBOLLIBPROTOCOL","GeoStarXMLSymbol"));
+	style.vecPairs.push_back(VCTPairEx("SYMBOLLIBLOCATION",ptrLib->Name()));
+	
+	style.vecPairs.push_back(VCTPairEx("COLOR",GeoStar::Utility::GsStringHelp::ToString(pSym->Color().Argb)));
+	style.vecPairs.push_back(VCTPairEx("POINTSIZE",GeoStar::Utility::GsStringHelp::ToString(pSym->Size())));
+	style.vecPairs.push_back(VCTPairEx("SYMBOLID",GeoStar::Utility::GsStringHelp::ToString(pSym->Code())));
+	
+	m_Writer->Write(style);
 }
 void StyleCache::SaveStyle(GeoStar::Kernel::GsLineSymbol* pSym,const std::string& name)
 {
+	std::shared_ptr<GeoStar::Kernel::GsSymbolLibrary> ptrLib = SymbolLib();
+	ptrLib->Symbols()->push_back(pSym);
+
+	VCTStyle style;
+	style.strID = name;
+	style.vecPairs.push_back(VCTPairEx("LAYERNAME",FromUtf8(pSym->Name().c_str())));
+	style.vecPairs.push_back(VCTPairEx("SYMBOLLIBPROTOCOL","GeoStarXMLSymbol"));
+	style.vecPairs.push_back(VCTPairEx("SYMBOLLIBLOCATION",ptrLib->Name()));
+	
+	style.vecPairs.push_back(VCTPairEx("COLOR",GeoStar::Utility::GsStringHelp::ToString(pSym->Color().Argb)));
+	style.vecPairs.push_back(VCTPairEx("LINEWIDTH",GeoStar::Utility::GsStringHelp::ToString(pSym->Width())));
+	style.vecPairs.push_back(VCTPairEx("SYMBOLID",GeoStar::Utility::GsStringHelp::ToString(pSym->Code())));
+	
+	m_Writer->Write(style);
 }
 void StyleCache::SaveStyle(GeoStar::Kernel::GsFillSymbol* pSym,const std::string& name)
 {
+	std::shared_ptr<GeoStar::Kernel::GsSymbolLibrary> ptrLib = SymbolLib();
+	ptrLib->Symbols()->push_back(pSym);
+
+	VCTStyle style;
+	style.strID = name;
+	style.vecPairs.push_back(VCTPairEx("LAYERNAME",FromUtf8(pSym->Name().c_str())));
+	style.vecPairs.push_back(VCTPairEx("SYMBOLLIBPROTOCOL","GeoStarXMLSymbol"));
+	style.vecPairs.push_back(VCTPairEx("SYMBOLLIBLOCATION",ptrLib->Name()));
+	
+	style.vecPairs.push_back(VCTPairEx("COLOR",GeoStar::Utility::GsStringHelp::ToString(pSym->FillColor().Argb)));
+	style.vecPairs.push_back(VCTPairEx("SYMBOLID",GeoStar::Utility::GsStringHelp::ToString(pSym->Code())));
+		
+	m_Writer->Write(style);
 }
 void StyleCache::SaveStyle(GeoStar::Kernel::GsTextSymbol* pSym,const std::string& name)
 {
 	VCTStyle style;
 	style.strID = name;
 	if(pSym->Name().empty())
-		style.vecPairs.push_back(VCTPairEx("LAYERNAME",pSym->Name()));
+		style.vecPairs.push_back(VCTPairEx("LAYERNAME",FromUtf8(pSym->Name().c_str())));
 	
 	style.vecPairs.push_back(VCTPairEx("COLOR",GeoStar::Utility::GsStringHelp::ToString(pSym->Color().Argb)));
 	style.vecPairs.push_back(VCTPairEx("BACKCOLOR",GeoStar::Utility::GsStringHelp::ToString(pSym->BackgroundColor().Argb)));
 	if(pSym->Code() >0)
 		style.vecPairs.push_back(VCTPairEx("SYMBOLID",GeoStar::Utility::GsStringHelp::ToString(pSym->Code())));
 
-	style.vecPairs.push_back(VCTPairEx("FONT",pSym->Font()));
+	style.vecPairs.push_back(VCTPairEx("FONT",FromUtf8(pSym->Font().c_str())));
 	style.vecPairs.push_back(VCTPairEx("ANNOHEIGHT",GeoStar::Utility::GsStringHelp::ToString(pSym->Height())));
 	style.vecPairs.push_back(VCTPairEx("ANNOWIDTH",GeoStar::Utility::GsStringHelp::ToString(pSym->Width())));
 	style.vecPairs.push_back(VCTPairEx("ANNOSPACE",GeoStar::Utility::GsStringHelp::ToString((pSym->VerticalExtra() + pSym->HorizonExtra())/2)));
@@ -447,12 +504,12 @@ public:
 			col--;
 		else
 			col-=2;
-
+		std::string strVal = FromUtf8(val);
 		if(m_Row.vecstrFieldValues.size() <= col + 1)
 			m_Row.vecstrFieldValues.resize(col + 1);
 
 		if(val)
-			m_Row.vecstrFieldValues[col] = val;
+			m_Row.vecstrFieldValues[col] = strVal;
 		else
 			m_Row.vecstrFieldValues[col].clear();
 
@@ -529,8 +586,8 @@ void ExportVCT::WriteTo(VCTWriter& w,gpkg::content& content,gpkg::database_ptr d
 			code.GeometryType = VCT_ANNOTATION;
 	}
 	code.strName = FromUtf8(content.identifier.c_str());
-	code.strUserID = code.strName;
-	code.strAttributeTableName = code.strName;
+	code.strUserID = FromUtf8(code.strName.c_str());
+	code.strAttributeTableName = FromUtf8(code.strName.c_str());
 	//表结构
 	VCTTableStructure tab;
 	tab.strTableName = code.strUserID;
@@ -552,34 +609,34 @@ void ExportVCT::WriteTo(VCTWriter& w,gpkg::content& content,gpkg::database_ptr d
 		switch(it->type)
 		{
 		case gpkg::BOOLEAN:
-			tab.vecFields.push_back(VCTField(it->name.c_str(),VCT_BOOL));
+			tab.vecFields.push_back(VCTField(FromUtf8(it->name.c_str()).c_str(),VCT_BOOL));
 			break;
 		case gpkg::TINYINT:
-			tab.vecFields.push_back(VCTField(it->name.c_str(),VCT_SMALLINT));
+			tab.vecFields.push_back(VCTField(FromUtf8(it->name.c_str()).c_str(),VCT_SMALLINT));
 			break;
 		case gpkg::MEDIUMINT:
-			tab.vecFields.push_back(VCTField(it->name.c_str(),VCT_INTEGER));
+			tab.vecFields.push_back(VCTField(FromUtf8(it->name.c_str()).c_str(),VCT_INTEGER));
 			break;
 		case gpkg::INTEGER: 
-			tab.vecFields.push_back(VCTField(it->name.c_str(),VCT_INTEGER));
+			tab.vecFields.push_back(VCTField(FromUtf8(it->name.c_str()).c_str(),VCT_INTEGER));
 			break;
 		case gpkg::FLOAT:
-			tab.vecFields.push_back(VCTField(it->name.c_str(),VCT_FLOAT,10,8));
+			tab.vecFields.push_back(VCTField(FromUtf8(it->name.c_str()).c_str(),VCT_FLOAT,10,8));
 			break;
 		case gpkg::DOUBLE: 
-			tab.vecFields.push_back(VCTField(it->name.c_str(),VCT_FLOAT,38,10));
+			tab.vecFields.push_back(VCTField(FromUtf8(it->name.c_str()).c_str(),VCT_FLOAT,38,10));
 			break;
 		case gpkg::TEXT:
-			tab.vecFields.push_back(VCTField(it->name.c_str(),VCT_CHAR,1024,0));
+			tab.vecFields.push_back(VCTField(FromUtf8(it->name.c_str()).c_str(),VCT_CHAR,1024,0));
 			break;
 		case gpkg::BLOB:
-			tab.vecFields.push_back(VCTField(it->name.c_str(),VCT_VARBIN));
+			tab.vecFields.push_back(VCTField(FromUtf8(it->name.c_str()).c_str(),VCT_VARBIN));
 			break;
 		case gpkg::DATE:
-			tab.vecFields.push_back(VCTField(it->name.c_str(),VCT_DATE));
+			tab.vecFields.push_back(VCTField(FromUtf8(it->name.c_str()).c_str(),VCT_DATE));
 			break;
 		case gpkg::DATETIME:
-			tab.vecFields.push_back(VCTField(it->name.c_str(),VCT_DATETIME));
+			tab.vecFields.push_back(VCTField(FromUtf8(it->name.c_str()).c_str(),VCT_DATETIME));
 			break;
 
 		case gpkg::POINT:
@@ -589,7 +646,7 @@ void ExportVCT::WriteTo(VCTWriter& w,gpkg::content& content,gpkg::database_ptr d
 			continue;
 			break;
 		default:
-			tab.vecFields.push_back(VCTField(it->name.c_str(),VCT_CHAR,1024,0));
+			tab.vecFields.push_back(VCTField(FromUtf8(it->name.c_str()).c_str(),VCT_CHAR,1024,0));
 			break;
 
 		}
@@ -710,7 +767,7 @@ const char* ExportVCT::Execute(const char* strParameter,GIS::Progress * pProgres
 		{
 			WriteTo(w,*it,db,pProgress,id);
 		}
-
+		m_StyleCache.Commit();
 		//结束绘制。
 		pProgress->OnLog("提交数据。",GIS::LogLevel::eInfo);
 		w.Finish();
@@ -727,7 +784,7 @@ const char* ExportVCT::Execute(const char* strParameter,GIS::Progress * pProgres
 			m_StyleCache.Attach(&w);
 			WriteTo(w,*it,db,pProgress,id);
 			pProgress->OnLog("提交数据。",GIS::LogLevel::eInfo);
-		
+			m_StyleCache.Commit();
 			w.Finish();
 		}
 	}

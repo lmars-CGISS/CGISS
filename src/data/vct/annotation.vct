@@ -14,11 +14,11 @@ Separator:,
 HeadEnd
 
 FeatureCodeBegin
-RES1,RES1,Annotation,RES1
+annotation,annotation,Annotation,annotation
 FeatureCodeEnd
 
 TableStructureBegin
-RES1,1
+annotation,1
 BOLD,Int4
 0
 
@@ -35,7 +35,7 @@ PolygonEnd
 
 AnnotationBegin
 1
-RES1
+annotation
 Style_0
 1
 拉萨
@@ -43,7 +43,7 @@ Style_0
 0
 
 2
-RES1
+annotation
 Style_0
 1
 西宁
@@ -51,7 +51,7 @@ Style_0
 0
 
 3
-RES1
+annotation
 Style_0
 1
 昆明
@@ -59,7 +59,7 @@ Style_0
 0
 
 4
-RES1
+annotation
 Style_0
 1
 兰州
@@ -67,7 +67,7 @@ Style_0
 0
 
 5
-RES1
+annotation
 Style_0
 1
 成都
@@ -75,7 +75,7 @@ Style_0
 0
 
 6
-RES1
+annotation
 Style_0
 1
 银川
@@ -83,7 +83,7 @@ Style_0
 0
 
 7
-RES1
+annotation
 Style_0
 1
 重庆
@@ -91,7 +91,7 @@ Style_0
 0
 
 8
-RES1
+annotation
 Style_0
 1
 贵阳
@@ -99,7 +99,7 @@ Style_0
 0
 
 9
-RES1
+annotation
 Style_0
 1
 南宁
@@ -107,7 +107,7 @@ Style_0
 0
 
 10
-RES1
+annotation
 Style_0
 1
 台北
@@ -115,7 +115,7 @@ Style_0
 0
 
 11
-RES1
+annotation
 Style_0
 1
 澳门
@@ -123,7 +123,7 @@ Style_0
 0
 
 12
-RES1
+annotation
 Style_0
 1
 西安
@@ -131,7 +131,7 @@ Style_0
 0
 
 13
-RES1
+annotation
 Style_0
 1
 呼和浩特
@@ -139,7 +139,7 @@ Style_0
 0
 
 14
-RES1
+annotation
 Style_0
 1
 太原
@@ -147,7 +147,7 @@ Style_0
 0
 
 15
-RES1
+annotation
 Style_0
 1
 长沙
@@ -155,7 +155,7 @@ Style_0
 0
 
 16
-RES1
+annotation
 Style_0
 1
 广州
@@ -163,7 +163,7 @@ Style_0
 0
 
 17
-RES1
+annotation
 Style_0
 1
 郑州
@@ -171,7 +171,7 @@ Style_0
 0
 
 18
-RES1
+annotation
 Style_0
 1
 武汉 市
@@ -179,7 +179,7 @@ Style_0
 0
 
 19
-RES1
+annotation
 Style_0
 1
 南昌
@@ -187,15 +187,15 @@ Style_0
 0
 
 20
-RES1
-Style_0
+annotation
+Style_1
 1
 北京
 117.157596,39.923615,0.000000
 0
 
 21
-RES1
+annotation
 Style_0
 1
 济南
@@ -203,7 +203,7 @@ Style_0
 0
 
 22
-RES1
+annotation
 Style_0
 1
 天津
@@ -211,7 +211,7 @@ Style_0
 0
 
 23
-RES1
+annotation
 Style_0
 1
 合肥
@@ -219,7 +219,7 @@ Style_0
 0
 
 24
-RES1
+annotation
 Style_0
 1
 福州
@@ -227,7 +227,7 @@ Style_0
 0
 
 25
-RES1
+annotation
 Style_0
 1
 杭州
@@ -235,7 +235,7 @@ Style_0
 0
 
 26
-RES1
+annotation
 Style_0
 1
 上海
@@ -243,7 +243,7 @@ Style_0
 0
 
 27
-RES1
+annotation
 Style_0
 1
 沈阳
@@ -251,7 +251,7 @@ Style_0
 0
 
 28
-RES1
+annotation
 Style_0
 1
 长春
@@ -261,7 +261,7 @@ Style_0
 AnnotationEnd
 
 AttributeBegin
-RES1
+annotation
 1,0
 2,0
 3,0
@@ -296,12 +296,21 @@ AttributeEnd
 
 StyleBegin
 RepresentationBegin
-RES1
+Style_0
 5
 FONT,宋体
 COLOR,0
 ANNOHEIGHT,3.175000
 ANNOWIDTH,3.175000
+ANNOSPACE,0.000000
+0
+
+Style_1
+5
+FONT,微软雅黑
+COLOR,255
+ANNOHEIGHT,6
+ANNOWIDTH,6
 ANNOSPACE,0.000000
 0
 
