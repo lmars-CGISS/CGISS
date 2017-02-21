@@ -1,8 +1,12 @@
 ﻿#include "geopackage.h"  
 #include <iostream>
 #include <sstream>
+#include <time.h>
+
 
 #ifndef WIN32
+#include <strings.h>
+#include <string.h> 
 #define stricmp strcasecmp
 #define _stricmp strcasecmp
 #endif
@@ -401,8 +405,510 @@ namespace gpkg
 	}
 
 #pragma endregion
-#pragma region symbols
-symbols::symbols(std::shared_ptr<database_handle>& db)
+	
+#pragma region metadata_table
+	
+metadata_table::metadata_table(std::shared_ptr<database_handle>& db)
+{
+	m_name = "gpkg_metadata";
+	m_ptrDB = db;
+	if(exists())
+		return;
+		
+	//没有则创建元表。
+	std::string sql = "CREATE TABLE gpkg_metadata (\
+					  id INTEGER CONSTRAINT m_pk PRIMARY KEY ASC NOT NULL,\
+					  md_scope TEXT NOT NULL DEFAULT 'dataset',\
+					  md_standard_uri TEXT NOT NULL,\
+					  mime_type TEXT NOT NULL DEFAULT 'text/xml',\
+					  metadata TEXT NOT NULL DEFAULT '' );";
+
+	db->execute(sql.c_str());
+
+	sql ="CREATE TRIGGER 'gpkg_metadata_md_scope_insert' "
+    "BEFORE INSERT ON 'gpkg_metadata' "
+    "FOR EACH ROW BEGIN "
+    "SELECT RAISE(ABORT, 'insert on table gpkg_metadata violates "
+    "constraint: md_scope must be one of undefined | fieldSession | "
+    "collectionSession | series | dataset | featureType | feature | "
+    "attributeType | attribute | tile | model | catalogue | schema | "
+    "taxonomy software | service | collectionHardware | "
+    "nonGeographicDataset | dimensionGroup') "
+    "WHERE NOT(NEW.md_scope IN "
+    "('undefined','fieldSession','collectionSession','series','dataset', "
+    "'featureType','feature','attributeType','attribute','tile','model', "
+    "'catalogue','schema','taxonomy','software','service', "
+    "'collectionHardware','nonGeographicDataset','dimensionGroup')); "
+    "END; "
+    "CREATE TRIGGER 'gpkg_metadata_md_scope_update' "
+    "BEFORE UPDATE OF 'md_scope' ON 'gpkg_metadata' "
+    "FOR EACH ROW BEGIN "
+    "SELECT RAISE(ABORT, 'update on table gpkg_metadata violates "
+    "constraint: md_scope must be one of undefined | fieldSession | "
+    "collectionSession | series | dataset | featureType | feature | "
+    "attributeType | attribute | tile | model | catalogue | schema | "
+    "taxonomy software | service | collectionHardware | "
+    "nonGeographicDataset | dimensionGroup') "
+    "WHERE NOT(NEW.md_scope IN "
+    "('undefined','fieldSession','collectionSession','series','dataset', "
+    "'featureType','feature','attributeType','attribute','tile','model', "
+    "'catalogue','schema','taxonomy','software','service', "
+    "'collectionHardware','nonGeographicDataset','dimensionGroup')); "
+    "END";
+	 
+	db->execute(sql.c_str());
+
+}
+		
+/// \brief 增加一个符号
+bool metadata_table::add(metadata& data)
+{
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return false;
+
+	std::stringstream ss;
+	ss <<"insert or replace into gpkg_metadata(md_scope,md_standard_uri,mime_type,metadata)\
+			values(?,?,?,?)";
+	sqlite_statment stmt(ptrDB->m_db,ss.str().c_str());
+	stmt.bind(1,data.md_scope.c_str());
+	stmt.bind(2,data.md_standard_uri.c_str());
+	stmt.bind(3,data.mime_type.c_str());
+	stmt.bind(4,data.data.c_str());
+	
+	if(database_handle::is_error(stmt.step()))
+		return false;
+	//最近的oid
+	data.id = stmt.last_rowid();
+	return true;
+}
+
+/// \brief 删除一个符号
+bool metadata_table::remove(const metadata& data)
+{
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return  false;
+
+	std::stringstream ss;
+	ss <<"delete from  gpkg_metadata where  id=?";
+	sqlite_statment stmt(ptrDB->m_db,ss.str().c_str());
+	stmt.bind(1,data.id);
+	return !database_handle::is_error(stmt.step());
+}
+
+/// \brief 查询一个符号
+bool metadata_table::query(metadata& data)
+{
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return  false;
+
+	std::stringstream ss;
+	ss <<"select * from  gpkg_metadata where id=?";
+	sqlite_statment stmt(ptrDB->m_db,ss.str().c_str());
+	stmt.bind(1,data.id);
+	if(SQLITE_ROW != stmt.step())
+		return false;
+	data.md_scope = stmt.string_value(1);
+	data.md_standard_uri = stmt.string_value(2);
+	data.mime_type = stmt.string_value(3);
+	data.data = stmt.string_value(4);
+	
+	return true;
+}
+
+/// \brief 替换一个符号数据
+bool metadata_table::replace(const metadata& data)
+{
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return false;
+
+	std::stringstream ss;
+	ss <<"insert or replace into gpkg_metadata values(?,?,?,?,?)";
+	sqlite_statment stmt(ptrDB->m_db,ss.str().c_str());
+	stmt.bind(1,data.id);
+	stmt.bind(2,data.md_scope.c_str());
+	stmt.bind(3,data.md_standard_uri.c_str());
+	stmt.bind(4,data.mime_type.c_str());
+	stmt.bind(5,data.data.c_str());
+	
+	return !database_handle::is_error(stmt.step());
+}
+	
+#pragma endregion
+
+#pragma region metadata_reference_table
+metadata_reference_table::metadata_reference_table(std::shared_ptr<database_handle>& db)
+{
+	m_name = "gpkg_metadata_reference";
+	m_ptrDB = db;
+	if(exists())
+		return;
+		
+	//没有则创建元表。
+	std::string sql = "CREATE TABLE gpkg_metadata_reference(\
+						reference_scope TEXT NOT NULL,\
+						table_name TEXT,\
+						column_name TEXT,\
+						row_id_value INTEGER,\
+						timestamp DATETIME NOT NULL DEFAULT (strftime('%%Y-%%m-%%dT%%H:%%M:%%fZ','now')),\
+						md_file_id INTEGER NOT NULL,\
+						md_parent_id INTEGER,\
+						CONSTRAINT crmr_mfi_fk FOREIGN KEY (md_file_id) REFERENCES gpkg_metadata(id),\
+						CONSTRAINT crmr_mpi_fk FOREIGN KEY (md_parent_id) REFERENCES gpkg_metadata(id) );";
+
+	db->execute(sql.c_str());
+
+	/* From D.3. metadata_reference Table 41. gpkg_metadata_reference Trigger Definition SQL   */
+    sql ="CREATE TRIGGER 'gpkg_metadata_reference_reference_scope_insert' "
+        "BEFORE INSERT ON 'gpkg_metadata_reference' "
+        "FOR EACH ROW BEGIN "
+        "SELECT RAISE(ABORT, 'insert on table gpkg_metadata_reference "
+        "violates constraint: reference_scope must be one of \"geopackage\", "
+        "table\", \"column\", \"row\", \"row/col\"') "
+        "WHERE NOT NEW.reference_scope IN "
+        "('geopackage','table','column','row','row/col'); "
+        "END; "
+        "CREATE TRIGGER 'gpkg_metadata_reference_reference_scope_update' "
+        "BEFORE UPDATE OF 'reference_scope' ON 'gpkg_metadata_reference' "
+        "FOR EACH ROW BEGIN "
+        "SELECT RAISE(ABORT, 'update on table gpkg_metadata_reference "
+        "violates constraint: reference_scope must be one of \"geopackage\", "
+        "\"table\", \"column\", \"row\", \"row/col\"') "
+        "WHERE NOT NEW.reference_scope IN "
+        "('geopackage','table','column','row','row/col'); "
+        "END; "
+        "CREATE TRIGGER 'gpkg_metadata_reference_column_name_insert' "
+        "BEFORE INSERT ON 'gpkg_metadata_reference' "
+        "FOR EACH ROW BEGIN "
+        "SELECT RAISE(ABORT, 'insert on table gpkg_metadata_reference "
+        "violates constraint: column name must be NULL when reference_scope "
+        "is \"geopackage\", \"table\" or \"row\"') "
+        "WHERE (NEW.reference_scope IN ('geopackage','table','row') "
+        "AND NEW.column_name IS NOT NULL); "
+        "SELECT RAISE(ABORT, 'insert on table gpkg_metadata_reference "
+        "violates constraint: column name must be defined for the specified "
+        "table when reference_scope is \"column\" or \"row/col\"') "
+        "WHERE (NEW.reference_scope IN ('column','row/col') "
+        "AND NOT NEW.table_name IN ( "
+        "SELECT name FROM SQLITE_MASTER WHERE type = 'table' "
+        "AND name = NEW.table_name "
+        "AND sql LIKE ('%' || NEW.column_name || '%'))); "
+        "END; "
+        "CREATE TRIGGER 'gpkg_metadata_reference_column_name_update' "
+        "BEFORE UPDATE OF column_name ON 'gpkg_metadata_reference' "
+        "FOR EACH ROW BEGIN "
+        "SELECT RAISE(ABORT, 'update on table gpkg_metadata_reference "
+        "violates constraint: column name must be NULL when reference_scope "
+        "is \"geopackage\", \"table\" or \"row\"') "
+        "WHERE (NEW.reference_scope IN ('geopackage','table','row') "
+        "AND NEW.column_nameIS NOT NULL); "
+        "SELECT RAISE(ABORT, 'update on table gpkg_metadata_reference "
+        "violates constraint: column name must be defined for the specified "
+        "table when reference_scope is \"column\" or \"row/col\"') "
+        "WHERE (NEW.reference_scope IN ('column','row/col') "
+        "AND NOT NEW.table_name IN ( "
+        "SELECT name FROM SQLITE_MASTER WHERE type = 'table' "
+        "AND name = NEW.table_name "
+        "AND sql LIKE ('%' || NEW.column_name || '%'))); "
+        "END; "
+        "CREATE TRIGGER 'gpkg_metadata_reference_row_id_value_insert' "
+        "BEFORE INSERT ON 'gpkg_metadata_reference' "
+        "FOR EACH ROW BEGIN "
+        "SELECT RAISE(ABORT, 'insert on table gpkg_metadata_reference "
+        "violates constraint: row_id_value must be NULL when reference_scope "
+        "is \"geopackage\", \"table\" or \"column\"') "
+        "WHERE NEW.reference_scope IN ('geopackage','table','column') "
+        "AND NEW.row_id_value IS NOT NULL; "
+        "SELECT RAISE(ABORT, 'insert on table gpkg_metadata_reference "
+        "violates constraint: row_id_value must exist in specified table when "
+        "reference_scope is \"row\" or \"row/col\"') "
+        "WHERE NEW.reference_scope IN ('row','row/col') "
+        "AND NOT EXISTS (SELECT rowid "
+        "FROM (SELECT NEW.table_name AS table_name) WHERE rowid = "
+        "NEW.row_id_value); "
+        "END; "
+        "CREATE TRIGGER 'gpkg_metadata_reference_row_id_value_update' "
+        "BEFORE UPDATE OF 'row_id_value' ON 'gpkg_metadata_reference' "
+        "FOR EACH ROW BEGIN "
+        "SELECT RAISE(ABORT, 'update on table gpkg_metadata_reference "
+        "violates constraint: row_id_value must be NULL when reference_scope "
+        "is \"geopackage\", \"table\" or \"column\"') "
+        "WHERE NEW.reference_scope IN ('geopackage','table','column') "
+        "AND NEW.row_id_value IS NOT NULL; "
+        "SELECT RAISE(ABORT, 'update on table gpkg_metadata_reference "
+        "violates constraint: row_id_value must exist in specified table when "
+        "reference_scope is \"row\" or \"row/col\"') "
+        "WHERE NEW.reference_scope IN ('row','row/col') "
+        "AND NOT EXISTS (SELECT rowid "
+        "FROM (SELECT NEW.table_name AS table_name) WHERE rowid = "
+        "NEW.row_id_value); "
+        "END; "
+        "CREATE TRIGGER 'gpkg_metadata_reference_timestamp_insert' "
+        "BEFORE INSERT ON 'gpkg_metadata_reference' "
+        "FOR EACH ROW BEGIN "
+        "SELECT RAISE(ABORT, 'insert on table gpkg_metadata_reference "
+        "violates constraint: timestamp must be a valid time in ISO 8601 "
+        "\"yyyy-mm-ddThh:mm:ss.cccZ\" form') "
+        "WHERE NOT (NEW.timestamp GLOB "
+        "'[1-2][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9].[0-9][0-9][0-9]Z' "
+        "AND strftime('%s',NEW.timestamp) NOT NULL); "
+        "END; "
+        "CREATE TRIGGER 'gpkg_metadata_reference_timestamp_update' "
+        "BEFORE UPDATE OF 'timestamp' ON 'gpkg_metadata_reference' "
+        "FOR EACH ROW BEGIN "
+        "SELECT RAISE(ABORT, 'update on table gpkg_metadata_reference "
+        "violates constraint: timestamp must be a valid time in ISO 8601 "
+        "\"yyyy-mm-ddThh:mm:ss.cccZ\" form') "
+        "WHERE NOT (NEW.timestamp GLOB "
+        "'[1-2][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9].[0-9][0-9][0-9]Z' "
+        "AND strftime('%s',NEW.timestamp) NOT NULL); "
+        "END";
+
+	db->execute(sql.c_str());
+
+}
+		
+/// \brief 增加一个元数据引用
+bool metadata_reference_table::add(metadata_reference& data)
+{
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return false;
+
+	std::stringstream ss;
+	ss <<"insert or replace into gpkg_metadata_reference\
+			values(?,?,?,?,strftime('%Y-%m-%dT%H:%M:%fZ','now'),?,?)";
+	sqlite_statment stmt(ptrDB->m_db,ss.str().c_str());
+	int  i = 0;
+
+	stmt.bind(++i,data.reference_scope.c_str());
+	if(stricmp(data.reference_scope.c_str(),"geopackage")==0)
+	{
+		stmt.bind(++i);
+	}
+	else
+		stmt.bind(++i,data.table_name.c_str());
+
+	 //be NULL when reference_scope is "geopackage", "table" or "column"
+	if(stricmp(data.reference_scope.c_str(),"geopackage")==0 ||
+		stricmp(data.reference_scope.c_str(),"table")==0 )
+	{
+		stmt.bind(++i);
+	}
+	else
+		stmt.bind(++i,data.column_name.c_str());
+
+	 //be NULL when reference_scope is "geopackage", "table" or "column"
+	if(stricmp(data.reference_scope.c_str(),"geopackage")==0 ||
+		stricmp(data.reference_scope.c_str(),"table")==0 ||
+		stricmp(data.reference_scope.c_str(),"column")==0 )
+	{
+		stmt.bind(++i);
+	}
+	else
+		stmt.bind(++i,data.row_id_value);
+
+	//stmt.bind(++i,data.timestamp.c_str());
+	stmt.bind(++i,data.md_file_id);
+	stmt.bind(++i,data.md_parent_id);
+
+	if(database_handle::is_error(stmt.step()))
+		return false; 
+	return true;
+}
+/// \brief 删除某个影响范围的元数据引用
+bool metadata_reference_table::remove(const std::string& scope)
+{
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return false;
+
+	std::stringstream ss;
+	ss <<"delete from gpkg_metadata_reference where reference_scope=?";
+	sqlite_statment stmt(ptrDB->m_db,ss.str().c_str());
+	stmt.bind(1,scope.c_str());
+
+	return !database_handle::is_error(stmt.step());
+}
+
+/// \brief 删除某个表的元数据引用
+bool metadata_reference_table::remove(const std::string& scope,const std::string& table_name)
+{
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return false;
+
+	std::stringstream ss;
+	ss <<"delete from gpkg_metadata_reference where reference_scope=? and table_name=?";
+	sqlite_statment stmt(ptrDB->m_db,ss.str().c_str());
+
+	stmt.bind(1,scope.c_str());
+	stmt.bind(2,table_name.c_str());
+	return !database_handle::is_error(stmt.step());
+}
+/// \brief 删除某个表的列对应的元数据引用
+bool metadata_reference_table::remove(const std::string& scope,const std::string& table_name,const std::string& column_name)
+{
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return false;
+
+	std::stringstream ss;
+	ss <<"delete from gpkg_metadata_reference where reference_scope=? and table_name=? and column_name=?";
+	sqlite_statment stmt(ptrDB->m_db,ss.str().c_str());
+
+	stmt.bind(1,scope.c_str());
+	stmt.bind(2,table_name.c_str());
+	stmt.bind(3,column_name.c_str());
+	return !database_handle::is_error(stmt.step());
+}
+		
+/// \brief 删除某列、某行的元数据引用
+bool metadata_reference_table::remove(const std::string& scope,const std::string& table_name,const std::string& column_name,long long rowid)
+{
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return false;
+
+	std::stringstream ss;
+	ss <<"delete from gpkg_metadata_reference where reference_scope=? and table_name=?  and column_name=? and row_id_value=?";
+	sqlite_statment stmt(ptrDB->m_db,ss.str().c_str());
+
+	stmt.bind(1,scope.c_str());
+	stmt.bind(2,table_name.c_str());
+	stmt.bind(3,column_name.c_str());
+	stmt.bind(4,rowid);
+	return !database_handle::is_error(stmt.step());
+}
+		
+/// \brief 删除某行的元数据引用
+bool metadata_reference_table::remove(const std::string& scope,const std::string& table_name,long long rowid)
+{
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return false;
+
+	std::stringstream ss;
+	ss <<"delete from gpkg_metadata_reference where reference_scope=? and table_name=? and row_id_value=?";
+	sqlite_statment stmt(ptrDB->m_db,ss.str().c_str());
+
+	stmt.bind(1,scope.c_str());
+	stmt.bind(2,table_name.c_str());
+	stmt.bind(3,rowid);
+	return !database_handle::is_error(stmt.step());
+}
+		
+/// \brief 查询某个影响范围的元数据引用
+bool metadata_reference_table::query(const std::string& scope)
+{
+	m_ptrQuery.reset();
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return false;
+
+	std::stringstream ss;
+	ss <<"select * from gpkg_metadata_reference where reference_scope=?";
+	m_ptrQuery = std::make_shared<sqlite_statment>(ptrDB->m_db,ss.str().c_str());
+	m_ptrQuery->bind(1,scope.c_str());
+
+	return true;
+
+}
+/// \brief 查询某个表的元数据引用
+bool metadata_reference_table::query(const std::string& scope,const std::string& table_name)
+{
+	m_ptrQuery.reset();
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return false;
+
+	std::stringstream ss;
+	ss <<"select * from gpkg_metadata_reference where reference_scope=? and table_name=?;";
+	m_ptrQuery = std::make_shared<sqlite_statment>(ptrDB->m_db,ss.str().c_str());
+	m_ptrQuery->bind(1,scope.c_str());
+	m_ptrQuery->bind(2,table_name.c_str());
+
+	return true;
+}
+/// \brief 查询某个行的元数据引用
+bool metadata_reference_table::query(const std::string& scope,const std::string& table_name,const std::string& column_name)
+{
+	m_ptrQuery.reset();
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return false;
+
+	std::stringstream ss;
+	ss <<"select * from gpkg_metadata_reference where reference_scope=? and table_name=? and column_name=?";
+	m_ptrQuery = std::make_shared<sqlite_statment>(ptrDB->m_db,ss.str().c_str());
+	m_ptrQuery->bind(1,scope.c_str());
+	m_ptrQuery->bind(2,table_name.c_str());
+	m_ptrQuery->bind(3,column_name.c_str());
+	
+	return true;
+}
+/// \brief 查询某个列，某个行的元数据引用
+bool metadata_reference_table::query(const std::string& scope,const std::string& table_name,const std::string& column_name,long long rowid)
+{
+	m_ptrQuery.reset();
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return false;
+
+	std::stringstream ss;
+	ss <<"select *  from gpkg_metadata_reference where reference_scope=? and table_name=?  and column_name=? and row_id_value=?";
+	m_ptrQuery = std::make_shared<sqlite_statment>(ptrDB->m_db,ss.str().c_str());
+	m_ptrQuery->bind(1,scope.c_str());
+	m_ptrQuery->bind(2,table_name.c_str());
+	m_ptrQuery->bind(3,column_name.c_str());
+	m_ptrQuery->bind(4,rowid);
+	
+	return true;
+}
+		
+/// \brief 查询某个行的元数据引用
+bool metadata_reference_table::query(const std::string& scope,const std::string& table_name,long long rowid)
+{
+	m_ptrQuery.reset();
+	database_handle_ptr ptrDB = m_ptrDB.lock();
+	if(!ptrDB.get())
+		return false;
+
+	std::stringstream ss;
+	ss <<"select * from gpkg_metadata_reference where reference_scope=? and table_name=?  and row_id_value=?";
+	m_ptrQuery = std::make_shared<sqlite_statment>(ptrDB->m_db,ss.str().c_str());
+	m_ptrQuery->bind(1,scope.c_str());
+	m_ptrQuery->bind(2,table_name.c_str());
+	m_ptrQuery->bind(3,rowid);
+	
+	return true;
+}
+
+/// \brief 调用query之后获取下一个引用的查询结果。
+bool metadata_reference_table::next(metadata_reference& data)
+{
+	if(!m_ptrQuery)
+		return false;
+	if(SQLITE_ROW != m_ptrQuery->step())
+		return false;
+
+	data.reference_scope = m_ptrQuery->string_value(0);
+	data.table_name = m_ptrQuery->string_value(1);
+	data.column_name = m_ptrQuery->string_value(2);
+	data.row_id_value = m_ptrQuery->int64_value(3);
+	data.timestamp = m_ptrQuery->string_value(4);
+	data.md_file_id = m_ptrQuery->int64_value(5);
+	data.md_parent_id = m_ptrQuery->int64_value(6);
+
+	return true;
+}
+
+#pragma endregion
+#pragma region symbol_table
+symbol_table::symbol_table(std::shared_ptr<database_handle>& db)
 {
 	m_name = "gpkgc_symbol";
 	m_ptrDB = db;
@@ -422,7 +928,7 @@ symbols::symbols(std::shared_ptr<database_handle>& db)
 
 }
 /// \brief 增加一个符号
-bool symbols::add(symbol& data)
+bool symbol_table::add(symbol& data)
 {
 	database_handle_ptr ptrDB = m_ptrDB.lock();
 	if(!ptrDB.get())
@@ -449,7 +955,7 @@ bool symbols::add(symbol& data)
 	return true;
 }
 /// \brief 替换一个符号数据
-bool symbols::replace(const symbol& data)
+bool symbol_table::replace(const symbol& data)
 {
 	database_handle_ptr ptrDB = m_ptrDB.lock();
 	if(!ptrDB.get())
@@ -472,7 +978,7 @@ bool symbols::replace(const symbol& data)
 	return !database_handle::is_error(stmt.step());
 }
 /// \brief 删除一个符号
-bool symbols::remove(const symbol& data)
+bool symbol_table::remove(const symbol& data)
 {
 	database_handle_ptr ptrDB = m_ptrDB.lock();
 	if(!ptrDB.get())
@@ -486,7 +992,7 @@ bool symbols::remove(const symbol& data)
 }
 
 /// \brief 查询一个符号
-bool symbols::query(symbol& data)
+bool symbol_table::query(symbol& data)
 {
 	database_handle_ptr ptrDB = m_ptrDB.lock();
 	if(!ptrDB.get())
@@ -512,7 +1018,7 @@ bool symbols::query(symbol& data)
 	return true;
 }
 		
-symbols_reference::symbols_reference(std::shared_ptr<database_handle>& db)
+symbol_reference_table::symbol_reference_table(std::shared_ptr<database_handle>& db)
 {
 	m_name = "gpkgc_symbol_reference";
 	m_ptrDB = db;
@@ -531,7 +1037,7 @@ symbols_reference::symbols_reference(std::shared_ptr<database_handle>& db)
 }
 		
 /// \brief 增加一个引用
-bool symbols_reference::add(const symbol_reference& data)
+bool symbol_reference_table::add(const symbol_reference& data)
 {
 	database_handle_ptr ptrDB = m_ptrDB.lock();
 	if(!ptrDB.get())
@@ -550,7 +1056,7 @@ bool symbols_reference::add(const symbol_reference& data)
 }
 
 /// \brief 删除一个表中的所有符号引用
-bool symbols_reference::remove(const std::string& table_name)
+bool symbol_reference_table::remove(const std::string& table_name)
 {
 	database_handle_ptr ptrDB = m_ptrDB.lock();
 	if(!ptrDB.get())
@@ -563,7 +1069,7 @@ bool symbols_reference::remove(const std::string& table_name)
 }
 
 /// \brief 删除一个表中某个feature的符号引用
-bool symbols_reference::remove(const std::string& table_name,long long rowid)
+bool symbol_reference_table::remove(const std::string& table_name,long long rowid)
 {
 	database_handle_ptr ptrDB = m_ptrDB.lock();
 	if(!ptrDB.get())
@@ -579,7 +1085,7 @@ bool symbols_reference::remove(const std::string& table_name,long long rowid)
 
 
 /// \brief 开始查询一个地物类表的符号引用
-bool symbols_reference::query(const char* table_name)
+bool symbol_reference_table::query(const char* table_name)
 {
 	database_handle_ptr ptrDB = m_ptrDB.lock();
 	if(!ptrDB.get())
@@ -589,11 +1095,11 @@ bool symbols_reference::query(const char* table_name)
 	ss <<"select  from gpkgc_symbol_reference where table_name=?";
 	m_ptrQuery = std::make_shared<sqlite_statment>(ptrDB->m_db,ss.str().c_str());
 	m_ptrQuery->bind(1,table_name);
-	return m_ptrQuery;
+	return true;
 }
 
 /// \brief 开始查询一个地物类表中某个featureid的符号
-bool symbols_reference::query(const char* table_name, long long rowid)
+bool symbol_reference_table::query(const char* table_name, long long rowid)
 {
 	database_handle_ptr ptrDB = m_ptrDB.lock();
 	if(!ptrDB.get())
@@ -604,11 +1110,11 @@ bool symbols_reference::query(const char* table_name, long long rowid)
 	m_ptrQuery = std::make_shared<sqlite_statment>(ptrDB->m_db,ss.str().c_str());
 	m_ptrQuery->bind(1,table_name);
 	m_ptrQuery->bind(2,rowid);
-	return m_ptrQuery;
+	return true;
 }
 		
 /// \brief 调用query之后获取下一个引用的查询结果。
-bool symbols_reference::next(symbol_reference& data)
+bool symbol_reference_table::next(symbol_reference& data)
 {
 	if(!m_ptrQuery)
 		return false;
@@ -626,7 +1132,7 @@ bool symbols_reference::next(symbol_reference& data)
 
 #pragma endregion
 #pragma region extensions
-	extensions::extensions(std::shared_ptr<database_handle>& db)
+	extensions_table::extensions_table(std::shared_ptr<database_handle>& db)
 	{
 		m_name = "gpkg_extensions";
 		m_ptrDB = db;
@@ -646,7 +1152,7 @@ bool symbols_reference::next(symbol_reference& data)
 		
 	}
 	/// \brief 增加一条扩展记录
-	bool extensions::add(const extension& ext)
+	bool extensions_table::add(const extension& ext)
 	{
 		database_handle_ptr ptrDB = m_ptrDB.lock();
 		if(!ptrDB.get())
@@ -665,7 +1171,7 @@ bool symbols_reference::next(symbol_reference& data)
 	}
 
 	/// \brief 删除一条扩展记录
-	void extensions::remove(const extension& ext)
+	void extensions_table::remove(const extension& ext)
 	{
 		database_handle_ptr ptrDB = m_ptrDB.lock();
 		if(!ptrDB.get())
@@ -680,7 +1186,7 @@ bool symbols_reference::next(symbol_reference& data)
 		stmt.step();
 	}
 	/// \brief 查询一条扩展记录
-	bool extensions::query(extension& ext)
+	bool extensions_table::query(extension& ext)
 	{
 		database_handle_ptr ptrDB = m_ptrDB.lock();
 		if(!ptrDB.get())
@@ -740,7 +1246,7 @@ bool symbols_reference::next(symbol_reference& data)
 	
 #pragma endregion
 #pragma region contents
-	contents::contents(std::shared_ptr<database_handle>& db)
+	contents_table::contents_table(std::shared_ptr<database_handle>& db)
 	{ 
 		m_name = "gpkg_contents";
 		m_ptrDB = db;
@@ -765,7 +1271,7 @@ bool symbols_reference::next(symbol_reference& data)
 		
 	}
 	/// \brief 更新记录的范围
-	void contents::update_extent(const content& c)
+	void contents_table::update_extent(const content& c)
 	{
 		database_handle_ptr ptrDB = m_ptrDB.lock();
 		if(!ptrDB.get())
@@ -790,7 +1296,7 @@ bool symbols_reference::next(symbol_reference& data)
 
 	}
 	/// \brief 删除一条记录
-	bool contents::remove(const char* strTable)
+	bool contents_table::remove(const char* strTable)
 	{
 		database_handle_ptr ptrDB = m_ptrDB.lock();
 		if(!ptrDB.get())
@@ -806,7 +1312,7 @@ bool symbols_reference::next(symbol_reference& data)
 
 
 	/// \brief 添加一条新的记录
-	bool contents::append(const content& c)
+	bool contents_table::append(const content& c)
 	{
 		database_handle_ptr ptrDB = m_ptrDB.lock();
 		if(!ptrDB.get())
@@ -833,7 +1339,7 @@ bool symbols_reference::next(symbol_reference& data)
 
 
 	/// \brief 根据名称查询
-	content contents::query_identifier(const char* identifier)
+	content contents_table::query_identifier(const char* identifier)
 	{
 		database_handle_ptr ptrDB = m_ptrDB.lock();
 		if(!ptrDB.get())
@@ -864,7 +1370,7 @@ bool symbols_reference::next(symbol_reference& data)
 		return c;
 	}
 	/// \brief 查询特定类型的记录
-	std::vector<content> contents::query(const char* data_type)
+	std::vector<content> contents_table::query(const char* data_type)
 	{
 		std::stringstream ss;
 		ss <<"select table_name,data_type,identifier,description,last_change,min_x,min_y,max_x,max_y,srs_id from gpkg_contents";
@@ -901,7 +1407,7 @@ bool symbols_reference::next(symbol_reference& data)
 	}
 #pragma endregion
 #pragma region spatial_ref_sys
-	spatial_ref_sys::spatial_ref_sys(std::shared_ptr<database_handle>& db)
+	spatial_ref_sys_table::spatial_ref_sys_table(std::shared_ptr<database_handle>& db)
 	{
 		m_name = "gpkg_spatial_ref_sys";
 		m_ptrDB = db;
@@ -919,7 +1425,7 @@ bool symbols_reference::next(symbol_reference& data)
 		}
 	}
 	/// \brief 创建一个空间参考，设置传入空间参考的srs_id
-	bool spatial_ref_sys::create(spatial_ref& ref)
+	bool spatial_ref_sys_table::create(spatial_ref& ref)
 	{
 		//获取数据库句柄，无法获得则退出
 		database_handle_ptr ptrDB = m_ptrDB.lock();
@@ -947,7 +1453,7 @@ bool symbols_reference::next(symbol_reference& data)
 	}
 
 	/// \brief 根据空间参考id查询一个空间参考
-	spatial_ref spatial_ref_sys::query(int srs_id)
+	spatial_ref spatial_ref_sys_table::query(int srs_id)
 	{
 		//获取数据库句柄，无法获得则退出
 		database_handle_ptr ptrDB = m_ptrDB.lock();
@@ -978,7 +1484,7 @@ bool symbols_reference::next(symbol_reference& data)
 	}
 #pragma endregion
 #pragma region geometry_columns
-geometry_columns::geometry_columns(std::shared_ptr<database_handle>& db)
+geometry_columns_table::geometry_columns_table(std::shared_ptr<database_handle>& db)
 {
 	m_ptrDB = db;
 	if(!db->exist_table("gpkg_geometry_columns"))
@@ -1000,7 +1506,7 @@ geometry_columns::geometry_columns(std::shared_ptr<database_handle>& db)
 	}
 }
 /// \brief 删除一条记录
-bool geometry_columns::remove(const char* tablename)
+bool geometry_columns_table::remove(const char* tablename)
 {
 	//获取数据库句柄，无法获得则退出
 	database_handle_ptr ptrDB = m_ptrDB.lock();
@@ -1020,7 +1526,7 @@ bool geometry_columns::remove(const char* tablename)
 
 
 /// \brief 添加一条新的geometry记录
-bool geometry_columns::append(geometry_column &col)
+bool geometry_columns_table::append(geometry_column &col)
 {
 	//获取数据库句柄，无法获得则退出
 	database_handle_ptr ptrDB = m_ptrDB.lock();
@@ -1044,7 +1550,7 @@ bool geometry_columns::append(geometry_column &col)
 		
 	return !database_handle::is_error(stmt.step());
 }
-geometry_column geometry_columns::query(const char* name)
+geometry_column geometry_columns_table::query(const char* name)
 {
 	//获取数据库句柄，无法获得则退出
 	database_handle_ptr ptrDB = m_ptrDB.lock();
@@ -1292,7 +1798,7 @@ void CreateSpatialIndex(database_handle* db,const char* table,const char* geom,c
 	db->execute(ss.str().c_str());
 }
 /// \brief 创建空间索引
-bool feature_table::create_spatial_index(extensions* ext)
+bool feature_table::create_spatial_index(extensions_table* ext)
 {
 		//获取数据库句柄，无法获得则退出
 	database_handle_ptr ptrDB = m_ptrDB.lock();
@@ -1329,7 +1835,7 @@ bool feature_table::create_spatial_index(extensions* ext)
 	return true;
 }
 /// \brief 删除表
-bool feature_table::drop(extensions* ext)
+bool feature_table::drop(extensions_table* ext)
 {
 	//获取数据库句柄，无法获得则退出
 	database_handle_ptr ptrDB = m_ptrDB.lock();
@@ -1349,7 +1855,7 @@ bool feature_table::drop(extensions* ext)
 	return true;
 }
 /// \brief 删除空间索引
-bool feature_table::delete_spatial_index(extensions* ext)
+bool feature_table::delete_spatial_index(extensions_table* ext)
 {
 	//获取数据库句柄，无法获得则退出
 	database_handle_ptr ptrDB = m_ptrDB.lock();
@@ -1601,40 +2107,40 @@ database_handle_ptr  database::DB()
 	return m_ptrDB;
 }
 /// \brief 符号引用表，记录地物和符号的关系。
-symbols_reference* database::symbol_reference_table()
+symbol_reference_table* database::symbol_reference_table()
 {
 	if(m_ptrSymRef.get())
 		return m_ptrSymRef.get();
 
-	m_ptrSymRef.reset(new symbols_reference(m_ptrDB));
+	m_ptrSymRef.reset(new class symbol_reference_table(m_ptrDB));
 	return m_ptrSymRef.get();
 }
 /// \brief 符号表
-symbols* database::symbol_table()
+symbol_table* database::symbol_table()
 {
 	if(m_ptrSymbolData.get())
 		return m_ptrSymbolData.get();
 
-	m_ptrSymbolData.reset(new symbols(m_ptrDB));
+	m_ptrSymbolData.reset(new class symbol_table(m_ptrDB));
 	return m_ptrSymbolData.get();
 }
 //获取内容元表
-contents* database::contents_table()
+contents_table* database::contents_table()
 {
 	spatial_ref_table();
 	if(m_ptrContents.get())
 		return m_ptrContents.get();
 
-	m_ptrContents.reset(new contents(m_ptrDB));
+	m_ptrContents.reset(new class contents_table(m_ptrDB));
 	return m_ptrContents.get();
 }
 /// \brief 获取几何信息元表
-geometry_columns* database::geometry_columns_table()
+geometry_columns_table* database::geometry_columns_table()
 {
 	if(m_ptrGeo.get())
 		return m_ptrGeo.get();
 
-	m_ptrGeo.reset(new geometry_columns(m_ptrDB));
+	m_ptrGeo.reset(new class geometry_columns_table(m_ptrDB));
 	return m_ptrGeo.get();
 }
 /// \brief 获取序列表指针
@@ -1646,24 +2152,45 @@ sqlite_sequence* database::sequence_table()
 	m_ptrSequence.reset(new sqlite_sequence(m_ptrDB));
 	return m_ptrSequence.get();
 }
+/// \brief 元数据
+metadata_table* database::metadata_table()
+{
+	if(m_ptrMetadata.get())
+		return m_ptrMetadata.get();
+
+	m_ptrMetadata.reset(new class metadata_table(m_ptrDB));
+	return m_ptrMetadata.get();
+}
+/// \brief 元数据引用
+metadata_reference_table* database::metadata_reference_table()
+{
+	metadata_table();
+	if(m_ptrMetadataRef.get())
+		return m_ptrMetadataRef.get();
+
+	m_ptrMetadataRef.reset(new class metadata_reference_table(m_ptrDB));
+	return m_ptrMetadataRef.get();
+}
+
+
 
 /// \brief 扩展表
-extensions* database::extensions_table()
+extensions_table* database::extensions_table()
 {
 	if(m_ptrExtensions.get())
 		return m_ptrExtensions.get();
 
-	m_ptrExtensions.reset(new extensions(m_ptrDB));
+	m_ptrExtensions.reset(new class extensions_table(m_ptrDB));
 	return m_ptrExtensions.get();
 }
 
 //获取空间元表
-spatial_ref_sys* database::spatial_ref_table()
+spatial_ref_sys_table* database::spatial_ref_table()
 {
 	if(m_ptrSR.get())
 		return m_ptrSR.get();
 
-	m_ptrSR.reset(new spatial_ref_sys(m_ptrDB));
+	m_ptrSR.reset(new spatial_ref_sys_table(m_ptrDB));
 	return m_ptrSR.get();
 }
 /// \brief 打开地物类表

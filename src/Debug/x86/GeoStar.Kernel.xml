@@ -301,7 +301,7 @@
         <member name="D:GeoStar.Kernel.GsStyleTableFactoryPtr">
 \brief GsStyleTableFactoryPtr
 </member>
-        <member name="M:GeoStar.Kernel.GsStyleTableFactory.OpenFromMapDefine(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+        <member name="M:GeoStar.Kernel.GsStyleTableFactory.OpenFromMapDefine(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,GeoStar.Kernel.GsPyramid*)">
 \brief 从地图定义文件构造样式表实例
 </member>
         <member name="M:GeoStar.Kernel.GsStyleTableFactory.OpenFromXml(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.Boolean)">
@@ -2295,6 +2295,18 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
   }while(ptrCursor-&gt;Next(ptrFea.p);
 \endcode
 </member>
+        <member name="D:GeoStar.Kernel.GsSymbolizeFeaturePtr">
+\brief GsSymbolizeFeaturePtr
+</member>
+        <member name="M:GeoStar.Kernel.GsSymbolizeFeature.SymbolData">
+\brief 获取符号数据
+</member>
+        <member name="M:GeoStar.Kernel.GsSymbolizeFeature.SymbolID">
+\brief 获取符号的ID
+</member>
+        <member name="T:GeoStar.Kernel.GsSymbolizeFeature">
+\brief 带符号化的矢量地物对象
+</member>
         <member name="D:GeoStar.Kernel.GsFeaturePtr">
 \brief GsFeaturePtr
 </member>
@@ -3166,6 +3178,9 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
         <member name="M:GeoStar.Kernel.GsPointFillSymbol.IsValid">
 \brief 符号是否有效
 \details 符号是否会在画布上绘制内容，如果符号不会在画布上绘制任何的内容则不需要执行绘制过程。
+</member>
+        <member name="M:GeoStar.Kernel.GsPointFillSymbol.Picture">
+\brief 获取图片
 </member>
         <member name="M:GeoStar.Kernel.GsPointFillSymbol.YSeparation(System.Double)">
 \brief x方向上间隔
@@ -4300,6 +4315,9 @@ GsGeoDatabasePtr ptrGDB = fac.Open(connProperty);
 </member>
         <member name="M:GeoStar.Kernel.GsSymbolLibrary.ParserSymbol(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
 \brief 从字符串解析生成符号对象
+</member>
+        <member name="M:GeoStar.Kernel.GsSymbolLibrary.ToStringDrawn(GeoStar.Kernel.GsSymbol*)">
+\brief 将符号序列化为字符串，只包含绘制部分，不含basic。
 </member>
         <member name="M:GeoStar.Kernel.GsSymbolLibrary.ToString(GeoStar.Kernel.GsSymbol*,GeoStar.Kernel.GsSymbolLibraryFormat)">
 \brief 将符号序列化为字符串。

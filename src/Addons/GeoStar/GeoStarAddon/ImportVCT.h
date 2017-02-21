@@ -6,14 +6,16 @@
 #include <VCTRW.h>
 
 //缓存符号的信息。
-class SymbolCache
+class VCTContext
 {
 	std::string m_VCTFile;
 	gpkg::database_ptr m_DB;
-	gpkg::symbols* m_pSymbols;
-	gpkg::symbols_reference* m_pSymbolRef;
+	gpkg::symbol_table* m_pSymbols;
+	gpkg::symbol_reference_table* m_pSymbolRef;
 	//记录已经存储到符号表的符号的id和style对应关系。
 	std::map<std::string,long long> m_SymbolID;
+	long long						m_MetadataID;
+
 	//存储外部的符号库。
 	std::map<std::string,std::shared_ptr<GeoStar::Kernel::GsSymbolLibrary> > m_CacheExtLib;
 
@@ -24,12 +26,20 @@ class SymbolCache
 	std::string ToTextSymbol(VCTStyle& style);
 	
 	std::shared_ptr<GeoStar::Kernel::GsSymbolLibrary> SymbolLib(const char* libName);
-
+	
 public:
-	SymbolCache();
+	VCTContext();
+
 	void Attach(gpkg::database_ptr &db);
 	//绑定VCT文件
 	void BindVCT(const char* vctFile);
+	//返回VCT文件的元数据，如果存在的话
+	std::string MetadataFile();
+	long long MetaDataID();
+	long long StoreMetadata();
+	//存储元数据的引用
+	void StoreMetadataReference(const char* table_name);
+
 
 	//根据VCT的style查询记录到符号库的符号id。如果没有则返回0
 	long long SymbolIDFromStyle(const char* style);
@@ -45,7 +55,7 @@ public:
 class ImportVCT:public GIS::AddonBase
 {
 	//符号缓存。
-	SymbolCache m_SymbolCache;
+	VCTContext m_VCTContext;
 
 	/// \brief 导入一个文件
 	virtual bool ImportVCTFile(GeoStar::Utility::GsFile& file,gpkg::database_ptr& db,GIS::Progress * nProgress);

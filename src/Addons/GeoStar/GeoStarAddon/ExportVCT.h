@@ -10,22 +10,25 @@ class StyleCache
 	VCTWriter* m_Writer;
 	int m_nIndex;
 	std::map<long long,std::string> m_StyleName;
+	//记录地物类的元数据id
+	std::vector<long long>				m_FeaClassMetadata;
+
 	std::shared_ptr<GeoStar::Kernel::GsSymbolLibrary> m_ptrSymLib;
 	void SaveStyle(GeoStar::Kernel::GsPointSymbol* pSym,const std::string& name);
 	void SaveStyle(GeoStar::Kernel::GsLineSymbol* pSym,const std::string& name);
 	void SaveStyle(GeoStar::Kernel::GsFillSymbol* pSym,const std::string& name);
 	void SaveStyle(GeoStar::Kernel::GsTextSymbol* pSym,const std::string& name);
 	std::shared_ptr<GeoStar::Kernel::GsSymbolLibrary> SymbolLib();
+	
 public:
 	StyleCache();
-	void Commit();
+	void AddFeatureClassMetadata(long long id);
+	void Commit(gpkg::database_ptr& db);
 	void Attach(VCTWriter* w);
 	//根据符号id查询style的名称
 	std::string StyleName(long long symID);
 	//存储一个符号为style，返回sytle的明恒
 	std::string SaveStyle(gpkg::symbol &sym);
-
-
 };
 
 class ExportVCT:public GIS::AddonBase

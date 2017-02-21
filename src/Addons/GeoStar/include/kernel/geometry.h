@@ -3,6 +3,11 @@
 #include <utility.h> 
 #include "spatialreference.h"
 #include "../geomathd/geomath.h"
+
+//添加geomeathse引用 chijing 20170214
+#include "../geomathse/gobject.inl"
+#include "../geomathse/GeomathSE.inl"
+
 #include <map>
 #include <sstream>
 #include <stack>
@@ -290,7 +295,19 @@ public:
 	{
 		return (T*)Coordinate();
 	}
-
+	/// \brief 获取SE对象
+	/// \param pInter 解释串指针
+	/// \return 返回生成SE对象
+	geostar::gobjptr GeoSEObject();
+	/// \brief 设置SE对象到内存块
+	/// \param pInter SE对象
+	/// \return 返回是否成功
+	bool GeoSEObject(geostar::geo_object* p);
+private:
+	/// \brief se 对象
+	geostar::gobjptr m_ptrGeoObject;
+	/// \brief se 算法和类厂对象
+	geostar::safe_ga m_Safe_ga;
 };
 
 /// \brief 几何对象关系结果

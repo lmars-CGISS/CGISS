@@ -105,6 +105,9 @@ public:
 	/// \brief x方向上间隔
 	void YSeparation(double val);
 
+	/// \brief 获取图片
+	Utility::GsImage* Picture();
+
 	/// \brief 符号是否有效
 	/// \details 符号是否会在画布上绘制内容，如果符号不会在画布上绘制任何的内容则不需要执行绘制过程。
 	virtual bool IsValid();

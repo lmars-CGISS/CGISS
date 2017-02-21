@@ -80,8 +80,6 @@ const char* ImportFCS::Execute(const char* strParameter,GIS::Progress * pProgres
 	//从源数据库转换到目标数据库
 	ExecuteTranslate(ptrGDBInput,ptrGDBOutput,pProgress);
 
- 
-
 	//输出结果
 	m_strResult = kvpoutput.ToString();
 	return m_strResult.c_str();

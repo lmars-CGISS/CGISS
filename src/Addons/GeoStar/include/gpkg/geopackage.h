@@ -184,11 +184,11 @@ namespace gpkg
 		int srs_id;
 	};
 	/// \brief 元表gpkg_contents
-	class contents:public table
+	class contents_table:public table
 	{
 		sqlite_statment_ptr m_ptrUpdateExtent;
 	public:
-		contents(std::shared_ptr<database_handle>& db);
+		contents_table(std::shared_ptr<database_handle>& db);
 		
 		/// \brief 查询特定类型的记录
 		std::vector<content> query(const char* data_type = NULL);
@@ -208,7 +208,7 @@ namespace gpkg
 
 	};
 	/// \brief 智能指针
-	typedef std::shared_ptr<contents> contents_ptr;
+	typedef std::shared_ptr<contents_table> contents_table_ptr;
 	/// \brief 空间参考记录
 	struct spatial_ref
 	{
@@ -220,10 +220,10 @@ namespace gpkg
 		std::string description;
 	};
 	/// \brief 元表gpkg_spatial_ref_sys
-	class spatial_ref_sys:public table
+	class spatial_ref_sys_table:public table
 	{
 	public:
-		spatial_ref_sys(std::shared_ptr<database_handle>& db);
+		spatial_ref_sys_table(std::shared_ptr<database_handle>& db);
 		
 		/// \brief 根据空间参考id查询一个空间参考
 		spatial_ref query(int srs_id);
@@ -234,20 +234,20 @@ namespace gpkg
 	};
 	
 	/// \brief 智能指针
-	typedef std::shared_ptr<spatial_ref_sys> spatial_ref_sys_ptr;
+	typedef std::shared_ptr<spatial_ref_sys_table> spatial_ref_sys_table_ptr;
 #pragma endregion 
 
 #pragma region 可选元表
 
 	
 	/// \brief 元表gpkg_tile_matrix_set
-	class tile_matrix_set:public table
+	class tile_matrix_set_table:public table
 	{
 		
 	};
 	
 	/// \brief 智能指针
-	typedef std::shared_ptr<tile_matrix_set> tile_matrix_set_ptr;
+	typedef std::shared_ptr<tile_matrix_set_table> tile_matrix_set_table_ptr;
 	
 	/// \brief 几何对象列的记录
 	struct geometry_column
@@ -260,10 +260,10 @@ namespace gpkg
 		bool m;
 	};
 	/// \brief 元表gpkg_geometry_columns
-	class geometry_columns:public table
+	class geometry_columns_table:public table
 	{
 	public:
-		geometry_columns(std::shared_ptr<database_handle>& db);
+		geometry_columns_table(std::shared_ptr<database_handle>& db);
 		
 		/// \brief 根据表的名称查询一条几何记录
 		geometry_column query(const char* name);
@@ -277,30 +277,118 @@ namespace gpkg
 	};
 	
 	/// \brief 智能指针
-	typedef std::shared_ptr<geometry_columns> geometry_columns_ptr;
+	typedef std::shared_ptr<geometry_columns_table> geometry_columns_table_ptr;
 	 
 
 	/// \brief 元表gpkg_tile_matrix
-	class tile_matrix:public table
+	class tile_matrix_table:public table
 	{
 	};
 	/// \brief 智能指针
-	typedef std::shared_ptr<tile_matrix> tile_matrix_ptr;
+	typedef std::shared_ptr<tile_matrix_table> tile_matrix_table_ptr;
+
+	/// \brief 元数据
+	struct metadata
+	{
+		/// \brief 符号标识
+		int id;
+		/// \brief 范围。
+		std::string md_scope;
+		/// \brief 元数据定义标准
+		std::string md_standard_uri;
+		/// \brief 元数据格式类型 MIME [21] 编码 。
+		std::string mime_type;
+		/// \brief 元数据内容
+		std::string data;
+	};
 
 	/// \brief 元表gpkg_metadata
-	class metadata:public table
+	class metadata_table:public table
 	{
+	public:
+		metadata_table(std::shared_ptr<database_handle>& db);
+		
+		/// \brief 增加一个元数据
+		bool add(metadata& data);
+
+		/// \brief 删除一个元数据
+		bool remove(const metadata& data);
+
+		/// \brief 查询一个元数据
+		bool query(metadata& data);
+
+		/// \brief 替换一个元数据
+		bool replace(const metadata& data);
 	};
 	/// \brief 智能指针
-	typedef std::shared_ptr<metadata> metadata_ptr;
+	typedef std::shared_ptr<metadata_table> metadata_table_ptr;
 
-	/// \brief 元表gpkg_metadata_reference
-	class metadata_reference:public table
+	/// \brief 元数据引用
+	struct metadata_reference
 	{
+		/// \brief 元数据引用范围
+		/// \details‘GeoPackage’， ‘table’,‘column’，’ row’， ’row/col’之一
+		std::string reference_scope ;
+		/// \brief 元数据引用的表名称，如果 reference_scope 为 GeoPackage’，则为 空。 
+		std::string table_name;
+		/// \brief 元数据引用的表列名称
+		/// \details 如果 reference_scope 为 GeoPackage’， ‘table’ 或 ‘row’，为空，或如果 reference_scope 为 ‘column’ or ‘row/col’，则对应 table_name 表的 列名称。 
+		std::string column_name;
+		/// \brief 如果 reference_scope 为 ‘GeoPackage’，‘table’ 或 ‘column’，则为 NULL，或如果 reference_scope 为  ‘row’ 或 ‘row/col’，则对应 table_name 表行记 录的 rowid。 
+		long long row_id_value;
+		/// \brief 时间
+		/// \details 以ISO 8601格式所定义的时间戳值，函数 strftime("%y-%M-%dT% H:%M:%fZ",now) 定义了于当前的时间格式字符串。 
+		std::string timestamp;
+
+		/// \brief 引用的gpkg_metadata表中元数据的 ID列值。  
+		long long md_file_id;
+
+		/// \brief 元数据在gpkg_metadata表中的父元数据的ID列值。
+		long long md_parent_id;
+
+	};
+	/// \brief 元表gpkg_metadata_reference
+	class metadata_reference_table:public table
+	{
+		sqlite_statment_ptr m_ptrQuery;
+	public:
+		metadata_reference_table(std::shared_ptr<database_handle>& db);
+		
+		/// \brief 增加一个元数据引用
+		bool add(metadata_reference& data);
+
+		/// \brief 删除某个影响范围的元数据引用
+		bool remove(const std::string& scope);
+
+		/// \brief 删除某个表的元数据引用
+		bool remove(const std::string& scope,const std::string& table_name);
+		/// \brief 删除某个表的列对应的元数据引用
+		bool remove(const std::string& scope,const std::string& table_name,const std::string& column_name);
+
+		/// \brief 删除某行的元数据引用
+		bool remove(const std::string& scope,const std::string& table_name,long long rowid);
+		
+		/// \brief 删除某列、某行的元数据引用
+		bool remove(const std::string& scope,const std::string& table_name,const std::string& column_name,long long rowid);
+		
+		/// \brief 查询某个影响范围的元数据引用
+		bool query(const std::string& scope);
+		/// \brief 查询某个表的元数据引用
+		bool query(const std::string& scope,const std::string& table_name);
+		/// \brief 查询某个行的元数据引用
+		bool query(const std::string& scope,const std::string& table_name,long long rowid);
+		/// \brief 查询某个列的元数据引用
+		bool query(const std::string& scope,const std::string& table_name,const std::string& column_name);
+		/// \brief 查询某个列，某个行的元数据引用
+		bool query(const std::string& scope,const std::string& table_name,const std::string& column_name,long long rowid);
+			
+		/// \brief 调用query之后获取下一个引用的查询结果。
+		bool next(metadata_reference& data);
+
 	};
 	
 	/// \brief 智能指针
-	typedef std::shared_ptr<metadata_reference> metadata_reference_ptr;
+	typedef std::shared_ptr<metadata_reference_table> metadata_reference_table_ptr;
 
 	
 	/// \brief 单个符号数据
@@ -327,10 +415,10 @@ namespace gpkg
 	};
 
 	/// \brief 符号表扩展
-	class symbols:public table
+	class symbol_table:public table
 	{
 	public:
-		symbols(std::shared_ptr<database_handle>& db);
+		symbol_table(std::shared_ptr<database_handle>& db);
 		
 		/// \brief 增加一个符号
 		bool add(symbol& data);
@@ -346,7 +434,7 @@ namespace gpkg
 
 	};
 	/// \brief 智能指针
-	typedef std::shared_ptr<symbols> symbols_ptr;
+	typedef std::shared_ptr<symbol_table> symbol_table_ptr;
 
 
 	/// \brief 符号引用
@@ -360,11 +448,11 @@ namespace gpkg
 	};
 
 	/// \brief 符号引用
-	class symbols_reference:public table
+	class symbol_reference_table:public table
 	{
 		sqlite_statment_ptr m_ptrQuery;
 	public:
-		symbols_reference(std::shared_ptr<database_handle>& db);
+		symbol_reference_table(std::shared_ptr<database_handle>& db);
 		
 		/// \brief 增加一个引用
 		bool add(const symbol_reference& data);
@@ -388,7 +476,7 @@ namespace gpkg
 
 	};
 	/// \brief 智能指针
-	typedef std::shared_ptr<symbols_reference> symbols_reference_ptr;
+	typedef std::shared_ptr<symbol_reference_table> symbol_reference_table_ptr;
 
 	
 	/// \brief 一条扩展记录
@@ -401,10 +489,10 @@ namespace gpkg
 		std::string scope;
 	};
 	/// \brief 元表gpkg_extensions
-	class extensions:public table
+	class extensions_table:public table
 	{
 	public:
-		extensions(std::shared_ptr<database_handle>& db);
+		extensions_table(std::shared_ptr<database_handle>& db);
 		
 		/// \brief 增加一条扩展记录
 		bool add(const extension& ext);
@@ -417,7 +505,7 @@ namespace gpkg
 
 	};
 	/// \brief 智能指针
-	typedef std::shared_ptr<extensions> extensions_ptr;
+	typedef std::shared_ptr<extensions_table> extensions_table_ptr;
 
 	/// \brief sqlite的id分配表sqlite_sequence
 	class sqlite_sequence:public table
@@ -523,13 +611,13 @@ namespace gpkg
 		bool delete_feature(long long nFID);
 
 		/// \brief 创建空间索引
-		bool create_spatial_index(extensions* ext);
+		bool create_spatial_index(extensions_table* ext);
 
 		/// \brief 删除空间索引
-		bool delete_spatial_index(extensions* ext);
+		bool delete_spatial_index(extensions_table* ext);
 
 		/// \brief 删除表
-		bool drop(extensions* ext);
+		bool drop(extensions_table* ext);
 
 	};
 	/// \brief 地物类表智能指针
@@ -547,22 +635,26 @@ namespace gpkg
 		/// \brief sqlite标准序列表。
 		sqlite_sequence_ptr m_ptrSequence;
 		/// \brief 扩展表
-		extensions_ptr m_ptrExtensions;
+		extensions_table_ptr m_ptrExtensions;
 		/// \brief 数据库对象
 		database_handle_ptr  m_ptrDB;
 		/// \brief 内容元表
-		contents_ptr m_ptrContents;
+		contents_table_ptr m_ptrContents;
 		/// \brief 空间参考元表
-		spatial_ref_sys_ptr m_ptrSR;
+		spatial_ref_sys_table_ptr m_ptrSR;
 
 		/// \brief 几何元信息表
-		geometry_columns_ptr m_ptrGeo;
+		geometry_columns_table_ptr m_ptrGeo;
 		
 		/// \brief 符号表
-		symbols_ptr m_ptrSymbolData;
-
+		symbol_table_ptr m_ptrSymbolData;
+		/// \brief 元数据
+		metadata_table_ptr m_ptrMetadata;
+		/// \brief 元数据引用
+		metadata_reference_table_ptr m_ptrMetadataRef;
+		
 		/// \brief 符号引用表，记录地物和符号的关系。
-		symbols_reference_ptr m_ptrSymRef;
+		symbol_reference_table_ptr m_ptrSymRef;
 	public:
 		/// \brief sqlite的句柄
 		sqlite3* handle();
@@ -571,23 +663,28 @@ namespace gpkg
 		database_handle_ptr  DB();
 
 		/// \brief 符号表
-		symbols* symbol_table();
+		class symbol_table* symbol_table();
 		/// \brief 符号引用表，记录地物和符号的关系。
-		symbols_reference* symbol_reference_table();
+		class symbol_reference_table* symbol_reference_table();
 
 		/// \brief 获取内容元表
-		contents* contents_table();
+		class contents_table* contents_table();
 		/// \brief 获取空间参考元表
-		spatial_ref_sys* spatial_ref_table();
+		class spatial_ref_sys_table* spatial_ref_table();
 
 		/// \brief 获取几何信息元表
-		geometry_columns* geometry_columns_table();
+		class geometry_columns_table* geometry_columns_table();
 
 		/// \brief 扩展表
-		extensions* extensions_table();
+		class extensions_table* extensions_table();
 
 		/// \brief 获取序列表指针
 		sqlite_sequence* sequence_table();
+		
+		/// \brief 元数据
+		class metadata_table* metadata_table();
+		/// \brief 元数据引用
+		class metadata_reference_table* metadata_reference_table();
 
 
 	public:

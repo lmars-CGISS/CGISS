@@ -749,6 +749,20 @@ public:
 /// \brief GsFeaturePtr
 GS_SMARTER_PTR(GsFeature);
 
+/// \brief 带符号化的矢量地物对象
+class GS_API GsSymbolizeFeature:public GsFeature
+{
+public:
+	virtual ~GsSymbolizeFeature(){}
+	/// \brief 获取符号的ID
+	virtual long long SymbolID() = 0;
+
+	/// \brief 获取符号数据
+	virtual Utility::GsAny SymbolData() = 0;
+};
+/// \brief GsSymbolizeFeaturePtr
+GS_SMARTER_PTR(GsSymbolizeFeature);
+
 /// \brief 地物游标
 /// \code{.cpp}
 ///  GsFeaturePtr ptrFea = ptrCursor->Next();

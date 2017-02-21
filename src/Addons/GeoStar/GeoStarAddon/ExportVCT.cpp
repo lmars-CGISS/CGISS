@@ -15,6 +15,7 @@ void StyleCache::Attach(VCTWriter* w)
 	m_nIndex = 0;
 	m_Writer = w;
 	m_StyleName.clear();
+	m_FeaClassMetadata.clear();
 }
 //根据符号id查询style的名称
 std::string StyleCache::StyleName(long long symID)
@@ -24,13 +25,50 @@ std::string StyleCache::StyleName(long long symID)
 		return it->second;
 	return std::string();
 }
-void StyleCache::Commit()
+void StyleCache::AddFeatureClassMetadata(long long id)
 {
-	if(!m_ptrSymLib)
-		return;
-	GeoStar::Utility::GsFile f(m_Writer->Path());
-	f.ChangeExtension("symx");
-	m_ptrSymLib->Save(f.Path());
+	//如果元数据的id已经添加过则不需要添加了。
+	std::vector<long long>::iterator it = m_FeaClassMetadata.begin();
+	for(;it != m_FeaClassMetadata.end();it++)
+	{
+		if(*it == id)
+			return;
+	}
+
+	m_FeaClassMetadata.push_back(id);
+}
+void StyleCache::Commit(gpkg::database_ptr& db)
+{
+	if(m_ptrSymLib)
+	{
+		GeoStar::Utility::GsFile f(m_Writer->Path());
+		f.ChangeExtension("symx");
+		m_ptrSymLib->Save(f.Path());
+	}
+	if(m_FeaClassMetadata.empty()) return;
+	gpkg::metadata_table* table = db->metadata_table();
+	gpkg::metadata meta;
+	//构建以VCT文件名后面加xml后缀的路径作为元数据文件名
+	std::string strMetaFile = m_Writer->Path();
+	strMetaFile+=".xml";
+	//这里只考虑写入第一个元数据。将来需要考虑融合多个元数据。
+	for(int i =0;i < m_FeaClassMetadata.size();i++)
+	{
+		meta.id = m_FeaClassMetadata[i];
+		
+		//查询元数据
+		if(table->query(meta))
+		{
+			if(!meta.data.empty())
+			{
+				//将元数据写入到文件中。
+				std::ofstream f(strMetaFile.c_str());
+				f<<meta.data;
+				return;
+			}
+		}
+
+	}
 }
 std::shared_ptr<GeoStar::Kernel::GsSymbolLibrary> StyleCache::SymbolLib()
 {
@@ -667,9 +705,9 @@ void ExportVCT::WriteTo(VCTWriter& w,gpkg::content& content,gpkg::database_ptr d
 	int nPos  = 0;
 	std::string strTitle = "转换地物";
 	std::string strContent = code.strName;
-	gpkg::symbols_reference* pSymRef = db->symbol_reference_table();
+	gpkg::symbol_reference_table* pSymRef = db->symbol_reference_table();
 	gpkg::symbol_reference symRef;
-	gpkg::symbols* pSyms = db->symbol_table();
+	gpkg::symbol_table* pSyms = db->symbol_table();
 	gpkg::symbol sym;
 
 	while(ptrFeaClass->next(&fea))
@@ -699,6 +737,15 @@ void ExportVCT::WriteTo(VCTWriter& w,gpkg::content& content,gpkg::database_ptr d
 		nPos++;
 		pProgress->OnProgress(nPos,nMax,strTitle.c_str(),strContent.c_str());
 	}
+
+	//查询地物类的元数据
+	gpkg::metadata_reference_table* pRefTable = db->metadata_reference_table();
+	std::string strScope = "table";
+	pRefTable->query(strScope,content.table_name);
+	gpkg::metadata_reference ref;
+	//如果查询到地物类的元数据则加入到cache中，当commit的时候会生成元数据文件。
+	if(pRefTable->next(ref))
+		m_StyleCache.AddFeatureClassMetadata(ref.md_file_id);
 
 }
 /// \brief 执行插件
@@ -767,7 +814,7 @@ const char* ExportVCT::Execute(const char* strParameter,GIS::Progress * pProgres
 		{
 			WriteTo(w,*it,db,pProgress,id);
 		}
-		m_StyleCache.Commit();
+		m_StyleCache.Commit(db);
 		//结束绘制。
 		pProgress->OnLog("提交数据。",GIS::LogLevel::eInfo);
 		w.Finish();
@@ -784,7 +831,7 @@ const char* ExportVCT::Execute(const char* strParameter,GIS::Progress * pProgres
 			m_StyleCache.Attach(&w);
 			WriteTo(w,*it,db,pProgress,id);
 			pProgress->OnLog("提交数据。",GIS::LogLevel::eInfo);
-			m_StyleCache.Commit();
+			m_StyleCache.Commit(db);
 			w.Finish();
 		}
 	}

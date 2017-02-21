@@ -147,9 +147,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\..\include\tinyxml\kvp.h" />
     <ClInclude Include="..\..\include\tinyxml\tinyxml2.h" />
     <ClInclude Include="Export.h" />

@@ -658,6 +658,10 @@ GS_SMARTER_PTR(GsPaletteRasterRenderer);
 /// \details 游标中所有的地物统一使用一种符号进行绘制
 class GS_API GsSimpleFeatureRenderer:public GsFeatureRenderer
 {
+	GsSymbolizeFeaturePtr m_ptrSymbolizeFea;
+	std::map<long long,GsSymbolPtr> m_CacheSymbol;
+	
+	bool DrawSymbolizeFeature(GsFeature* pFea,GsDisplay* pDisplay);
 protected:
 	/// \brief 渲染的符号
 	GsSymbolPtr m_ptrSymbol;
@@ -773,8 +777,11 @@ class GS_API GsTextFeatureRenderer:public GsFeatureRenderer
 	bool m_bUnified;
 	GsTextSymbolPtr m_ptrTextSymbol;
 	GsTextSymbolPtr m_ptrRenderSymbol;
-
+	GsSymbolizeFeaturePtr m_ptrSymbolizeFea;
 	int m_nTextFieldPos;
+	std::map<long long,GsTextSymbolPtr> m_CacheSymbol;
+	
+	bool DrawSymbolizeFeature(GsFeature* pFea,GsDisplay* pDisplay);
 protected:
 	/// \brief 渲染器开始绘制游标时发生
 	virtual bool OnBeginDrawCursor(GsFeature* pFeaFirst,GsFeatureCursor* pFeaCursor,GsDisplay* pDisplay);

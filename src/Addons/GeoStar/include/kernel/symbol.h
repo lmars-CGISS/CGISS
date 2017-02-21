@@ -757,6 +757,9 @@ public:
 	/// \brief 将符号序列化为字符串。
 	static Utility::GsString ToString(GsSymbol* pSym,GsSymbolLibraryFormat eFormat = eGenernalFormat);
 
+	/// \brief 将符号序列化为字符串，只包含绘制部分，不含basic。
+	static Utility::GsString ToStringDrawn(GsSymbol* pSym);
+
 	/// \brief 从字符串解析生成符号对象
 	static GsSymbolPtr ParserSymbol(const char* str);
 
