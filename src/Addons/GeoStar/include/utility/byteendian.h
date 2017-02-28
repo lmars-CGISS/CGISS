@@ -7,7 +7,7 @@ UTILITY_NS
 enum GsEndian
 {
 	eBigEndian,
-	eLitteEndian,
+	eLittleEndian, 
 };
 
 /// \brief 字节序转换类
@@ -21,7 +21,7 @@ public:
 	static bool IsBigEndian ();
 
 	/// \brief 是否是低字节序
-	static bool IsLitteEndian ();
+	static bool IsLittleEndian ();
 
 	/// \brief 变量字节转换模板
 	template<typename T>

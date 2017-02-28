@@ -518,8 +518,26 @@ Shp文件类工厂
         <member name="D:GeoStar.Kernel.GsStyledVectorTileRendererPtr">
 \brief GsVectorStyleRenderer
 </member>
-        <member name="M:GeoStar.Kernel.GsStyledVectorTileRenderer.DrawVectorTile(GeoStar.Kernel.GsTile*)">
-\brief 绘制瓦片类型矢量数据。
+        <member name="M:GeoStar.Kernel.GsStyledVectorTileRenderer.IsLabelLayer(LayerDrawStyle*)">
+判断是否是标注图层
+</member>
+        <member name="M:GeoStar.Kernel.GsStyledVectorTileRenderer.IsLayerDrawOnTile(LayerDrawStyle*)">
+判断图层是否要绘制到瓦片上
+</member>
+        <member name="M:GeoStar.Kernel.GsStyledVectorTileRenderer.DrawTileFeature(LayerDrawStyle*,VectorTileFeature*,System.Boolean,System.Boolean)">
+绘制瓦片记录
+</member>
+        <member name="M:GeoStar.Kernel.GsStyledVectorTileRenderer.GetLabelProperty(System.Int32)">
+根据几何维度获取自动标注对象（0：点  1：线  2：面）
+</member>
+        <member name="M:GeoStar.Kernel.GsStyledVectorTileRenderer.DrawLabels(System.Byte!System.Runtime.CompilerServices.IsConst*,System.Int32,System.Int32,System.Int32,System.Int32)">
+\brief 本地渲染绘制瓦片标注
+</member>
+        <member name="M:GeoStar.Kernel.GsStyledVectorTileRenderer.LabelDisplayTransformation(GeoStar.Kernel.GsDisplayTransformation*)">
+\brief 本地渲染标注坐标转换对象
+</member>
+        <member name="M:GeoStar.Kernel.GsStyledVectorTileRenderer.LabelContainer(GeoStar.Kernel.GsLabelContainer*)">
+\brief 本地渲染设置标注参数容器
 </member>
         <member name="M:GeoStar.Kernel.GsStyledVectorTileRenderer.DrawVectorTile(System.Byte!System.Runtime.CompilerServices.IsConst*,System.Int32,System.Int32,System.Int32,System.Int32)">
 \brief 绘制瓦片类型矢量数据。
@@ -1423,11 +1441,23 @@ Shp文件类工厂
         <member name="D:GeoStar.Kernel.GsRenditionPtr">
 \brief GsRenditionPtr
 </member>
+        <member name="M:GeoStar.Kernel.GsRendition.TextMaxScale(System.Double)">
+\brief 设置/读取标注小层级
+</member>
+        <member name="M:GeoStar.Kernel.GsRendition.TextMinScale(System.Double)">
+\brief 设置/读取标注小层级
+</member>
         <member name="M:GeoStar.Kernel.GsRendition.End">
 \brief 结束渲染
 </member>
         <member name="M:GeoStar.Kernel.GsRendition.Begin(GeoStar.Kernel.GsDisplay*)">
 \brief 开始渲染
+</member>
+        <member name="F:GeoStar.Kernel.GsRendition.m_dblTextMaxScale">
+\brief 标注最大可见比例尺
+</member>
+        <member name="F:GeoStar.Kernel.GsRendition.m_dblTextMinScale">
+\brief 标注最小可见比例尺
 </member>
         <member name="T:GeoStar.Kernel.GsRendition">
 \brief 渲染器，实现数据的渲染。
@@ -1602,6 +1632,12 @@ Shp文件类工厂
 </member>
         <member name="F:GeoStar.Kernel.GsLayer.m_dblReferenceScale">
 \brief 参考比例尺
+</member>
+        <member name="F:GeoStar.Kernel.GsLayer.m_dblTextMaxScale">
+\brief 标注最大可见比例尺
+</member>
+        <member name="F:GeoStar.Kernel.GsLayer.m_dblTextMinScale">
+\brief 标注最小可见比例尺
 </member>
         <member name="F:GeoStar.Kernel.GsLayer.m_dblMaxScale">
 \brief 最大可见比例尺
@@ -7205,7 +7241,7 @@ GsSpatialReferencePtr ptrSR = new GsSpatialReference(4326);
         <member name="T:GeoStar.Utility.GsQRCodePage">
 \brief 一个二维码对象
 </member>
-        <member name="M:GeoStar.Utility.GsEndianConverter.IsLitteEndian">
+        <member name="M:GeoStar.Utility.GsEndianConverter.IsLittleEndian">
 \brief 是否是低字节序
 </member>
         <member name="M:GeoStar.Utility.GsEndianConverter.IsBigEndian">

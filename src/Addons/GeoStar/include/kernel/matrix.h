@@ -95,6 +95,11 @@ public:
 		return true;
 	}
 
+	/// \brief 获取矩阵数据的指针
+	T* Ptr()
+	{
+		return m_m;
+	}
 	/// \brief 为矩阵6元素赋值
     GsMatrixT<T>& Elements(T m11, T m12, T m21, T m22, T dx, T dy)
 	{

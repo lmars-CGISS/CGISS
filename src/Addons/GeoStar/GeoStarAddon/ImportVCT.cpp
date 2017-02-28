@@ -3,6 +3,8 @@
 #include <iostream>
 #include <io.h>
 #include "time.h"
+#include "WKBHelp.h"
+
 #pragma comment(lib,"LibVCT")
 
 std::string ToUtf8(const char* str)
@@ -640,22 +642,13 @@ class GPKGWriteFeature:public gpkg::feature
 	VCTParser*	m_pParser;
 	VCTFeatureCode  m_Code;
 
-	GeoStar::Utility::GsGrowByteBuffer m_Geo;
-	GeoStar::Kernel::GsWKBOGCWriter m_Writer;
-	GeoStar::Kernel::GsPointPtr m_ptrPoint;
-	GeoStar::Kernel::GsMultiPointPtr m_ptrMultiPoint;
-	GeoStar::Kernel::GsPathPtr m_ptrPath;
-	GeoStar::Kernel::GsPolylinePtr m_ptrPolyline;
-	GeoStar::Kernel::GsRingPtr m_ptrRing;
-	GeoStar::Kernel::GsPolygonPtr m_ptrPolygon;
-	GeoStar::Kernel::GsGeometryBlob m_GeometryBlob;
-	GeoStar::Utility::GsGrowByteBuffer m_Coord;
-	GeoStar::Utility::GsGrowByteBuffer m_Inter;
 	int m_nDim; //坐标维度。 
+	WKBWriter m_Writer;
 public:
-	GPKGWriteFeature(VCTParser*	pParser,VCTFeatureCode& code,int nDim):m_Writer(&m_Geo)
+	GPKGWriteFeature(VCTParser*	pParser,VCTFeatureCode& code,int nDim)
 	{
 		m_nDim = nDim;
+		m_Writer.Reset(ByteOrder::OSByteOrderType(),m_nDim);
 		m_Code = code; 
 		m_pParser = pParser;
 	}
@@ -699,8 +692,9 @@ public:
 			m_pParser->ParseObject(pos,m_Ann);
 			break;
 		break;
-		}
-		m_Geo.Allocate(0);
+		} 
+		
+		m_Writer.Reset(ByteOrder::OSByteOrderType(),m_nDim);
 		if(attpos >0)
 			m_pParser->ParseObject(attpos,m_Att); 
 
@@ -727,7 +721,7 @@ public:
 	/// \brief geometry的数据长度
 	virtual int geometry_length()
 	{
-		return m_Geo.BufferSize();
+		return m_Writer.Buffer()->BufferSize();
 	}
 	void ComputerExtent(std::vector<VCTPoint3D>& vec,double& xmin,double& ymin,double& xmax,double &ymax)
 	{
@@ -794,138 +788,7 @@ public:
 		head->envelope[3] = ymax;
 
 	}
-	void MakePoint()
-	{
-		if(m_Point.vecPoint.size() == 1)
-		{
-			if(!m_ptrPoint)
-				m_ptrPoint = new GeoStar::Kernel::GsPoint();
-			VCTPoint3D& pt = m_Point.vecPoint.front();
-			m_ptrPoint->Set(pt.x,pt.y,pt.z);
-			m_ptrPoint->CoordinateDimension(m_nDim);
-			m_Writer.Write(m_ptrPoint);
-			return;
-		}
-
-		if(!m_ptrMultiPoint)
-			m_ptrMultiPoint = new GeoStar::Kernel::GsMultiPoint();
-		m_ptrMultiPoint->CoordinateDimension(3);
-		m_ptrMultiPoint->Set((const GeoStar::Kernel::GsRawPoint3D*)(&m_Point.vecPoint[0]),m_Point.vecPoint.size());
-		m_ptrMultiPoint->CoordinateDimension(m_nDim);
-		m_Writer.Write(m_ptrMultiPoint);
-	}
-	void MakeLine()
-	{
-		if(m_Line.vecLineData.size() == 1)
-		{
-			if(!m_ptrPath)
-				m_ptrPath  = new GeoStar::Kernel::GsPath();
-			m_Coord.Allocate(0);
-			VCTLineElement &e = m_Line.vecLineData.front();
-			m_Coord.AppendT(&e.vecArcPoint[0],e.vecArcPoint.size());
-
-			int inter[]={1,2,1};
-			
-			m_ptrPath->GeometryBlobPtr()->CoordinateDimension(3);
-			m_ptrPath->GeometryBlobPtr()->SetCoordinate(inter,3,m_Coord.PtrT<double>(),m_Coord.BufferSizeT<double>());
-			m_ptrPath->GeometryBlobPtr()->CoordinateDimension(m_nDim);
-			m_Writer.Write(m_ptrPath);	
-			return;
-		}
-		m_Coord.Allocate(0);
-		m_Inter.Allocate(0);
-
-		std::vector<VCTLineElement>::iterator it = m_Line.vecLineData.begin();
-		for(;it != m_Line.vecLineData.end();it++)
-		{
-			int inter[]={m_Coord.BufferSizeT<double>() + 1,2,1};
-			m_Inter.AppendT(inter,3);
-
-			m_Coord.AppendT(&it->vecArcPoint[0],it->vecArcPoint.size());
-		}
-		if(!m_ptrPolyline)
-			m_ptrPolyline = new GeoStar::Kernel::GsPolyline();
-		
-		m_ptrPolyline->Clear();
-		m_ptrPolyline->GeometryBlobPtr()->CoordinateDimension(3);
-		m_ptrPolyline->GeometryBlobPtr()->SetCoordinate(m_Inter.PtrT<int>(),m_Inter.BufferSizeT<int>(),
-			m_Coord.PtrT<double>(),m_Coord.BufferSizeT<double>());
-
-		m_ptrPolyline->GeometryBlobPtr()->CoordinateDimension(m_nDim);
-		m_Writer.Write(m_ptrPolyline);	
-	}
-	
-	void MakePolygon()
-	{
-		if(m_Polygon.vecPolygonElement.size() == 1)
-		{
-			if(!m_ptrRing)
-				m_ptrRing  = new GeoStar::Kernel::GsRing();
-			m_Coord.Allocate(0);
-			VCTPolygonElement &e = m_Polygon.vecPolygonElement.front();
-			m_Coord.AppendT(&e.vecPoints[0],e.vecPoints.size());
-
-			int inter[]={1,3,1};
-			
-			m_ptrRing->GeometryBlobPtr()->CoordinateDimension(3);
-			m_ptrRing->GeometryBlobPtr()->SetCoordinate(inter,3,m_Coord.PtrT<double>(),m_Coord.BufferSizeT<double>());
-			m_ptrRing->GeometryBlobPtr()->CoordinateDimension(m_nDim);
-			m_Writer.Write(m_ptrRing);	
-			return;
-		}
-		m_Coord.Allocate(0);
-		m_Inter.Allocate(0);
-
-		std::vector<VCTPolygonElement>::iterator it = m_Polygon.vecPolygonElement.begin();
-		for(;it != m_Polygon.vecPolygonElement.end();it++)
-		{
-			int inter[]={m_Coord.BufferSizeT<double>() + 1,3,1};
-			m_Inter.AppendT(inter,3);
-
-			m_Coord.AppendT(&it->vecPoints[0],it->vecPoints.size());
-		}
-		if(!m_ptrPolygon)
-			m_ptrPolygon = new GeoStar::Kernel::GsPolygon();
-		
-		m_ptrPolygon->Clear();
-		m_ptrPolygon->GeometryBlobPtr()->Clear();
-		m_ptrPolygon->GeometryBlobPtr()->CoordinateDimension(3);
-		m_ptrPolygon->GeometryBlobPtr()->SetCoordinate(m_Inter.PtrT<int>(),m_Inter.BufferSizeT<int>(),
-			m_Coord.PtrT<double>(),m_Coord.BufferSizeT<double>());
-
-		m_ptrPolygon->CoordinateDimension(m_nDim);
-		m_Writer.Write(m_ptrPolygon);	
-
-	}
-	void MakeAnn()
-	{
-		//对于单点注记。
-		if(m_Ann.vecAnnoPoint.size() == 1)
-		{
-			if(!m_ptrPoint)
-				m_ptrPoint = new GeoStar::Kernel::GsPoint();
-			VCTAnnoPoint& pt = m_Ann.vecAnnoPoint.front();
-			m_ptrPoint->Set(pt.vctPoint3D.x,pt.vctPoint3D.y,pt.vctPoint3D.z);
-			m_ptrPoint->CoordinateDimension(m_nDim);
-			m_Writer.Write(m_ptrPoint);
-			return;
-		}
-
-		//对于多点注记
-		if(!m_ptrMultiPoint)
-			m_ptrMultiPoint = new GeoStar::Kernel::GsMultiPoint();
-
-		std::vector<VCTPoint3D> vec;
-		vec.reserve(m_Ann.vecAnnoPoint.size());
-		std::vector<VCTAnnoPoint>::iterator it = m_Ann.vecAnnoPoint.begin();
-		for(;it != m_Ann.vecAnnoPoint.end();it++)
-			vec.push_back(it->vctPoint3D);
-
-		m_ptrMultiPoint->CoordinateDimension(3);
-		m_ptrMultiPoint->Set((const GeoStar::Kernel::GsRawPoint3D*)(&vec[0]),vec.size());
-		m_ptrMultiPoint->CoordinateDimension(m_nDim);
-		m_Writer.Write(m_ptrPoint);
-	}
+	 
 
 	///用于将Geometry构造成WKB
 	void MakeGeometry()
@@ -933,24 +796,25 @@ public:
 		switch(m_Code.GeometryType)
 		{
 		case VCT_POINT:  
-			MakePoint();
+			m_Writer.Write(m_Point);
 			break;
 		case VCT_LINE: 
-			MakeLine();
+			m_Writer.Write(m_Line);
 			break;
 		case VCT_POLYGON: 
-			MakePolygon();
+			m_Writer.Write(m_Polygon);
 			break;
 		case VCT_SOLID: 
 			break;
 		case VCT_ANNOTATION: 
-			MakeAnn();
+			m_Writer.Write(m_Ann);
 			break;
 		}
 	}
 	void UnionExtent(double& xmin,double& ymin,double &xmax,double& ymax)
 	{
-		gpkg::geo_package_binary *head = m_Geo.PtrT<gpkg::geo_package_binary>();
+		
+		gpkg::geo_package_binary *head = m_Writer.Buffer()->PtrT<gpkg::geo_package_binary>();
 		xmin = min(head->envelope[0],xmin);
 		xmax = max(head->envelope[1],xmax);
 
@@ -962,23 +826,21 @@ public:
 	/// \brief 获取geometry的数据头指针
 	virtual gpkg::geo_package_binary* geometry()
 	{
-		if(m_Geo.BufferSize() ==0)
+		if(m_Writer.Buffer()->BufferSize() ==0)
 		{
 			//缺省使用EnvelopeXY的模式
-			m_Geo.Allocate( 8 + 4 * 8);
-			m_Geo.SetBufferValue(0);
-			gpkg::geo_package_binary *head = m_Geo.PtrT<gpkg::geo_package_binary>();
+			m_Writer.Buffer()->Allocate( 8 + 4 * 8);
+			m_Writer.Buffer()->SetBufferValue(0);
+			gpkg::geo_package_binary *head = m_Writer.Buffer()->PtrT<gpkg::geo_package_binary>();
 			head->magic[0] = 'G';
 			head->magic[1] = 'P';
 			head->is_little_endian(true);
 			head->is_standard(true);
 			head->envelope_type(gpkg::EnvelopeXY);
 			ComputerExtent(head);
-
-			m_Writer.Reset();
 			MakeGeometry();
 		}
-		return m_Geo.PtrT<gpkg::geo_package_binary>();
+		return m_Writer.Buffer()->PtrT<gpkg::geo_package_binary>();
 	}
 	/// \brief 设置geometry
 	virtual void geometry(gpkg::geo_package_binary* geo,int nlen)

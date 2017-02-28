@@ -4,6 +4,7 @@
 #include<geodatabase.h>
 #include<geometry.h>
 #include<symbol.h>
+#include "pointsymbol.h"
 #include <list>
 #include <queue>
 KERNEL_NS  
@@ -12,6 +13,7 @@ class GS_API GsLabel:public Utility::GsRefObject
 {
 protected:
 	GsTextSymbolPtr m_ptrSymbol;
+	GsPointSymbolPtr m_ptrPointSymbol;
 	long long m_nID;
 	long long m_nOrder;
 	double m_nPriority;
@@ -55,6 +57,11 @@ public:
 	GsTextSymbol* Symbol();
 	/// \brief 标注绘制的符号
 	void Symbol(GsTextSymbol* sym);
+
+	/// \brief 标注点符号
+	GsPointSymbol* PointSymbol();
+	/// \brief 标注点符号
+	void PointSymbol(GsPointSymbol* sym);
 
 	/// \brief 标注的文本
 	const char* Text()const;
@@ -203,12 +210,18 @@ protected:
 	int m_nFieldIndex;
 	/// \brief 标注字段类型
 	Utility::Data::GsFieldType m_eType;
+
+	/// \brief 计算的标注对象
+	GsLabelPtr m_ptrLabel;
 	
 	/// \brief 从地物中计算要标注的文本
 	Utility::GsString LabelText(GsFeature* pFea);
 
 	/// \brief 计算标注点的位置
 	GsRawPoint LabelPoint(GsGeometryBlob* blob,double& dblPri);
+
+	/// \brief 创建一个标注对象
+	GsLabelPtr CreateLabel();
 public:
 	GsLabelProperty();
 	virtual ~GsLabelProperty();
@@ -229,8 +242,14 @@ public:
 	/// \brief 标注绘制的符号
 	void Symbol(GsTextSymbol* sym);
 	
+	/// \brief 获取标注对象
+	GsLabel* Label();
+	
 	/// \brief 计算标注
-	virtual bool CalculateLabel(GsFeature* pFea,GsSymbol* pSym) = 0;
+	virtual bool CalculateLabel(GsFeature* pFea,GsSymbol* pSym);
+
+	/// \brief 计算标注
+	virtual bool CalculateLabel(GsGeometryBlob *pGeoBlob, const GeoStar::Utility::GsString& strText, GsSymbol* pSym) = 0;
 };
 
 /// \brief GsLabelPropertyPtr
@@ -308,9 +327,9 @@ public:
 	GsPlaceOrderPriority PlaceOrder(GsPointLabelPlace e);
 	/// \brief 设置标注位置的优先级
 	void PlaceOrder(GsPointLabelPlace e,GsPlaceOrderPriority order);
-
+	
 	/// \brief 计算标注
-	virtual bool CalculateLabel(GsFeature* pFea,GsSymbol* pSym) ;
+	virtual bool CalculateLabel(GsGeometryBlob *pGeoBlob, const GeoStar::Utility::GsString& strLabel, GsSymbol* pSym);
 };
 /// \brief GsPointLabelPropertyPtr
 GS_SMARTER_PTR(GsPointLabelProperty);
@@ -319,8 +338,8 @@ GS_SMARTER_PTR(GsPointLabelProperty);
 class GS_API GsLineLabelProperty:public GsLabelProperty
 {
 public:
-	//计算标注
-	virtual bool CalculateLabel(GsFeature* pFea,GsSymbol* pSym) ;
+	/// \brief 计算标注
+	virtual bool CalculateLabel(GsGeometryBlob *pGeoBlob, const GeoStar::Utility::GsString& strLabel, GsSymbol* pSym);
 
 };
 /// \brief GsLineLabelPropertyPtr
@@ -329,9 +348,9 @@ GS_SMARTER_PTR(GsLineLabelProperty);
 /// \brief 面自动标注计算类
 class GS_API GsSurfaceLabelProperty:public GsLabelProperty
 {
-public:
+public: 
 	/// \brief 计算标注
-	virtual bool CalculateLabel(GsFeature* pFea,GsSymbol* pSym) ;
+	virtual bool CalculateLabel(GsGeometryBlob *pGeoBlob, const GeoStar::Utility::GsString& strLabel, GsSymbol* pSym);
 };
 /// \brief GsSurfaceLabelPropertyPtr
 GS_SMARTER_PTR(GsSurfaceLabelProperty);

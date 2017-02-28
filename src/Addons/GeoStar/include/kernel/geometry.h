@@ -14,6 +14,10 @@
 
 KERNEL_NS    
 
+class GsGeometryCollection;
+/// \brief GsGeometryCollectionPtr
+GS_SMARTER_PTR(GsGeometryCollection);
+
 /// \brief 轻量级点对象
 struct GS_API GsRawPoint
 {
@@ -65,6 +69,16 @@ struct GS_API GsRawPoint
 
 };
 
+
+/// \brief 设定边界的情况
+enum enumSpatialRelation
+{
+	/// \brief 没有内部与边界的限制
+	SpatialRelationExBoundary = 0,
+	/// \brief 几何对象的边界相交
+	SpatialRelationExClementini = 1,
+	SpatialRelationExProper = 2
+};
 
 /// \brief 轻量级三维点对象
 struct GS_API GsRawPoint3D:public GsRawPoint
@@ -190,6 +204,29 @@ enum GsGeometryType
 	eGeometryTypeCircleArc,
 	/// \brief 单圈
 	eGeometryTypeRing 
+};
+
+/// \brief segment扩展类型
+enum GsSegmentExtension
+{
+	/// \brief segment不扩展
+    eNoExtension = 0,
+	/// \brief segment被沿着起点的切点无限扩展
+    eExtendTangentAtFrom = 1,
+	/// \brief segment沿着起点扩展，圆弧扩展后为一个圆，椭圆弧扩展后为一个椭圆，线段扩展后为一条射线
+    eExtendEmbeddedAtFrom = 2,
+	/// \brief segment被沿着终点的切点无限扩展
+    eExtendTangentAtTo = 4,
+	/// \brief segment沿着起点扩展，圆弧扩展后为一个圆，椭圆弧扩展后为一个椭圆，线段扩展后为一条射线
+    eExtendEmbeddedAtTo = 8,
+	/// \brief eExtendTangentAtFrom And/Or eExtendTangentAtTo
+    eExtendTangents = 5,
+	/// \brief eExtendEmbeddedAtFrom And/Or eExtendEmbeddedAtTo
+    eExtendEmbedded = 10,
+	/// \brief eExtendTangentAtFrom Or eExtendEmbeddedAtFrom
+    eExtendAtFrom = 3,
+	/// \brief eExtendTangentAtTo Or eExtendEmbeddedAtTo
+    eExtendAtTo = 12
 };
 
 struct GS_API GeometryBlobHead//blob的头结构
@@ -332,6 +369,8 @@ enum GsBufferJointType
 	eBufferCurve
 };
 
+class GS_API GsPoint;
+
 /// \brief 几何对象基类
 // \details 几何对象抽象基类
 class GS_API GsGeometry:public Utility::GsRefObject
@@ -344,12 +383,12 @@ protected:
 	/// \details OGS = Oracle Geometry Struct (Oracle几何对象结构）
 	/// \param pBlob 几何数据内存块
 	/// \param nLen 内存块长度
-	void SetOGS(const unsigned char* pBlob,long nLen);
+	void SetOGS(const unsigned char* pBlob,int nLen);
 	
 	/// \brief 从坐标串和解释串构造
 	/// \param pBlob 几何数据内存块
 	/// \param nLen 内存块长度
-	GsGeometry(const unsigned char* pBlob,long nLen);
+	GsGeometry(const unsigned char* pBlob,int nLen);
 	//缺省构造
 	GsGeometry();
 
@@ -368,6 +407,14 @@ protected:
 	bool BoundaryL (GsGeometry* ptrGeo, std::vector<double>& vD);
 	/// \brief 计算面的边界
 	Utility::GsSmarterPtr<GsGeometry> BoundaryA(GsGeometry* ptrGeo);
+	/// \brief 计算面缓冲
+	geostar::gobjptr SingleBuffer(geostar::gobjptr gSrc,double dRadius,int narc, double dblTol =  FLT_EPSILON);
+	//\brief 判断是否为矩形节点
+	bool IsEnvelopPort(geostar::gobjptr& ptrEnv,geostar::gobjptr ptrPoint,double dblTol);
+	///\brief 切割点
+	void CutP(geostar::gobjptr& ptrThis, geostar::gobjptr& ptrCut, double dblTol, GsGeometryCollection** ppLeftGeo, GsGeometryCollection** ppRightGeo);
+	///\brief 区分左边右边
+	void DifferentiatesLeftOrRight(geostar::gobjptr gSrc,std::vector<geostar::geo_object*> vecObjs,GsGeometryCollection** ppLeftGeo,GsGeometryCollection** ppRightGeo,double dblTol);
 public:
 	virtual ~GsGeometry();
 
@@ -421,31 +468,31 @@ public:
 		
 	/// \brief 计算和另外一个Geometry的距离
 	/// \image html Geometry_Distance.png "Geometry最短路径"
-	virtual double Distance (GsGeometry* pGeo);
+	virtual double Distance (GsGeometry* pGeo,double dblTol =  FLT_EPSILON);
 
     /// \brief 计算几何对象的外壳
-	virtual Utility::GsSmarterPtr<GsGeometry> Boundary ();
+	virtual Utility::GsSmarterPtr<GsGeometry> Boundary (double dblTol =  FLT_EPSILON);
 
 	/// \brief 计算几何对象的凸壳
-	virtual Utility::GsSmarterPtr<GsGeometry> ConvexHull ();
+	virtual Utility::GsSmarterPtr<GsGeometry> ConvexHull (double dblTol =  FLT_EPSILON);
 
 	/// \brief	计算几何对象的缓冲区
 	/// \param	dblRadius	缓冲区半径
 	/// \param	eType	 	缓冲区分析时的节点处理类型，默认使用真圆弧衔接
 	/// \return	缓冲区多边形
-	virtual Utility::GsSmarterPtr<GsGeometry> Buffer (double dblRadius, GsBufferJointType eType = eBufferRound);
+	virtual Utility::GsSmarterPtr<GsGeometry> Buffer (double dblRadius, GsBufferJointType eType = eBufferRound,double dblTol =  FLT_EPSILON);
 
 	/// \brief	计算几何对象的缓冲区
 	/// \param	dblRadius	缓冲区半径
 	/// \param	nArc	 	缓冲区分析时的节点内插成半圆时内插折线线段的数目
 	/// \return	缓冲区多边形
-	virtual Utility::GsSmarterPtr<GsGeometry> Buffer (double dblRadius, int nArc);
+	virtual Utility::GsSmarterPtr<GsGeometry> Buffer (double dblRadius, int nArc,double dblTol =  FLT_EPSILON);
 
 	/// \brief 计算和另外一个几何对象的相交的部分
 	virtual Utility::GsSmarterPtr<GsGeometry> Intersection (GsGeometry* pOther,double dblTol =  FLT_EPSILON);
 
 	/// \brief 计算和另外一个几何对象的合并的结果
-	virtual Utility::GsSmarterPtr<GsGeometry> Union (GsGeometry* pOther);
+	virtual Utility::GsSmarterPtr<GsGeometry> Union (GsGeometry* pOther,double dblTol =  FLT_EPSILON);
 
 	/// \brief 计算和另外一个几何对象不同的部分
 	virtual Utility::GsSmarterPtr<GsGeometry> Difference (GsGeometry* pOther,double dblTol =  FLT_EPSILON);
@@ -455,11 +502,24 @@ public:
 	
 	/// \brief 判断一个几何对象是否存在重点、自相交等复杂情况
 	/// \image html Geometry_IsSimple.png "Geometry是否自相交"
-	virtual bool IsSimple ();
+	virtual bool IsSimple (double dblTol =  FLT_EPSILON);
 
 	/// \brief 将复杂的存在重点、自相交的对象简化
 	/// \image html Geometry_Simplify.png "简化Geometry"
 	virtual Utility::GsSmarterPtr<GsGeometry> Simplify();
+
+	/// \brief 根据传入的分割线，将当前几何对象分割为左右两个几何对象集合
+	virtual void Cut(GsGeometry* pCutter, GsGeometryCollection** ppLeftGeo, GsGeometryCollection** ppRightGeo, double dblTol =  FLT_EPSILON);
+
+	/// \brief 用传入的几何对当前几何对象进行剪切
+	virtual bool Clip(GsGeometry* pCliperGeo, bool bIncludeBoundary, double dblTol =  FLT_EPSILON);
+
+	/// \brief 创建并返回当前几何对象上距离输入点最近的一个点
+	virtual Utility::GsSmarterPtr<GsPoint> ReturnNearestPoint(GsPoint * pPoint, GsSegmentExtension extension, double dblTol =  FLT_EPSILON);
+
+	/// \brief 复制当前几何对象上距离输入点最近的一个点到pNearest
+	virtual void QueryNearestPoint(GsPoint * pPoint, GsSegmentExtension extension, GsPoint * pNearest, double dblTol =  FLT_EPSILON);
+
 
 
 	/// \brief 比较几何对象似乎否相等
@@ -490,6 +550,33 @@ public:
 
 	/// \brief 几何对象和传入几何对象是否向交
 	virtual GsGeometryRelationResult IsIntersect(GsGeometry * pOther,double dblTol =  FLT_EPSILON);
+
+
+	/// \brief 计算几何对象集合的合并的结果
+	virtual Utility::GsSmarterPtr<GsGeometry> ConstructUnion(GsGeometryCollection* pGeometryCollection,double dblTol =  FLT_EPSILON);
+
+	/// \brief	计算几何对象的缓冲区
+	/// \param	dblRadius	缓冲区半径
+	/// \param	len			缓冲区半径数组长度
+	/// \param	eType	 	缓冲区分析时的节点处理类型，默认使用真圆弧衔接
+	/// \return	缓冲区多边形
+	virtual Utility::GsSmarterPtr<GsGeometryCollection> ConstructBuffers (double* dblRadius,int len, GsBufferJointType eType = eBufferRound,double dblTol =  FLT_EPSILON);
+
+	/// \brief	计算几何对象的缓冲区
+	/// \param	dblRadius	缓冲区半径数组  
+	/// \param	len			缓冲区半径数组长度
+	/// \param	nArc	 	缓冲区分析时的节点内插成半圆时内插折线线段的数目
+	/// \return	缓冲区多边形
+	virtual Utility::GsSmarterPtr<GsGeometryCollection> ConstructBuffers (double* dblRadius,int len, int nArc,double dblTol =  FLT_EPSILON);
+
+	//*********************************ISpatialRelation2**************************************************************
+	/// \brief 判断两个Geometry是否符合指定的空间关系
+	virtual GsGeometryRelationResult Relation (GsGeometry * pOther, char* strRelationDescription, double dblTol =  FLT_EPSILON);
+	/// \brief 几何对象包含另一几何对象
+	virtual GsGeometryRelationResult ContainsEx (GsGeometry * pOther, enum enumSpatialRelation SpatialRelationExEnum, double dblTol =  FLT_EPSILON);
+	/// \brief 几何对象被另一几何对象包含
+	virtual GsGeometryRelationResult WithinEx (GsGeometry * pOther, enum enumSpatialRelation SpatialRelationExEnum, double dblTol =  FLT_EPSILON);
+	//*********************************ISpatialRelation2**************************************************************
 
 };
 /// \brief GsGeometryPtr
@@ -581,7 +668,7 @@ public:
 	/// \param nLen 内存块长度
 	/// \param eEndian 几何内存块的字节序类型
 	/// \return 返回创建的几何对象指针
-	static GsGeometryPtr CreateGeometryFromBlob(const unsigned char* pBlob,int nLen,Utility::GsEndian eEndian = Utility::eLitteEndian);
+	static GsGeometryPtr CreateGeometryFromBlob(const unsigned char* pBlob,int nLen,Utility::GsEndian eEndian = Utility::eLittleEndian);
 	
 	// \brief 根据几何内存块创建几何对象
 	static GsGeometryPtr CreateGeometryFromBlob(GsGeometryBlob* pBlob);
@@ -608,7 +695,7 @@ public:
 	/// \brief 从内存块构造
 	/// \param pBlob 几何数据内存块
 	/// \param nLen 内存块长度
-	GsEnvelope(const unsigned char* pBlob,long nLen);
+	GsEnvelope(const unsigned char* pBlob,int nLen);
 	/// \brief 从范围构造
 	GsEnvelope(double xmin,double ymin,double xmax,double ymax);
 	/// \brief 从范围构造3D
@@ -783,7 +870,7 @@ public:
 	/// \brief 从内存块构造
 	/// \param pBlob 几何数据内存块
 	/// \param nLen 内存块长度
-	GsPoint(const unsigned char* pBlob,long nLen);
+	GsPoint(const unsigned char* pBlob,int nLen);
 	/// \brief xy坐标构造
 	/// \param x x坐标
 	/// \param y y坐标
@@ -1461,7 +1548,7 @@ public:
 	/// \brief 从内存块构造
 	/// \param pBlob 几何数据内存块
 	/// \param nLen 内存块长度
-	GsCircleArc(const unsigned char* pBlob,long nLen); 
+	GsCircleArc(const unsigned char* pBlob,int nLen); 
 
 	GsCircleArc(const GsRawPoint &from,const GsRawPoint &middle,const GsRawPoint &end);
     GsCircleArc(const GsRawPoint3D &from,const GsRawPoint3D &middle,const GsRawPoint3D &end);
@@ -1558,7 +1645,7 @@ public:
 	/// \brief 从内存块构造
 	/// \param pBlob 几何数据内存块
 	/// \param nLen 内存块长度
-	GsPolygon(const unsigned char* pBlob,long nLen); 
+	GsPolygon(const unsigned char* pBlob,int nLen); 
 
 	/// \brief 默认构造
 	GsPolygon();
@@ -1638,7 +1725,7 @@ public:
 	/// \brief 从内存块构造
 	/// \param pBlob 几何数据内存块
 	/// \param nLen 内存块长度
-	GsPolyline(const unsigned char* pBlob,long nLen);
+	GsPolyline(const unsigned char* pBlob,int nLen);
 	 
 	
 	/// \brief 设置为起点
@@ -1726,6 +1813,24 @@ enum GsOGCGeometryType
 	eOGCSurface,// 14 
 	eOGCPolyhedralSurface,// 15 
 	eOGCTIN,// 16 
+	
+	/// \brief 三点圆弧串
+	eOGCArcString = 31,
+	/// \brief 三点圆弧
+	eOGCArc = 32,
+	/// \brief 三点圆
+	eOGCCircle = 33,
+	/// \brief 由控制点和凸度表示的圆弧串
+	eOGCArcStringByBulge= 34,		
+	/// \brief 由控制点和凸度表示的圆弧
+	eOGCArcByBulge= 35,		
+	/// \brief B样条曲线
+	eOGCBSPLineCurve= 36,
+	/// \brief 贝塞尔曲线
+	eOGCBezier = 37,	
+	/// \brief 矩形
+	eOGCEnvelope = 41,
+
 	eOGCGeometryZ =1000 ,
 	eOGCPointZ,//  1001 
 	eOGCLineStringZ,//  1002 
@@ -1743,6 +1848,23 @@ enum GsOGCGeometryType
 	eOGCSurfaceZ,//  1014 
 	eOGCPolyhedralSurfaceZ,//  1015 
 	eOGCTINZ,//  1016
+	
+	/// \brief 三点圆弧串
+	eOGCArcStringZ = 1031,
+	/// \brief 三点圆弧
+	eOGCArcZ = 1032,
+	/// \brief 三点圆
+	eOGCCircleZ = 1033,
+	/// \brief 由控制点和凸度表示的圆弧串
+	eOGCArcStringByBulgeZ= 1034,		
+	/// \brief 由控制点和凸度表示的圆弧
+	eOGCArcByBulgeZ= 1035,		
+	/// \brief B样条曲线
+	eOGCBSPLineCurveZ= 1036,
+	/// \brief 贝塞尔曲线
+	eOGCBezierZ = 1037,	
+	/// \brief 矩形
+	eOGCEnvelopeZ = 1041,
 };
 /// \brief WKB字节序。
 enum GsOGCByteOrder
@@ -1769,6 +1891,7 @@ enum GsCircularInterpolationStyle
 /// \brief OGC几何对象读取
 class GS_API GsOGCReader
 {
+protected:
 	std::vector<GsRawPoint3D> m_vecCachePoint;
 	std::vector<GsRawPoint> m_vecCachePoint2;
 protected:
@@ -1825,27 +1948,38 @@ public:
 /// \brief WKB格式读取
 class GS_API GsWKBOGCReader:public GsOGCReader
 {
-	const unsigned char* m_pHead;
-	const unsigned char* m_pBuffer,*m_pBufferEnd;
-	unsigned char m_eByteOrder;
-	bool m_bNeedConvertByteOrder; 
-	std::stack<int> m_SubCount;
-	
-	inline int ReadInt();
-	inline double ReadDouble();
-	inline bool IsEof();
+	const unsigned char* m_pStart;
+	const unsigned char* m_pEnd;
+	const unsigned char* m_pCurrent;
+	char m_Order;
+	char m_OSOrder;
+	bool IsEof();
+	template<class T>
+	T ReadT()
+	{
+		T val;
+		int l = sizeof(T);
+		memcpy(&val,m_pCurrent,l);
+		if(l > 1 && m_OSOrder != m_Order) GeoStar::Utility::GsEndianConverter::SwapRefT(val);
+		m_pCurrent+=l;
+		return val;
+	}
+	GsPointPtr ReadPoint(bool bHasZ);
+	GsPathPtr ReadPath(GsPath* path,bool bHasZ,bool bArc = false,int n = -1);
 protected:
-	virtual bool ReadPoint(GsRawPoint3D& pt,int& nDim) ;
+	virtual bool ReadPoint(GsRawPoint3D& pt,int& nDim); 
+
 	virtual GsOGCGeometryType NextGeometry();
 	virtual void EndGeometry(GsOGCGeometryType e);
 public:
 	GsWKBOGCReader();
 	GsWKBOGCReader(Utility::GsByteBuffer* pBuffer); 
 	GsWKBOGCReader(const unsigned char* pBuffer,int nLen); 
-	
 	/// \brief 重新设置一段新的WKB数据用于解析Geometry
 	void Begin(const unsigned char* pBuffer,int nLen);
-
+	
+	/// \brief 读取生成一个几何对象。
+	virtual GsGeometryPtr Read();
 
 };
 /// \brief KML格式读入

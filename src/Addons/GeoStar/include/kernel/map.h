@@ -19,6 +19,9 @@
 #include <memory>
 
 class AggGraphics;
+class LayerDrawStyle;
+struct VectorTileFeature;
+
 KERNEL_NS 
 /// \brief 显示对象
 /// \details 代表地图的显示设备
@@ -249,6 +252,11 @@ protected:
 	/// \brief 最大可见比例尺
 	volatile double m_dblMaxScale;
 
+	/// \brief 标注最小可见比例尺
+	volatile double m_dblTextMinScale;
+	/// \brief 标注最大可见比例尺
+	volatile double m_dblTextMaxScale;
+
 	/// \brief 参考比例尺
 	volatile double m_dblReferenceScale;
 
@@ -434,6 +442,10 @@ class GS_API GsRendition:public Utility::GsRefObject
 protected:
 	GsRendition();
 	GsDisplayPtr m_ptrDisplay;
+	/// \brief 标注最小可见比例尺
+	volatile double m_dblTextMinScale;
+	/// \brief 标注最大可见比例尺
+	volatile double m_dblTextMaxScale;
 public:
 	virtual ~GsRendition();
 	/// \brief 开始渲染
@@ -441,6 +453,14 @@ public:
 	
 	/// \brief 结束渲染
 	virtual void End();
+
+	/// \brief 设置/读取标注小层级
+	void TextMinScale(double dblScale);
+	double TextMinScale();
+
+	/// \brief 设置/读取标注小层级
+	void TextMaxScale(double dblScale);
+	double TextMaxScale();
 };
 /// \brief GsRenditionPtr
 GS_SMARTER_PTR(GsRendition);
@@ -1457,7 +1477,6 @@ public:
 	/// \brief 绘制瓦片类型矢量数据。
 	virtual bool DrawVectorTile(const unsigned char* pData,int nLen,int l,int r,int c) = 0;
 
-
 protected:
 	GsImageCanvasPtr m_ptrImageCanvas;
 	GsPyramidPtr m_ptrPyramid;
@@ -1465,6 +1484,7 @@ protected:
 };
 /// \brief GsVectorTileRendererPtr
 GS_SMARTER_PTR(GsVectorTileRenderer);
+
 
 /// \brief 基于样式表绘制矢量数据的Renderer
 /// \details 样式表在本类中默认为json格式，但可扩展为其他多种格式。根据样式表创建符号，并用符号绘制传入的矢量数据，最终在内存中创建栅格图片。
@@ -1483,15 +1503,38 @@ public:
 	/// \brief 获取样式表实例
 	GsStyleTable * StyleTable();
 
-	 
 	/// \brief 绘制瓦片类型矢量数据。
 	virtual bool DrawVectorTile(const unsigned char* pData,int nLen,int l,int r,int c) ;
 
-	/// \brief 绘制瓦片类型矢量数据。
-	virtual bool DrawVectorTile(GsTile *pTile);
+	/// \brief 本地渲染设置标注参数容器
+	void LabelContainer(GsLabelContainer* pLabelContainer);
+
+	/// \brief 本地渲染标注坐标转换对象
+	void LabelDisplayTransformation(GsDisplayTransformation *pDT);
+
+	/// \brief 本地渲染绘制瓦片标注
+	bool DrawLabels(const unsigned char* pData,int nLen,int l,int r,int c);
 
 protected:
+	/// 根据几何维度获取自动标注对象（0：点  1：线  2：面）
+	GsLabelProperty* GetLabelProperty(int nDim);
+
+	/// 绘制瓦片记录
+	void DrawTileFeature( LayerDrawStyle *pLayerStyle, VectorTileFeature *pFeature, bool bIsLabelLayer, bool bDrawTile);
+
+	/// 判断图层是否要绘制到瓦片上
+	bool IsLayerDrawOnTile(LayerDrawStyle *pLayerStyle);
+
+	/// 判断是否是标注图层
+	bool IsLabelLayer(LayerDrawStyle *pLayerStyle);
+protected:
 	GsStyleTablePtr m_ptrStyleTable;
+	// 自动计算标注对象缓存
+	std::map<int, GsLabelPropertyPtr> m_mapLabelProp;
+	// 地理到屏幕的坐标转换对象
+	GsDisplayTransformationPtr m_ptrScreenDT;
+	// 标注容器
+	GsLabelContainerPtr m_pLabelContainer;
 };
 /// \brief GsVectorStyleRenderer
 GS_SMARTER_PTR(GsStyledVectorTileRenderer);
@@ -1544,7 +1587,7 @@ public:
 
 private:
 	// 渲染瓦片成图片
-	Utility::GsImagePtr RenderTileImage(GsTile* pTile);
+	Utility::GsImagePtr RenderTileImage(GsTile* pTile, GsDisplay* pDisplay);
 
 private:
 	typedef std::pair<Utility::GsImagePtr, unsigned long long> ImagePair;
@@ -1557,6 +1600,8 @@ private:
 	std::list<ImagePair> m_lsTileImage;
 	// 瓦片缓存索引
 	std::map<unsigned long long, std::list<ImagePair>::iterator> m_mapTileIndex;
+	// 标注缓存
+	std::map<unsigned long long, std::vector<GsLabelPtr>> m_mapLabelCache;
 };
 /// \brief GsVectorTileLayerPtr
 GS_SMARTER_PTR(GsVectorTileLayer);

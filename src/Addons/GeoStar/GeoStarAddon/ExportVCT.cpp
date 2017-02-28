@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "ExportVCT.h"
+#include "WKBHelp.h"
 
 
 std::string FromUtf8(const char* str)
@@ -300,7 +301,7 @@ class CReadFeature:public gpkg::feature
 	VCTSolid m_Solid;
 	VCTAnnotation  m_Ann;
 	VCTAttributeRow m_Row;
-	GeoStar::Kernel::GsWKBOGCReader m_Reader;
+	WKBReader m_Reader;
 	VCTFeatureCode m_Code;
 	VCTID& m_ID;
 public:
@@ -370,84 +371,25 @@ public:
 	{
 		unsigned char* wkb = geo->wkb_ptr();
 		m_Reader.Begin(wkb,nlen - geo->size());
-		GeoStar::Kernel::GsGeometryPtr ptrGeo = m_Reader.Read();
-		if(!ptrGeo)
-			return ; 
-
-		switch(ptrGeo->GeometryType())
-		{ 
-		/// \brief 单点
-		case GeoStar::Kernel::eGeometryTypePoint:
-		
+		OGCGeometryType eType = m_Reader.GeometryType(true);
+		switch(eType)
+		{
+		case eOGCPoint:// 1 
+		case eOGCMultiPoint:// 4 
 			m_Point.vecPoint.clear();
-			m_Point.FeatureType = VCT_POINT_DEFAULT;
-			GeometryBlobToVCT(ptrGeo->GeometryBlobPtr(),m_Point.vecPoint,1);
+			m_Reader.Read(m_Point);
 			break;
-		case GeoStar::Kernel::eGeometryTypeMultiPoint:
-			m_Point.vecPoint.clear();
-			m_Point.FeatureType = VCT_POINT_GROUP;
-			GeometryBlobToVCT(ptrGeo->GeometryBlobPtr(),m_Point.vecPoint,1);
-		break;
-			/// \brief 单段线
-		case GeoStar::Kernel::eGeometryTypePath:
-		/// \brief 两点线段
-		case GeoStar::Kernel::eGeometryTypeLine:
-			{
-				m_Line.FeatureType = VCT_LINE_DIRECT;
-				m_Line.vecLineData.clear();
-				m_Line.vecLineData.push_back(VCTLineElement());
-				m_Line.vecLineData.back().GeometryType = VCT_LINE_SIMPLE;
-				GeometryBlobToVCT(ptrGeo->GeometryBlobPtr(),m_Line.vecLineData.back().vecArcPoint);
-
-			}
+		case eOGCLineString:// 2 
+		case eOGCMultiLineString:// 5 
+			m_Line.vecLineData.clear();
+			m_Reader.Read(m_Line);
 			break;
-		/// \brief 多边形
-		case GeoStar::Kernel::eGeometryTypePolygon:
-			{
-				m_Polygon.FeatureType = VCT_POLYGON_DIRECT;
-				m_Polygon.vecPolygonElement.clear();
-				GeoStar::Kernel::GsPolygonPtr ptrPolygon = ptrGeo;
-				for(int i =0;i<ptrPolygon->Count();i++)
-				{
-					m_Polygon.vecPolygonElement.push_back(VCTPolygonElement());
-
-					m_Polygon.vecPolygonElement.back().GeoType = VCT_POLYGON_SIMPLE;
-					GeometryBlobToVCT(ptrPolygon->Geometry(i)->GeometryBlobPtr(),m_Polygon.vecPolygonElement.back().vecPoints);
-				} 
-			}
-			break;
-
-		 
-		/// \brief 多段折线
-		case GeoStar::Kernel::eGeometryTypePolyline: 
-			{
-				m_Line.FeatureType = VCT_LINE_DIRECT;
-				m_Line.vecLineData.clear();
-				GeoStar::Kernel::GsPolylinePtr ptrPolyline = ptrGeo;
-				for(int i =0;i<ptrPolyline->Count();i++)
-				{
-					m_Line.vecLineData.push_back(VCTLineElement());
-
-					m_Line.vecLineData.back().GeometryType = VCT_LINE_SIMPLE;
-					GeometryBlobToVCT(ptrPolyline->Geometry(i)->GeometryBlobPtr(),m_Line.vecLineData.back().vecArcPoint);
-				} 
-			}
-			break;
-
-			 
-		/// \brief 单圈
-		case GeoStar::Kernel::eGeometryTypeRing:
-			{
-				m_Polygon.FeatureType = VCT_POLYGON_DIRECT;
-				m_Polygon.vecPolygonElement.clear();
-				m_Polygon.vecPolygonElement.push_back(VCTPolygonElement());
-				m_Polygon.vecPolygonElement.back().GeoType = VCT_POLYGON_SIMPLE;
-				GeometryBlobToVCT(ptrGeo->GeometryBlobPtr(),m_Polygon.vecPolygonElement.back().vecPoints);
-				
-			}
+		case eOGCPolygon:// 3 
+		case eOGCMultiPolygon:// 6 
+			m_Polygon.vecPolygonElement.clear();
+			m_Reader.Read(m_Polygon);
 			break;
 		}
-
 	}
 	void BindStyle(const std::string &styleName)
 	{
