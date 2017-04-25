@@ -1,9 +1,29 @@
 ﻿#pragma once
+//////////////////////////////////////////////////////////////////////////
+//  
+//   _____                     _____   _                  
+//  / ____|                   / ____| | |                 
+// | |  __    ___    ___     | (___   | |_    __ _   _ __ 
+// | | |_ |  / _ \  / _ \     \___ \  | __|  / _` | | '__|
+// | |__| | |  __/ | (_) |    ____) | | |_  | (_| | | |   
+//  \_____|  \___|  \___/    |_____/   \__|  \__,_| |_|   
+//                                                        
+//!  \file kernel.h
+//!  \brief GeoStar Kernel GIS内核
+//!  \details GIS内核主要模块
+//!  \author 
+//!  \attention 
+//!   Copyright (c) Wuda Geoinformatics Co.,Ltd. <br> 
+//!   All Rights Reserved.
+//!  \version 1.1
+//////////////////////////////////////////////////////////////////////////
+
 #include "preconfig.h"
 #include "spatialindex.h"
 #include "spatialreference.h"
 #include "pyramid.h"
 #include "geometry.h"
+#include "canvas.h"
 #include "symbol.h"
 #include "pointsymbol.h"
 #include "linesymbol.h"
@@ -26,7 +46,7 @@
  *
  * \section install_sec 安装
  *
- * \subsection step1 Step 1: Opening the box
+ * \subsection step1 Step 
  *  
  * etc...
  */

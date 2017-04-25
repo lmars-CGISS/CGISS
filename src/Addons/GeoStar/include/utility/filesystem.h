@@ -8,6 +8,8 @@ UTILITY_NS
 class GS_API GsFileSystem
 {
 public:
+	/// \brief 路径是否使用utf8字符串
+	static bool IsUtf8Path();
 	/// \brief 文件路径的的分隔符
 	static char PathSeparator();
 	/// \brief 判断文件路径、目录路径是否存在

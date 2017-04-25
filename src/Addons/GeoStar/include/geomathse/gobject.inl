@@ -7,12 +7,11 @@ namespace geostar {
 struct gobjptr
 {
     geostar::geo_object*   m_ptr;
-    gobjptr(geostar::geo_object* p,int):m_ptr(p)
+	gobjptr(geostar::geo_object* p,int n):m_ptr(p)
     { 
         
     }
-    
-	gobjptr(geostar::geo_object* p=0):m_ptr(p)
+    gobjptr(geostar::geo_object* p=0):m_ptr(p)
     { 
         if(p)p->addref(); 
     }
@@ -71,8 +70,9 @@ struct Tobject : type
 {
     volatile int m_ref;
     Tobject():m_ref(0){}
-    virtual const char* type_info()const{ return 0; }
-    virtual void* type_cast(const char*){ return 0; }
+	virtual ~Tobject(){}
+    virtual string_t type_info()const{ return 0; }
+    virtual void* type_cast(string_t){ return 0; }
     virtual int i4_get(int i){ return 0; }
     virtual bool i4_set(int i,int v){ return false; }
 

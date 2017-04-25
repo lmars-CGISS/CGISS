@@ -2,14 +2,23 @@
 #include "preconfig.h" 
 #include <list>
 #include "locker.h"
+#include "stringhelp.h"
 UTILITY_NS
 /// \brief 工作线程，通过继承工作线程类，实现类对多线程的支持
 class GS_API GsWorkThread
 {
+	void* m_Wait;
+	unsigned long long m_ThreadID;
+	volatile bool m_bWorking;
+	volatile bool m_bShutdown;
 protected:
-	void* m_pThread;
+	GsString	m_ThreadName;
+	
+	void* m_pThread; 
+	int OnThread();
 public:
-	GsWorkThread();
+	GsWorkThread(const char* name = NULL);
+
 	virtual ~GsWorkThread();
 	
 	/// \brief 启动线程
@@ -25,10 +34,12 @@ public:
    ///\return 返回是否成功
 	virtual bool Shutdown(bool bWaitFinish = true);
 
+	/// \brief 当前线程的ID
+	static unsigned long long CurrentThreadID();
 	
 	/// \brief 获取线程的ID
     ///\return 返回线程的ID
-	virtual int ThreadID();
+	virtual unsigned long long ThreadID();
 
 	/// \brief 是否需要停止，在Execute函数中判断线程是否接受到了外部的停止通知
 	/// \brief 调用Shutdown方法后ShouldStop会返回true

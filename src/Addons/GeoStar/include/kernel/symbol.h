@@ -24,6 +24,7 @@ enum GsSymbolType
 
 };
   
+
 /// \brief 显示坐标转换对象
 /// \details 用于实现设备和地图之间的坐标以及长度单位的转换
 class GS_API GsDisplayTransformation:public Utility::GsRefObject
@@ -108,7 +109,7 @@ public:
 
 	/// \brief 获取参考比例尺
 	double ReferenceScale();
-	//设置参考比例尺
+	/// \brief 设置参考比例尺
 	void ReferenceScale(double dblScale);
 
 	/// \brief 地图到屏幕的转换矩阵
@@ -124,8 +125,10 @@ GS_SMARTER_PTR(GsDisplayTransformation);
 class GS_API GsSymbol:public Utility::GsRefObject
 {
 	void AppendPath(double* pCoord,int nLen,GsGraphicsPath* pPath);
-	void AppendPath(SPATIALANALYSIS_NS::polyline* poly,GsGraphicsPath* pPath);
-	void AppendPath(SPATIALANALYSIS_NS::curve* curve,GsGraphicsPath* pPath);
+
+	void AppendPolyline( int n_cood,double *p_cood,int cdim,GsGraphicsPath*  path);
+	void AppendCurve( std::vector<GsRawPoint>& pointArray,GsGraphicsPath*  path,bool circle=false);
+	void AppendEnv( int n_cood,double *p_cood,int cdim,GsGraphicsPath*  path);
 
 protected:
 	/// \brief 绘制的画布
@@ -150,7 +153,7 @@ protected:
 	
 protected:
 	/// \brief 由空间分析的path构建成可绘制的path
-	GsGraphicsPathPtr CreateGraphicsPath(SPATIALANALYSIS_NS::path* pPath);
+	GsGraphicsPathPtr CreateGraphicsPath(GsGeometryBlob *pBlob);
 
 	/// \brief 转换毫米单位长度为像素单位长度
 	float MMToPixel(double mm);
@@ -172,7 +175,7 @@ protected:
 	/// \brief 弧度转换为度
 	double ToDegree(double radian);
 
-	//转换地理坐标为屏幕坐标
+	/// \brief 转换地理坐标为屏幕坐标
 	virtual Utility::GsGrowByteBuffer* ToScreen(double* pCoord,int nLen,int nDim);
 	virtual float* ToScreenPtr(double* pCoord,int nLen,int nDim);
 
@@ -187,16 +190,12 @@ protected:
 	/// \details 子类通过覆盖此方法实现实际的绘制
 	virtual void OnDraw(GsGeometryBlob* pBuffer);
 
-	/// \brief 以Geomathd的path进行绘制
-	/// \details 线、或者面的子类符号可以覆盖此方法进行绘制。此方法在GeometryOperator方法之后被调用
-	virtual void OnDraw(SPATIALANALYSIS_NS::path* pPath);
-
 	/// \brief 绘制Canvas的path
-	virtual void OnDraw(GsGraphicsPath* pPath,SPATIALANALYSIS_NS::path* pGeoPath);
+	virtual void OnDraw(GsGraphicsPath* pPath,GsGeometryBlob *pBlob) ;
 
 	/// \brief 几何数据操作
 	/// \details 子类通过覆盖此函数实现绘制前对几何数据的处理，例如计算平行线
-	virtual SPATIALANALYSIS_NS::path_ptr GeometryOperator(SPATIALANALYSIS_NS::path* pPath);
+	virtual geostar::gobjptr GeometryOperator(geostar::gobjptr& pPath);
 public:
 	/// \brief 缺省构造
 	GsSymbol();
@@ -369,6 +368,7 @@ class GS_API GsTextSymbol : public GsSymbol
 	bool					m_bStrikeOut;					//删除线标识
 	GsSolidBrushPtr			m_ptrBrush;						//注记填充画刷
 	GsPenPtr				m_ptrPen;						//注记描边画笔
+	GsPenPtr				m_ptrWhitePen;					//绘制不偏移阴影效果时的白色画刷
 	GsColor					m_textColor;					//注记颜色
 	std::string				m_strFont;						//字体名称
 	float					m_fSize;						//字体大小
@@ -396,7 +396,6 @@ class GS_API GsTextSymbol : public GsSymbol
 	Utility::GsSizeF		m_StringSize;
 	GsVector<Utility::GsString> m_SplitWords;
 	bool					m_SimpleDraw;
-	GsSymbolType			m_parentSymbolType;				//从属于符号类型，如线的自动标注
 private:
 	/// \brief 绘制一个文本单元
 	void DrawText(const Utility::GsPTF& loc,double angle,const GsVector<Utility::GsString>& vecWords);
@@ -539,13 +538,9 @@ public:
 	/// \brief 设置注记阴影的Y偏移
 	void ShadowOffsetY(double offset);
 
-	// 标注与线位置
+	/// \brief 标注与线位置
 	int LabelOffset();
 	void LabelOffset(int iLabelOffset);
-
-	//从属于符号
-	GsSymbolType ParentType();
-	void ParentType(GsSymbolType type);
 
 	/// \brief 返回符号的类型
 	virtual GsSymbolType Type();
@@ -553,6 +548,7 @@ public:
 	/// \brief 是否有效
 	virtual bool IsValid();
 
+	/// \brief 对符号进行克隆
 	virtual Utility::GsSmarterPtr<GsSymbol> Clone();
 };
 
@@ -756,9 +752,9 @@ public:
 
 	/// \brief 将符号序列化为字符串。
 	static Utility::GsString ToString(GsSymbol* pSym,GsSymbolLibraryFormat eFormat = eGenernalFormat);
-
-	/// \brief 将符号序列化为字符串，只包含绘制部分，不含basic。
-	static Utility::GsString ToStringDrawn(GsSymbol* pSym);
+	
+	/// \brief 计算符号哈希值
+	static long long HashCode(GsSymbol* pSym);
 
 	/// \brief 从字符串解析生成符号对象
 	static GsSymbolPtr ParserSymbol(const char* str);

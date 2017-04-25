@@ -15,10 +15,10 @@ UTILITY_NS
 template<typename ENUM>
 class GS_API GsEnumType
 {
-	std::vector<std::pair<std::string,ENUM> > m_vecPair;
-	void Push(std::string str,ENUM value)
+	GsVector<std::pair<GsString,ENUM> > m_vecPair;
+	void Push(const GsString& str ,ENUM value)
 	{
-		m_vecPair.push_back(std::pair<std::string,ENUM>(str,value));
+		m_vecPair.push_back(std::pair<GsString,ENUM>(str,value));
 	}
 	static GsEnumType<ENUM> m_Instance;
 public:
@@ -35,7 +35,7 @@ public:
 	{
 		if(m_vecPair.empty())
 			return eDefault;
-		typename std::vector<std::pair<std::string,ENUM> >::iterator it = m_vecPair.begin();
+		typename GsVector<std::pair<GsString,ENUM> >::iterator it = m_vecPair.begin();
 		for(;it != m_vecPair.end();it++)
 		{
 			if(GsCRT::_stricmp(it->first.c_str(),strValue)==0)
@@ -60,10 +60,27 @@ public:
 		return eDefault;
 	}
 	/// \brief 将枚举值转换成字符串
-	std::string ToString(ENUM eValue,const char* strDefault)
+	GsVector<GsString> ToStringArray(ENUM eValue,const char* strDefault)
 	{
-		std::string strRet = (NULL == strDefault)?"":strDefault;
-		typename std::vector<std::pair<std::string,ENUM> >::iterator it = m_vecPair.begin();
+		GsVector<GsString> vec;
+		GsString strRet = (NULL == strDefault)?"":strDefault;
+		typename GsVector<std::pair<GsString,ENUM> >::iterator it = m_vecPair.begin();
+		for(;it != m_vecPair.end();it++)
+		{
+			if(it->second == eValue)
+				vec.push_back(it->first);
+			
+		}
+		if(vec.empty())
+			vec.push_back(strRet);
+
+		return vec;
+	}
+	/// \brief 将枚举值转换成字符串
+	GsString ToString(ENUM eValue,const char* strDefault)
+	{
+		GsString strRet = (NULL == strDefault)?"":strDefault;
+		typename GsVector<std::pair<GsString,ENUM> >::iterator it = m_vecPair.begin();
 		for(;it != m_vecPair.end();it++)
 		{
 			if(it->second == eValue)
@@ -80,7 +97,7 @@ class GS_API GsEnumParser
 public: 
 	/// \brief 从字符串解析枚举值
 	template<typename ENUM>	
-	static ENUM ParserFromString(const std::string& strValue,ENUM eDefault)
+	static ENUM ParserFromString(const GsString& strValue,ENUM eDefault)
 	{
 		return ParserFromString(strValue.c_str(),eDefault);
 	};
@@ -92,15 +109,21 @@ public:
 	}	
 	/// \brief 枚举值转换字符串
 	template<typename ENUM>
-	static std::string ToString(ENUM eValue,const char* strDefault)
+	static GsString ToString(ENUM eValue,const char* strDefault)
 	{
 		return GsEnumType<ENUM>::Instance()->ToString(eValue,strDefault);
 	}
 	/// \brief 枚举值转换字符串
 	template<typename ENUM>
-	static std::string ToString(ENUM eValue,const std::string& strDefault)
+	static GsString ToString(ENUM eValue,const GsString& strDefault)
 	{
 		return GsEnumType<ENUM>::Instance()->ToString(eValue,strDefault.c_str());
+	}
+	/// \brief 枚举值转换字符串的多个结果
+	template<typename ENUM>
+	static GsVector<GsString> ToStringArray(ENUM eValue,const GsString& strDefault)
+	{
+		return GsEnumType<ENUM>::Instance()->ToStringArray(eValue,strDefault.c_str());
 	}
 };
 

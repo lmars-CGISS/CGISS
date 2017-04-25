@@ -12,7 +12,7 @@ class GS_API GsSimpleLineSymbol:public GsLineSymbol
 	GsPenStyle m_pLineStyle;
 protected: 
 	/// \brief 绘制Canvas的path
-	virtual void OnDraw(GsGraphicsPath* pPath,SPATIALANALYSIS_NS::path* pGeoPath);
+	virtual void OnDraw(GsGraphicsPath* pPath,GsGeometryBlob * pBlob);
 
 	virtual void OnStartDrawing();
 	virtual void OnEndDrawing();
@@ -50,6 +50,7 @@ struct GS_API GsPattern
 };
 
 /// \brief 
+class TemplateParser;
 class GS_API GsSymbolTemplate:public std::vector<GsPattern>
 {
 	/// \brief 线头方向的偏移量
@@ -83,7 +84,6 @@ public:
 	/// \brief 返回模板序列的首地址
 	float* MakePattern();
 };
-class TemplateParser;
 class GS_API GsTemplateLineSymbol: public GsLineSymbol
 {
 protected:
@@ -94,15 +94,17 @@ protected:
 protected:  
 	/// \brief 几何数据操作
 	/// \details 子类通过覆盖此函数实现绘制前对几何数据的处理，例如计算平行线
-	virtual SpatialAnalysis::path_ptr GeometryOperator(SpatialAnalysis::path* pPath);
+	virtual geostar::gobjptr GeometryOperator(geostar::gobjptr& pPath);
 	
 	/// \brief 以Geomathd的path进行绘制
 	/// \details 线、或者面的子类符号可以覆盖此方法进行绘制。此方法在GeometryOperator方法之后被调用
-	virtual void OnDraw(SpatialAnalysis::path* pPath);
+	virtual void OnDraw(GsGeometryBlob * pBlob);
 	
 	virtual void OnDrawSub(GsPoint* pPoint,double a){}
 	
 	virtual void OnStartDrawing();
+
+	virtual void OnEndDrawing();
 
 	GsTemplateLineSymbol(); 
 
@@ -221,16 +223,15 @@ private:
 	virtual void DrawSide(double* pSide,int nPointCount,int nIndex);
 	virtual void DrawCorner(double* pCorner,int nIndex);
 
-
-	virtual void DrawSingle(SpatialAnalysis::polyline* p);
-	virtual void DrawSingle(SpatialAnalysis::path* p);
+	virtual void DrawSingle(double * coords,int num);
+	virtual void DrawSingle(GsBox &env);
 protected:	
 	/// \brief 以Geomathd的path进行绘制
 	/// \details 线、或者面的子类符号可以覆盖此方法进行绘制。此方法在GeometryOperator方法之后被调用
-	virtual void OnDraw(SPATIALANALYSIS_NS::path* pPath);
+	virtual void OnDraw(GsGeometryBlob * pBlob);
 	/// \brief 几何数据操作
 	/// \details 子类通过覆盖此函数实现绘制前对几何数据的处理，例如计算平行线
-	virtual SPATIALANALYSIS_NS::path_ptr GeometryOperator(SPATIALANALYSIS_NS::path* pPath);
+	virtual geostar::gobjptr GeometryOperator(geostar::gobjptr& pPath);
 	virtual void OnStartDrawing();
 	virtual void OnEndDrawing();
 
@@ -346,6 +347,7 @@ enum GsSymbolLocateEndsType
 	eLocateBoth,
 };
 
+class GsAnalysisBlob;
 /// \brief 定位点线符号
 class GS_API GsLocatePointLineSymbol:public GsLineSymbol
 {
@@ -386,9 +388,9 @@ public:
 	virtual bool IsValid();
 
 protected:
-	/// \brief 以Geomathd的path进行绘制
+	/// \brief 以GeomathSE的path进行绘制
 	/// \details 线、或者面的子类符号可以覆盖此方法进行绘制。此方法在GeometryOperator方法之后被调用
-	virtual void OnDraw(SPATIALANALYSIS_NS::path* pPath);
+	virtual void OnDraw(GsGeometryBlob * pBlob);
 
 	virtual void OnStartDrawing();
 	virtual void OnEndDrawing();
@@ -402,9 +404,9 @@ protected:
 	/// \brief 绘制图片
 	void DrawBitmap(float fX, float fY);
 	/// \brief 根据屏幕坐标计算贴图坐标
-	void CalcuBitmapPosition(SPATIALANALYSIS_NS::path* pPath, GsSymbolLocateDirectionType eDirectionType);
+	void CalcuBitmapPosition(GsGeometryBlob* pPath,GsAnalysisBlob* pAnaBlob, GsSymbolLocateDirectionType eDirectionType);
 	//计算点符号旋转角度
-	double RoundAngle(SPATIALANALYSIS_NS::path* pPath, int nCurrentIndex, int nPointCount, GsSymbolLocateDirectionType eDirectionType);
+	double RoundAngle(GsAnalysisBlob* pAnaBlob, int nCurrentIndex, int nPointCount, GsSymbolLocateDirectionType eDirectionType);
 	//根据向量计算角度
 	double Angle(GsRawPoint gsPoint);
 };
@@ -482,10 +484,10 @@ protected:
 	virtual void OnEndDrawing();
 	 
 	/// \details 线、或者面的子类符号可以覆盖此方法进行绘制。此方法在GeometryOperator方法之后被调用
-	virtual void OnDraw(SPATIALANALYSIS_NS::path* pPath);
+	virtual void OnDraw(GsGeometryBlob * pBlob);
 	
 	/// \brief 绘制Canvas的path
-	virtual void OnDraw(GsGraphicsPath* pPath,SPATIALANALYSIS_NS::path* pGeoPath);
+	virtual void OnDraw(GsGraphicsPath* pPath,GsGeometryBlob * pBlob);
 
 public:
 	GsCartographicLineSymbol();
@@ -564,15 +566,10 @@ protected:
 	/// \brief 当结束绘制的时候发生
 	/// \details 子类通过覆盖此方法实现自定义的数据回收过程
 	virtual void OnEndDrawing();
-
-
 private:
-	/// \brief 根据间隔处理单条path（直线或弧线）
-	/// \param ptrPath 需要使用Interval间隔打断的path
-	/// \return 返回劈裂的path集合
-	void SplitPath(SpatialAnalysis::path* ptrPath, SpatialAnalysis::multi_path* multipath);
-	void Process(SpatialAnalysis::curve* pCurve, SpatialAnalysis::multi_path* multiPath);
-	void Process(SpatialAnalysis::polyline* pPolyline, SpatialAnalysis::multi_path* multiPath);
+	void CalculatePath(GsGeometryBlob * pBlobIn ,GsGeometryBlob &pBlobOut);
+	void ProcessLine(int num, double * coods, GsGeometryBlob & pBlobOut);
+
 };
 
 GS_SMARTER_PTR(GsLeadConnectedLineSymbol);

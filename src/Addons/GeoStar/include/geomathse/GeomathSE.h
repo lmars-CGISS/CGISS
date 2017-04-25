@@ -452,7 +452,13 @@ struct geo_algorithm : geo_object
     //env如果不为空那么指向一个[x0,y0,x1,y1]的矩形，凡不在此矩形内部的点都不会被简化
     //[pp,pp+n)是要简化的path数组，程序只会简化其内部的点，而不会改变对象以及其属性
     virtual void top_reserve_simplify(int n,geo_object** pp,double tol,double* env)=0;
+
+    //根据参数区间返回一段子path
+    virtual geo_object* t2path(geo_object* p,double t0,double t1)=0;
 	
+    //文字布局函数 p是一个几何对象 env[x,y,x1,y1]是窗口的可视范围(可以为null) font[w，h]是字体大小(可以为null)
+    //n是文字的个数,xy是输出的每个文字的左下角坐标
+    virtual bool layout(geo_object* p,const double* env,const double* font,int n,double* xy)=0;
 	//virtual geo_reader* difference_n2n(geo_reader* A,geo_reader* B,geo_writer* dA,geo_writer* dB,int mode)=0;
 };
 
@@ -492,6 +498,9 @@ const int prop_value_length = 11;		//长度
 const int prop_value_width =  21;		//宽度
 const int prop_value_height = 31;		//高度
 const int prop_value_area =	  12;		//面积
+
+const int prop_geo_clone =   0;		    //克隆
+const int prop_geo_clone_mem0 = 1;		//只对没有真实内存的path克隆
 
 const int prop_geo_label =   10;		//标志点
 const int prop_geo_center =  20;		//中心	

@@ -36,7 +36,8 @@ enum GsDataSourceType
 
     /// \brief 达梦数据源
     eDameng,
-	
+	/// \brief web数据源
+	eWeb,
 };
 
 /// \brief 空间数据库支持的能力
@@ -204,6 +205,9 @@ enum GsTileEncodingType
 	//! \brief protobuf格式
 	eProtobuffType = 11,
 
+	//! \brief 以GZip格式压缩后protobuf格式
+	eGZipProtobuffType = 12,
+
 	//! \brief texture of model
 	eModTexType = 99,
 
@@ -291,6 +295,19 @@ public:
 	/// \brief 取消事务
 	///\return 返回是否取消成功
 	virtual bool RollbackTransaction();
+
+	/// \brief 元数据的分类名称
+	virtual GsVector<Utility::GsString> MetadataDomain();
+	
+	/// \brief 获取元数据分类下的元数据名称
+	virtual GsVector<Utility::GsString> MetadataName(const char* strDomainName);
+
+	/// \brief 获取某个分类下的元数据值
+	virtual Utility::GsString MetadataItem(const char* strDomainName,const char* strName);
+
+	/// \brief 设置某个分类下的元数据值
+	virtual void MetadataItem(const char* strDomainName,const char* strName,const char* strValue);
+
 };
 /// \brief  声明GsDataRoomPtr智能指针
 GS_SMARTER_PTR(GsDataRoom);
@@ -1005,6 +1022,45 @@ public:
 /// \brief GsTileClassPtr
 GS_SMARTER_PTR(GsTileClass);
 
+
+/// \brief 基于瓦片化的地图服务的瓦片数据集封装。
+class GS_API GsTMSTileClass:public GsTileClass
+{
+protected:
+	Utility::GsString m_strFormat;
+	GsTileClassPtr	m_ptrCacheTile;
+	GsTileEncodingType m_eType;
+	GsTMSTileClass();
+public:
+	virtual ~GsTMSTileClass();
+	/// \brief 获取TMS的url地址模板
+	virtual Utility::GsString UrlTemplate();
+
+	/// \brief 获取瓦片类型
+	virtual GsTileEncodingType TileType();
+	/// \brief 设置瓦片类型
+	virtual void TileType(GsTileEncodingType eType);
+
+	/// \brief 设置TMS的url地址模板
+	/// \details 地址模板如http://xxx.server.com/${Level}/${Row}/${Col}
+	/// ${Level}代表瓦片级别
+	/// ${Row}代表瓦片行
+	/// ${Col}代表瓦片列
+	virtual void UrlTemplate(const char* );
+
+
+	/// \brief 获取缓存瓦片数据的TileClass对象
+	virtual GsTileClass* Cache();
+
+	/// \brief 设置缓存瓦片数据的TileClass
+	virtual void Cache(GsTileClass* pCacheTileClass);
+
+
+
+};
+
+
+
 /// \brief 二维表数据集
 class GS_API GsRowClass:public GsDataRoom
 {
@@ -1465,18 +1521,7 @@ public:
 	/// \param pLevels
 	virtual bool CreatePyramid(GsRasterResampleAlg alg,int nCount,int* pLevels) = 0;
 
-	/// \brief 元数据的分类名称
-	virtual GsVector<Utility::GsString> MetadataDomain();
 	
-	/// \brief 获取元数据分类下的元数据名称
-	virtual GsVector<Utility::GsString> MetadataName(const char* strDomainName);
-
-	/// \brief 获取某个分类下的元数据值
-	virtual Utility::GsString MetadataItem(const char* strDomainName,const char* strName);
-
-	/// \brief 设置某个分类下的元数据值
-	virtual void MetadataItem(const char* strDomainName,const char* strName,const char* strValue);
-
 	
 	/// \brief 获取基本几何信息
 	///\return 返回基本几何信息对象
@@ -1738,5 +1783,21 @@ public:
 };
 /// \brief GsGeoPackageGeoDatabaseFactoryPtr
 GS_SMARTER_PTR(GsGeoPackageGeoDatabaseFactory);
+
+/// \brief 以WebService为基础的数据库工厂
+class GS_API GsWebGeoDatabaseFactory:public GsGeoDatabaseFactory
+{ 
+public:
+	GsWebGeoDatabaseFactory();
+	virtual ~GsWebGeoDatabaseFactory();
+
+	/// \brief 根据数据库连接信息打开一个空间数据库
+	///\param connProperty 数据库连接信息
+	///\return 返回空间数据库对象实例或者空
+	virtual GsGeoDatabasePtr Open(const GsConnectProperty& connProperty); 
+};
+/// \brief GsWebGeoDatabaseFactoryPtr
+GS_SMARTER_PTR(GsWebGeoDatabaseFactory);
+
 
 KERNEL_ENDNS

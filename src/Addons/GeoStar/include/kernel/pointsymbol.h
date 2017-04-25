@@ -18,10 +18,6 @@ protected:
 	/// \brief xy的偏移
 	GsRawPoint m_Offset;
 
-	// 间距
-	double m_IntervalX;
-	double m_IntervalY;
-
 protected:
 	
 	/// \brief 当绘制的时候发生
@@ -75,11 +71,6 @@ public:
 	void Offset(const GsRawPoint& val);
 	/// \brief 偏移
 	void Offset(double x,double y);
-
-	void IntervalX(double dblIntervalX);
-	void IntervalY(double dblIntervalY);
-	double IntervalX();
-	double IntervalY();
 
 	/// \brief 点符号的矩形范围
 	virtual GsBox Envelope();
@@ -220,7 +211,7 @@ public:
 				m_dblLongAxis,m_dblShortAxis,
 				-m_dblLongAxis,m_dblShortAxis,};
 			GsMatrix mat;
-			mat.Rotate(-this->m_dblAngle * PI / 180);		
+			mat.Rotate(-this->m_dblAngle * Utility::GsMath::Pi() / 180);		
 			mat.TransformPointsT(f,4);
 			for (int i = 0; i < 2; i++)
 			{
@@ -399,7 +390,7 @@ public:
 
 
 		GsMatrix mat;
-		mat.Rotate(-this->m_dblAngle * PI / 180);
+		mat.Rotate(-this->m_dblAngle * Utility::GsMath::Pi() / 180);
 		float f[2];
 
 		std::vector<GsRawPoint>::iterator it = m_vecPoints.begin();
@@ -667,7 +658,7 @@ class GS_API GsPicturePointSymbol:public GsPointSymbol
 	/// \brief 锁定类型
 	GsPictureKeepOrigin m_OriginalState;
 	/// \brief 图片对象
-	Utility::GsImagePtr m_ptrImage;
+	Utility::GsImagePtr m_ptrImage,m_ptrImageDrawing;
 	/// \brief 图片的真实数据
 	Utility::GsGrowByteBuffer m_ImageData;
 	/// \brief 画刷
@@ -680,6 +671,9 @@ protected:
 
 	/// \brief 点符号的矩形范围
 	virtual GsBox Envelope();
+
+	/// \brief 处理透明色
+	void ProcessTransparentColor();
 public:
 	/// \brief 无参构造函数
 	GsPicturePointSymbol();

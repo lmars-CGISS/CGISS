@@ -189,6 +189,8 @@ class GS_API GsLabelProperty:public Utility::GsRefObject
 protected:
 	/// \brief 标注绘制的符号
 	GsTextSymbolPtr m_ptrSymbol;
+	///\brief 公用的SE计算对象
+	geostar::safe_ga m_ga;
 	/// \brief 标注符号的Clone，用于计算标注范围
 	GsTextSymbolPtr m_ptrSymbolClone;
 	
@@ -322,6 +324,7 @@ class GS_API GsPointLabelProperty:public GsLabelProperty
 {
 	std::vector<std::pair<GsPointLabelPlace,GsPlaceOrderPriority> > m_PlaceOrder;
 public:
+	using GsLabelProperty::CalculateLabel;
 	GsPointLabelProperty();
 	/// \brief 获取标注位置的优先级
 	GsPlaceOrderPriority PlaceOrder(GsPointLabelPlace e);
@@ -338,6 +341,7 @@ GS_SMARTER_PTR(GsPointLabelProperty);
 class GS_API GsLineLabelProperty:public GsLabelProperty
 {
 public:
+	using GsLabelProperty::CalculateLabel;
 	/// \brief 计算标注
 	virtual bool CalculateLabel(GsGeometryBlob *pGeoBlob, const GeoStar::Utility::GsString& strLabel, GsSymbol* pSym);
 
@@ -349,6 +353,7 @@ GS_SMARTER_PTR(GsLineLabelProperty);
 class GS_API GsSurfaceLabelProperty:public GsLabelProperty
 {
 public: 
+	using GsLabelProperty::CalculateLabel;
 	/// \brief 计算标注
 	virtual bool CalculateLabel(GsGeometryBlob *pGeoBlob, const GeoStar::Utility::GsString& strLabel, GsSymbol* pSym);
 };

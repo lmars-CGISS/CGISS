@@ -373,8 +373,8 @@ protected:
 	/// \brief 图形列表
 	std::vector<GsLayerPtr > m_lstLayers;
 
-	/// \brief 金字塔图层
-	GsLayerPtr m_ptrPyramidLayer;
+	/// \brief 热点图层列表
+	std::vector<GsLayerPtr>	m_lstHotspotLayers;
 	
 	/// \brief 屏幕显示对象
 	GsScreenDisplayPtr m_ptrDisplay;
@@ -398,6 +398,10 @@ public:
 
 	/// \brief 获取图层列表对象指针
 	GsVector<GsLayerPtr >* Layers();
+
+	/// \brief 获取热点图层列表对象指针，在数据图层上一层
+	GsVector<GsLayerPtr>* HotspotLayers();
+
 	/// \brief 强制刷新地图
 	/// \details 使地图失效，强制刷新
 	virtual void Update();
@@ -429,8 +433,6 @@ public:
 	/// \param pDisp 需要输出数据的Display
 	bool Output(GsDisplay* pDisp,GsTrackCancel* pCancel);
 
-	/// \brief 获取金字塔图层
-	GsLayerPtr GetPyramidLayer() const;
 };
 /// \brief GsMapPtr
 GS_SMARTER_PTR(GsMap);
@@ -773,7 +775,7 @@ public:
 	/// \brief 根据整型属性值获取符号
 	GsSymbol* Symbol(int nValue);
 	/// \brief 根据字符串型属性值获取符号
-	GsSymbol* Symbol(Utility::GsString &strValue);
+	GsSymbol* Symbol(const char* value);
 
 	/// \brief 设置是否使用默认符号进行绘制
 	void IsUseDefaultSymbol(bool bUse);
@@ -990,7 +992,8 @@ private:
 	bool m_bIsDirty ;
 	bool m_bIsDrawBackGound ; 
 
-	std::auto_ptr<SpatialAnalysis::path_index> m_ptrKnife; 
+	//std::auto_ptr<SpatialAnalysis::path_index> m_ptrKnife;
+	GsGeometryPtr m_ptrGeoKnife;
 
 	GsPoint* m_vPoints;
 
@@ -1262,12 +1265,19 @@ protected:
 	GsMemoryImageCanvas();
 
 public:
+	using GsCanvas::RenderingOrigin;
+	using GsCanvas::Clip;
+	using GsCanvas::DrawLine;
+	using GsCanvas::DrawImage;
+	using GsCanvas::DrawString;
+	using GsCanvas::CreateImage;
+
 	/// \brief 根据宽和高构建RGBA32位色的画布
 	GsMemoryImageCanvas(int w, int h, float dpi=96);
 	virtual ~GsMemoryImageCanvas();
 	 
 	/// \brief 设置绘制起算的原点
-	virtual void RenderingOrigin(const Utility::GsPT pt);
+	virtual void RenderingOrigin(const Utility::GsPT& pt);
 
 	/// \brief 创建一个裁切范围
 	virtual GsRegionPtr CreateRegion(GsGraphicsPath*  path);
@@ -1388,7 +1398,11 @@ class GS_API GsFileImageCanvas:public GsMemoryImageCanvas
 {
 public:
 	/// \brief 根据文件名和宽高构建RGBA32位色的画布
-	GsFileImageCanvas(const char* strFile,int w,int h,int nMaxMemoryCache=0x100000);
+	/// \param strFile PAM文件路径。
+	/// \param w PAM图像的宽度
+	/// \param h PAM图像的高度
+	/// \param nMaxMemoryCache 缓存图形的行数据在内存中最多花费多少内存
+	GsFileImageCanvas(const char* strFile,int w,int h,int nMaxMemoryCache=0x100000,float fDPI=96.0f);
 	virtual ~GsFileImageCanvas();
 };
 /// \brief GsFileImageCanvasPtr
@@ -1405,6 +1419,13 @@ public:
 	virtual bool Content(const char* contentname,Utility::GsByteBuffer* buff) = 0;
 
 	/// \brief 指定范围内的字体产生为Protobuffer格式的栅格。
+	/// \param fontFamily 字体名称
+	/// \param style 字体风格(Regular、Bold等)
+	/// \param size 字符大小(默认24)
+	/// \param nStartCode 字符开始编号
+	/// \param nEndCode 字符结束编号
+	/// \param buff 返回的内存块
+	/// \returns 返回执行是否成功 
 	virtual bool GenerateRasterGlyph(const char* fontFamily,const char* style,float size,int nStartCode,int nEndCode,Utility::GsByteBuffer* buff) = 0;
 
 	/// \brief 获得样式表名字
@@ -1457,13 +1478,21 @@ GS_SMARTER_PTR(GsStyleTableFactory);
 class GS_API GsVectorTileRenderer : public Utility::GsRefObject
 {
 protected:
+	double m_DPI;
+protected:
 	GsVectorTileRenderer(GsImageCanvas *pImageCanvas, GsPyramid *pGsPyramid);
 	GsVectorTileRenderer(int nWidth, int nHeight, GsPyramid *pGsPyramid);
 	
+	/// \brief 创建坐标转换对象
 	virtual GsDisplayTransformationPtr CreateDisplay(int l,int r,int c);
 
 public:
 	virtual ~GsVectorTileRenderer();
+	
+	/// \brief Render绘制的DPI
+	float DPI();
+	/// \brief Render绘制的DPI
+	void DPI(float dpi);
 
 	/// \brief 清空画布。
 	void ClearCanvas(const GsColor &c = GsColor(255, 255, 255, 0));
@@ -1471,16 +1500,32 @@ public:
 	/// \brief 返回画布指针
 	GsImageCanvas *ImageCanvas();
 
-	/// \brief 绘制瓦片类型矢量数据。
+	/// \brief 绘制瓦片类型矢量数据
+	virtual bool DrawVectorTile(GsCanvas *pCanvas,GsDisplayTransformation* pDT,
+					const GsBox& tileExtent,const Utility::GsRect& rect,const unsigned char* pData,int nLen,
+					int l,int r,int c) = 0;
+
+	/// \brief 绘制瓦片类型矢量数据
 	virtual bool DrawVectorTile(GsTile *pTile);
 
-	/// \brief 绘制瓦片类型矢量数据。
-	virtual bool DrawVectorTile(const unsigned char* pData,int nLen,int l,int r,int c) = 0;
+	/// \brief 绘制瓦片类型矢量数据
+	/// \param pData 瓦片内存块
+	/// \param nLen 内存块长度
+	/// \param l 层号
+	/// \param r 行号
+	/// \param c 列号
+	virtual bool DrawVectorTile(const unsigned char* pData,int nLen,int l,int r,int c);
+
 
 protected:
+	/// \brief 画布对象
 	GsImageCanvasPtr m_ptrImageCanvas;
+	/// \brief 金字塔对象
 	GsPyramidPtr m_ptrPyramid;
+	/// \brief 坐标转换对象
 	GsDisplayTransformationPtr m_ptrDT;
+	/// \brief 瓦片GZip内存块
+	Utility::GsGrowByteBuffer		m_ZipBuffer;
 };
 /// \brief GsVectorTileRendererPtr
 GS_SMARTER_PTR(GsVectorTileRenderer);
@@ -1491,6 +1536,14 @@ GS_SMARTER_PTR(GsVectorTileRenderer);
 class GS_API GsStyledVectorTileRenderer: public GsVectorTileRenderer
 {
 public:
+	enum GsDrawBehavior
+	{
+		eDrawVectorData,
+		eDrawLabelData,
+		eDrawVectorAndLabelData,
+	};
+public:
+	using GsVectorTileRenderer::DrawVectorTile;
 	/// \brief 通过画布和金字塔构造Renderer
 	GsStyledVectorTileRenderer(GsImageCanvas *pImageCanvas, GsPyramid *pGsPyramid,GsStyleTable *pStyleTable = NULL);
 
@@ -1502,9 +1555,10 @@ public:
 	void StyleTable(GsStyleTable *pStyleTable);
 	/// \brief 获取样式表实例
 	GsStyleTable * StyleTable();
-
-	/// \brief 绘制瓦片类型矢量数据。
-	virtual bool DrawVectorTile(const unsigned char* pData,int nLen,int l,int r,int c) ;
+	 
+	/// \brief 绘制瓦片类型矢量数据
+	virtual bool DrawVectorTile(GsCanvas *pCanvas,GsDisplayTransformation* pDT,const GsBox& tileExtent,const Utility::GsRect& rect,const unsigned char* pData,int nLen,
+					int l,int r,int c);
 
 	/// \brief 本地渲染设置标注参数容器
 	void LabelContainer(GsLabelContainer* pLabelContainer);
@@ -1512,35 +1566,37 @@ public:
 	/// \brief 本地渲染标注坐标转换对象
 	void LabelDisplayTransformation(GsDisplayTransformation *pDT);
 
-	/// \brief 本地渲染绘制瓦片标注
-	bool DrawLabels(const unsigned char* pData,int nLen,int l,int r,int c);
+	/// \brief 绘制行为
+	void DrawBehavior(GsDrawBehavior eDrawBehavior);
+	/// \brief 绘制方式
+	GsDrawBehavior DrawBehavior();
 
 protected:
-	/// 根据几何维度获取自动标注对象（0：点  1：线  2：面）
+	/// \brief 根据几何维度获取自动标注对象（0：点  1：线  2：面）
 	GsLabelProperty* GetLabelProperty(int nDim);
 
-	/// 绘制瓦片记录
-	void DrawTileFeature( LayerDrawStyle *pLayerStyle, VectorTileFeature *pFeature, bool bIsLabelLayer, bool bDrawTile);
-
-	/// 判断图层是否要绘制到瓦片上
-	bool IsLayerDrawOnTile(LayerDrawStyle *pLayerStyle);
-
-	/// 判断是否是标注图层
+	/// \brief 绘制瓦片记录
+	void DrawTileFeature(GsCanvas *pCanvas,GsDisplayTransformation* pDT, LayerDrawStyle *pLayerStyle, VectorTileFeature *pFeature, bool bIsLabelLayer);
+	 
+	/// \brief 判断是否是标注图层
 	bool IsLabelLayer(LayerDrawStyle *pLayerStyle);
 protected:
+	/// \brief 样式文件对象
 	GsStyleTablePtr m_ptrStyleTable;
-	// 自动计算标注对象缓存
+	/// \brief自动计算标注对象缓存
 	std::map<int, GsLabelPropertyPtr> m_mapLabelProp;
-	// 地理到屏幕的坐标转换对象
+	/// \brief 地理到屏幕的坐标转换对象
 	GsDisplayTransformationPtr m_ptrScreenDT;
-	// 标注容器
+	// \brief 标注容器
 	GsLabelContainerPtr m_pLabelContainer;
+	// \brief 是否只绘制标注
+	GsDrawBehavior m_eBehavior;
 };
 /// \brief GsVectorStyleRenderer
 GS_SMARTER_PTR(GsStyledVectorTileRenderer);
 
 
-/// \brief 简单矢量瓦片Render
+/// \brief GsSimpleVectorTileRenderer
 /// \details 无样式配置的简单矢量瓦片渲染器，创建随机颜色样式的符号矢量数据
 class GS_API GsSimpleVectorTileRenderer : public GsVectorTileRenderer
 {
@@ -1552,13 +1608,14 @@ public:
 	GsSimpleVectorTileRenderer(int nWidth, int nHeight, GsPyramid* pGsPyramid);
 	virtual ~GsSimpleVectorTileRenderer();
 	
-	/// \brief 绘制瓦片类型矢量数据。
-	virtual bool DrawVectorTile(const unsigned char* pData,int nLen,int l,int r,int c) ;
+	/// \brief 绘制瓦片类型矢量数据
+	virtual bool DrawVectorTile(GsCanvas *pCanvas,GsDisplayTransformation* pDT,const GsBox& tileExtent,const Utility::GsRect& rect,const unsigned char* pData,int nLen,
+					int l,int r,int c);
 private: 
-	// 根据名称和几何类型获取符号
+	/// \brief 根据名称和几何类型获取符号
 	GsSymbol* GetSymbol(const char* szLyrName, GsGeometryType eType);
 private:
-	// 符号缓存
+	/// \brief 符号缓存
 	std::map<std::string, GsSymbolPtr> m_mapSimpleSymbols;
 };
 /// \brief GsSimpleVectorTileRendererPtr
@@ -1587,21 +1644,20 @@ public:
 
 private:
 	// 渲染瓦片成图片
-	Utility::GsImagePtr RenderTileImage(GsTile* pTile, GsDisplay* pDisplay);
+	Utility::GsImagePtr RenderTileImage(GsTile* pTile,GsDisplayTransformation* pDT,const GsBox& extent, int sx,int sy);
 
 private:
+	/// \brief 类型定义<GsImage, 瓦片id>
 	typedef std::pair<Utility::GsImagePtr, unsigned long long> ImagePair;
-
+	/// \brief 最大图片缓存
 	int m_nMaxTileCache;
-	// 矢量样式渲染对象
+	/// \brief 矢量样式渲染对象
 	GsVectorTileRendererPtr m_ptrRender;
 	
-	// 瓦片缓存
+	/// \brief 瓦片缓存
 	std::list<ImagePair> m_lsTileImage;
-	// 瓦片缓存索引
+	/// \brief 瓦片缓存索引(瓦片id, GsImage)
 	std::map<unsigned long long, std::list<ImagePair>::iterator> m_mapTileIndex;
-	// 标注缓存
-	std::map<unsigned long long, std::vector<GsLabelPtr>> m_mapLabelCache;
 };
 /// \brief GsVectorTileLayerPtr
 GS_SMARTER_PTR(GsVectorTileLayer);
@@ -1612,6 +1668,9 @@ GS_SMARTER_PTR(GsVectorTileLayer);
 class GS_API GsPyramidLayer : public GsLayer
 {
 public:
+	GsPyramidLayer(GsPyramid* pPyramid = 0);
+	virtual ~GsPyramidLayer();
+
 	/// \brief 内部绘制入口
 	/// \details 子类通过覆盖此函数实现绘制。
 	virtual bool InnerDraw(GsDisplay* pDisplay,GsTrackCancel* pCancel,GsDrawPhase eDrawPhase);
@@ -1626,9 +1685,6 @@ public:
 	/// \brief 是否有效
 	virtual bool IsValid();
 
-	GsPyramidLayer(GsPyramid* pPyramid = 0);
-	virtual ~GsPyramidLayer();
-
 	/// \brief 设置金字塔对象
 	void Pyramid(GsPyramid* pPyramid);
 	/// \brief 设置金字塔对象
@@ -1636,19 +1692,20 @@ public:
 
 	/// \brief 设置网格线颜色
 	void GridColor(const GsColor& color);
-
 	/// \brief 获取网格线颜色
 	GsColor GridColor();
 
 private:
+	/// \brief 金字塔对象
 	GsPyramidPtr m_ptrPyramid;
+	/// \brief 网格线颜色
 	GsColor m_LineColor;
 };
 /// \brief GsPyramidLayerPtr
 GS_SMARTER_PTR(GsPyramidLayer);
 
-
-/// \brief 字体对象
+/// \brief GsFontFamily
+/// \details 字体对象
 class GS_API GsFontFamily:public Utility::GsRefObject
 {
 protected:
@@ -1666,6 +1723,9 @@ public:
 	
 	/// \brief 将枚举的值字符串类型的式样
 	static Utility::GsString ConvertToString(GsFontStyle style);
+
+	/// \brief 规范化字体的名称，将字体名称和式样的混合区分出名称和式样。
+	static Utility::GsString RegularFontName(const char* fontNameAndStyle,GsFontStyle& style);
 
 	
 	/// \brief 将字符串的式样转换为枚举值

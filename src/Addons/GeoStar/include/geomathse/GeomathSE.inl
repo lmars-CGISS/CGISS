@@ -209,6 +209,11 @@ struct safe_ga
 		if(m_f==0) m_f = _gf2();
 		return m_f->ora_get_info(obj,i_n,i_p,c_n,cdim,c_p);
 	}
+	
+	geo_object* t2path(geo_object* p,double t0,double t1)
+	{
+		return _ga().t2path(p, t0, t1);
+	}
 };
 
 }

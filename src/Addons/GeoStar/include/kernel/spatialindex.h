@@ -15,7 +15,7 @@ public:
 	/// \param box 要检索的矩形范围
 	/// \param vecResult 返回和检索矩形相交的对象id
 	/// \return 返回是否检索到对象
-	virtual bool Query(const GsBox& box,GsVector<int> &vecResult) = 0;
+	virtual bool Query(const GsBox& box,GsVector<long long> &vecResult) = 0;
 };
 /// \brief GsSpatialIndexQueryPtr
 GS_SMARTER_PTR(GsSpatialIndexQuery);
@@ -43,7 +43,7 @@ GS_SMARTER_PTR(GsSpatialIndexEdit);
 class GS_API GsMemoryRTreeSpatialIndex:public GsSpatialIndexEdit
 {
 	void* m_pTree;
-	std::map<int,void*> m_Object;
+	std::map<long long,void*> m_Object;
 public:
 	virtual ~GsMemoryRTreeSpatialIndex();
 
@@ -62,16 +62,16 @@ public:
 	/// \param box 要检索的矩形范围
 	/// \param vecResult 返回和检索矩形相交的对象id
 	/// \return 返回是否检索到对象
-	virtual bool Query(const GsBox& box,GsVector<int> &vecResult);
+	virtual bool Query(const GsBox& box,GsVector<long long> &vecResult);
 	/// \brief 增加一个对象到空间索引
 	/// \param box 要增加对象的box
 	/// \param nID 要增加对象的id
 	/// \return 增加是否成功
-	virtual bool Add(const GsBox& box,int nID);
+	virtual bool Add(const GsBox& box,long long nID);
 	/// \brief 从空间索引移除一个对象
 	/// \param nID 要移除对象的id
 	/// \return 移除是否成功
-	virtual bool Remove(int nID);
+	virtual bool Remove(long long nID);
 
 	/// \brief 将索引保存为QIX文件
 	/// \details 将内存的索引保存为文件，可以通过GsQIXFileSpatialIndex类打开快速检索。
@@ -83,7 +83,7 @@ public:
 	/// \param maxBound 维度最大的值
 	/// \param nDim 要检索的维度
 	/// \return 返回是否检索到对象
-	virtual bool QueryMultiDimension(const double* minBound,const double* maxBound,int nDim,GsVector<int> &vecResult);
+	virtual bool QueryMultiDimension(const double* minBound,const double* maxBound,int nDim,GsVector<long long> &vecResult);
 	
 };
 /// \brief GsMemoryRTreeSpatialIndexPtr
@@ -103,14 +103,14 @@ public:
 	/// \param box 要检索的矩形范围
 	/// \param vecResult 返回和检索矩形相交的对象id
 	/// \return 返回是否检索到对象
-	virtual bool Query(const GsBox& box,GsVector<int> &vecResult);
+	virtual bool Query(const GsBox& box,GsVector<long long> &vecResult);
 	 
 	/// \brief 查询多个维度
 	/// \param minBound 维度最小的值
 	/// \param maxBound 维度最大的值
 	/// \param nDim 要检索的维度
 	/// \return 返回是否检索到对象
-	virtual bool QueryMultiDimension(const double* minBound,const double* maxBound,int nDim,GsVector<int> &vecResult);
+	virtual bool QueryMultiDimension(const double* minBound,const double* maxBound,int nDim,GsVector<long long> &vecResult);
 	
 };
 /// \brief GsQIXFileSpatialIndexPtr

@@ -1,105 +1,12 @@
-#pragma once
+ï»¿#pragma once
 #include "../utility/preconfig.h"
-#include <utility.h>  
+#include "utility.h"  
 #include "geodatabase.h"
-#include "geometry.h"  
-#include "pyramid.h" 
-#include "spatialreference.h"
-#include <list>
-#include <map>
-#include <GeomathSE.inl>
-#include <gobject.inl>
 
-class GsVecTileCache;
+KERNEL_NS
 
-KERNEL_NS    
-/// \brief ÍßÆ¬ÇĞ¸î»ùÀà
-class GS_API GsVectorTileSpliter:public Utility::GsRefObject
-{
-	geostar::geo_factory* m_pFac;
-	int m_nMaxTileCount;
-	GsPyramidPtr m_ptrPyramid;
-	GsCoordinateTransformationPtr m_ptrTransObj;
-	int m_nMinLevel,m_nMaxLevel;
-	double m_dblSimplfyTol;
-	
-	/// \brief ×ö¼ò»¯ÓÃµÄ×ª»»Àà
-	std::map<int,geostar::gobjptr> m_mapSimplfy;
-	
-	/// \brief geometryÇĞ¸îµÄ×ª»»Àà
-	std::map<int,geostar::gobjptr> m_mapSplit;
-
-	geostar::gobjptr m_ObjGeoCut;
-
-	geostar::gobjptr SimplfyObject(int l);
-	geostar::gobjptr SplitObject(int l);
-
-	void Add(geostar::gobjptr &ptrSimplfy,geostar::gobjptr &ptrSplit,GsFeature* pFea,geostar::gobjptr &ptrGeo,int l,
-		const std::vector<std::pair<std::string,GeoStar::Utility::GsAny> >& vecAtt,const char* lyrName);
-protected:
-	// ÍßÆ¬»º´æ
-	UTILITY_NAME::GsSmarterPtr<GsVecTileCache> m_pTileCache;
-protected:
-	/// \brief »ñÈ¡Ò»¸öÍßÆ¬¶ÔÏó
-	virtual GsTile* GetTile(int l,int r,int c);
-	
-	/// \brief ´Ó´æ´¢½éÖÊ¶ÁÈ¡Ò»¸öÍßÆ¬µÄÄÚÈİ¡£
-	virtual bool ReadTile(GsTile* pTile) = 0; 
-	/// \brief ´æ´¢ÍßÆ¬µ½½éÖÊ
-	virtual bool SaveTile(GsTile* pTile) = 0; 
-
-public:
-	GsVectorTileSpliter(GsPyramid* pPyramid,int nMin,int nMax,double dTileCacheSize=1.5,double dblSimplfyTol=0.00390625);
-	virtual ~GsVectorTileSpliter();
-	/// \brief 
-	void SetCoordinateTransObj(GsCoordinateTransformation* ptrTransObj);
-	/// \brief 
-	GsCoordinateTransformation* GetCoordinateTransObj();
-	/// \brief ÉèÖÃ»ñÈ¡×îĞ¡µÄÇĞÆ¬¼¶±ğ
-	int& MinLevel();
-	/// \brief ÉèÖÃ»ñÈ¡×î´óµÄÇĞÆ¬¼¶±ğ
-	int& MaxLevel();
-
-	/// \brief Ìí¼ÓÒ»¸öFeature½øĞĞÍßÆ¬ÇĞ¸î¡£
-	void Add(GsFeature* pFea,int* pAttIndex,int nAttCount,const char* lyrName =  NULL);
-	///// \brief ÉèÖÃ»ñÈ¡×î´óÍßÆ¬ÊıÁ¿
-	//int& MaxTileCount();
-
-	/// \brief ¹Ø±Õ¡£
-	virtual void Close();
-
-	void SetBlockBox(const GsBox& box);
-	GsBox GetBlockBox(){ return m_BlockBox; }
-
-private:
-	void GetAttFields(GsFeature *pFea, int* pAttIndex,int nAttCount, std::vector<std::pair<std::string,GeoStar::Utility::GsAny> >& vecAtt);
-	void CutGeometry(int nLevel, const GsBox& boxGeo, geostar::gobjptr& ptrGeo);
-
-private:
-	GsBox m_BlockBox;
-};
-// ÍßÆ¬µØÎïÀà¡£
-class GS_API GsTileClassVTSpiter:public GsVectorTileSpliter
-{
-	GsTileClassPtr m_ptrTileClass;
-	GsTilePtr		m_ptrTile;
-	int				m_nCommitCount;
-protected:
-	/// \brief ´Ó´æ´¢½éÖÊ¶ÁÈ¡Ò»¸öÍßÆ¬µÄÄÚÈİ¡£
-	virtual bool ReadTile(GsTile* pTile); 
-	
-	/// \brief ´æ´¢ÍßÆ¬µ½½éÖÊ
-	virtual bool SaveTile(GsTile* pTile); 
-public:
-	GsTileClassVTSpiter(GsTileClass* pTileClass,GsPyramid* pPyramid,int nMin,int nMax,double dTileCacheSize=1.5,double dblSimplfyTol=0.00390625);
-	virtual ~GsTileClassVTSpiter();
-	/// \brief ¹Ø±Õ¡£
-	virtual void Close();
-};
-
-
-
-/// \brief ÍßÆ¬ÇĞ¸î»ùÀà
+/// \brief GsFileVectorTileSpliter
+/// \detail æ–‡ä»¶å¼ç“¦ç‰‡åˆ‡å‰²ç±»
 class GS_API GsFileVectorTileSpliter:public Utility::GsRefObject
 {  
 	struct LayerStruct:public GsVector<Utility::GsString>
@@ -116,49 +23,69 @@ class GS_API GsFileVectorTileSpliter:public Utility::GsRefObject
 			Name = name;
 		}
 	};
+	/// \brief é‡‘å­—å¡”å¯¹è±¡
 	GsPyramidPtr		m_ptrPyramid;
+	/// \brief åˆ‡ç‰‡çº§åˆ«èŒƒå›´
 	int m_MinLevel,m_MaxLevel;
+	/// \brief æ€»ç¢ç‰‡æ•°
 	long long m_nTotalPieces;
+	/// \brief å‡ ä½•ç®€åŒ–å®¹å·®
 	double m_SimplfyTol;
+	/// \brief ç“¦ç‰‡æ•°æ®é›†å¯¹è±¡
 	GsTileClassPtr				m_ptrTileClass;
+	/// \brief åæ ‡è½¬æ¢å¯¹è±¡
 	GsCoordinateTransformationPtr m_ptrTans;
-	//¹ıÂË·¶Î§¡£
+	/// \brief åˆ‡ç‰‡è¿‡æ»¤èŒƒå›´
 	geostar::gobjptr			m_FilterExtent;
-
+	/// \brief ç“¦ç‰‡å±æ€§ç¼“å­˜
 	Utility::GsGrowByteBuffer m_AttributeBuffer;
+	/// \brief ç“¦ç‰‡å›¾å±‚ç´¢å¼•ç¼“å­˜
 	std::map<std::string,LayerStruct> m_LayerIndex;
+	/// \brief åˆ‡ç‰‡å¯¹è±¡ç¼“å­˜
 	std::map<int,geostar::gobjptr> m_ClipCache;
+	/// \brief ä¸´æ—¶åˆ‡ç‰‡æ–‡ä»¶ioå¯¹è±¡
 	geostar::geo_reader2* m_TempRW;
-	
+	// åˆ‡ç‰‡ä¸´æ—¶æ–‡ä»¶å­˜å‚¨è·¯å¾„
+	Utility::GsString m_strCacheFile;
+
+	/// \brief åˆ›å»ºä¸´æ—¶åˆ‡ç‰‡æ–‡ä»¶ioå¯¹è±¡
+	void CreateReader();
+	/// \brief è·å–å›¾å±‚çš„ç´¢å¼•
 	int LayerIndex(const char* layerName,GsFeature* pFea,int* pAttIndex,int nAttCount);
-	//¸ù¾İlevel´´½¨Ò»¸öclip
+	/// brief æ ¹æ®levelåˆ›å»ºä¸€ä¸ªclip
 	geostar::geo_trans* CreateClip(int nLevel);
-	//Ğ´Ò»¸öµ½ÁÙÊ±ÎÄ¼ş
+	/// brief å†™ä¸€ä¸ªç¢ç‰‡åˆ°ä¸´æ—¶æ–‡ä»¶
 	void Write(geostar::geo_object* o);
 public:
 	GsFileVectorTileSpliter(GsTileClass* pTileClass,GsPyramid* pPyramid,int nMin,int nMax,double dblSimplfyTol = 0);
 	virtual ~GsFileVectorTileSpliter();
 	
-	/// \brief ÉèÖÃ¹ıÂË·¶Î§,¹ıÂË·¶Î§ÍâµÄÊı¾İ²»»á½øÈëÍßÆ¬
+	/// \brief è®¾ç½®è¿‡æ»¤èŒƒå›´,è¿‡æ»¤èŒƒå›´å¤–çš„æ•°æ®ä¸ä¼šè¿›å…¥ç“¦ç‰‡
 	void FilterExtent(GsBox& box);
-	/// \brief ÉèÖÃ¹ıÂË·¶Î§£¬¹ıÂË·¶Î§ÍâµÄÊı¾İ²»»á½øÈëÍßÆ¬
+	/// \brief è®¾ç½®è¿‡æ»¤èŒƒå›´ï¼Œè¿‡æ»¤èŒƒå›´å¤–çš„æ•°æ®ä¸ä¼šè¿›å…¥ç“¦ç‰‡
 	void FilterExtent(GsGeometry* pGeo);
 
-	/// \brief ×ø±ê×ª»»¶ÔÏó
+	/// \brief åæ ‡è½¬æ¢å¯¹è±¡
 	void CoordinateTransformation(GsCoordinateTransformation* ptrTransObj);
-	/// \brief ×ø±ê×ª»»¶ÔÏó 
+	/// \brief åæ ‡è½¬æ¢å¯¹è±¡ 
 	GsCoordinateTransformation* CoordinateTransformation();
-	/// \brief ÉèÖÃ»ñÈ¡×îĞ¡µÄÇĞÆ¬¼¶±ğ
+	/// \brief è®¾ç½®è·å–æœ€å°çš„åˆ‡ç‰‡çº§åˆ«
 	int& MinLevel();
-	/// \brief ÉèÖÃ»ñÈ¡×î´óµÄÇĞÆ¬¼¶±ğ
+	/// \brief è®¾ç½®è·å–æœ€å¤§çš„åˆ‡ç‰‡çº§åˆ«
 	int& MaxLevel();
-	/// \brief Ìí¼ÓÒ»¸öFeature½øĞĞÍßÆ¬ÇĞ¸î¡£
+	/// \brief æ·»åŠ ä¸€ä¸ªFeatureè¿›è¡Œç“¦ç‰‡åˆ‡å‰²ã€‚
 	bool Add(GsFeature* pFea,int* pAttIndex,int nAttCount,const char* lyrName =  NULL);
-	/// \brief Ìá½»Êı¾İ¡£
+	/// \brief æäº¤æ•°æ®ã€‚
 	virtual void Commit(); 
 
+	/// \brief è®¾ç½®GZipå‹ç¼©æ˜¯å¦æœ‰æ•ˆ
+	void GZipCompress(bool bEnable);
+
+	/// \brief è®¾ç½®åˆ‡ç‰‡ä¸´æ—¶æ–‡ä»¶å­˜å‚¨è·¯å¾„
+	void CachePath(const char* strPath);
+
 public:
-	/// \brief µ±Ìá½»Êı¾İÊ±ÏÔÊ¾½ø¶È¡£
+	/// \brief å½“æäº¤æ•°æ®æ—¶æ˜¾ç¤ºè¿›åº¦ã€‚
 	Utility::GsDelegate<void(long long,long long)> OnCommit;
 };
 

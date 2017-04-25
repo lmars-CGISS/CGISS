@@ -201,7 +201,7 @@ public:
 	/// \param fromAzimuth 输出开始点的方向角
 	/// \param toAzimuth 输出结束点的方向角
 	/// \return 测地线长度，单位米
-	double Inverse(double fromLongitude,double fromLatitude,double toLongitude,double toLatitude,double* fromAzimuth,double* toAzimuth);
+	double Inverse(double fromLongitude,double fromLatitude,double toLongitude,double toLatitude,double* fromAzimuth = NULL,double* toAzimuth = NULL);
 
 	
 	/// \brief 根据起点经纬度坐标和方位角沿测试线前进一定长度到终点
@@ -213,7 +213,7 @@ public:
 	/// \param toLatitude 输出终点的纬度
 	/// \param toLatitude 输出终点的方位角
 	void Direct(double fromLongitude,double fromLatitude,double fromAzimuth,double length12,
-				double* toLongitude,double* toLatitude,double* toAzimuth);
+				double* toLongitude,double* toLatitude,double* toAzimuth = NULL);
 
 
 	/// \brief 寻找起点终点大圆上的t对应的点
@@ -226,7 +226,7 @@ public:
 	/// \param Latitude 插值点的维度
 	/// \param Azimuth 插值点的方向角
 	void Interpolation(double fromLongitude,double fromLatitude,double toLongitude,double toLatitude,double t,
-				double* Longitude,double* Latitude,double* Azimuth);
+				double* Longitude,double* Latitude,double* Azimuth = NULL);
 
 
 };
@@ -278,7 +278,7 @@ public:
 	/// \param toLatitude 终点的经度
 	/// \param toLongitude 终点的纬度
 	/// \param toAzimuth 终点的方位角
-	void Position(double distance,double* toLatitude, double* toLongitude, double* toAzimuth);
+	void Position(double distance,double* toLatitude, double* toLongitude, double* toAzimuth = NULL);
 
 };
 
@@ -323,7 +323,7 @@ public:
 	/// \param pArea  当构造时使用非Polyline参数则返回球面面积，否则不返回
 	/// \param pPerimeter    返回多边形或者polyline的周长
 	/// \return 返回多边形或者折线有多少个点
-	unsigned int Compute(bool bReverse,bool bSign,double* pArea,double *pPerimeter);
+	unsigned int Compute(bool bReverse,bool bSign,double* pArea,double *pPerimeter = NULL);
 
 };
 
@@ -406,6 +406,7 @@ protected:
 	GsSpatialReferencePtr m_ptrTarget;
 	void CreateHandle();
 public:
+	using GsCoordinateTransformation::Transformation;
 	GsProjectCoordinateTransformation(GsSpatialReference* pSource,GsSpatialReference* pTarget);
 	~GsProjectCoordinateTransformation();
 
@@ -455,6 +456,7 @@ class GS_API GsParameterProjectCoordinateTransformation:public GsProjectCoordina
 	/// \brief 转换参数。
 	GsCoordinateTransformationMethod m_eMethod;
 public:
+	using GsCoordinateTransformation::Transformation;
 	/// \brief 从转换方法和转换参数构造
 	GsParameterProjectCoordinateTransformation(GsSpatialReference* pSource,GsSpatialReference* pTarget,
 							GsCoordinateTransformationMethod eMethod,double* pParam);
@@ -480,6 +482,7 @@ class GS_API GsAffineCoordinateTransformation:public GsCoordinateTransformation
 	std::vector<double> m_Target;
 	double m_Matrix[6];
 public:
+	using GsCoordinateTransformation::Transformation;
 	/// \brief 根据源和目标同名点组构成仿射变换参数
 	/// \details 最低需要3个点的坐标,即nLen为6。
 	GsAffineCoordinateTransformation(double* pSourcePoint,double* pTargetPoint,int nLen =  6);
@@ -519,6 +522,7 @@ GS_SMARTER_PTR(GsAffineCoordinateTransformation);
 class GS_API GsWGS84ToGCJ02CoordinateTransformation:public GsCoordinateTransformation
 {
 public:
+	using GsCoordinateTransformation::Transformation;
 	/// \brief 对x数组和y数组以及Z数组分别转换
 	virtual bool Transformation(double* pX,double *pY,double *pZ,int nPointCount,int nPointOff);
 };
@@ -533,6 +537,7 @@ class GS_API GsGCJ02ToWGS84CoordinateTransformation:public GsCoordinateTransform
 protected:
 	double m_dblPrecision;
 public:
+	using GsCoordinateTransformation::Transformation;
 	/// \brief 从转换精度构造
 	/// \param dblPrecision 反转的精确度，单位米
 	GsGCJ02ToWGS84CoordinateTransformation(double dblPrecision);
@@ -549,6 +554,7 @@ GS_SMARTER_PTR(GsGCJ02ToWGS84CoordinateTransformation);
 class GS_API GsWGS84ToBD09CoordinateTransformation:public GsWGS84ToGCJ02CoordinateTransformation
 {
 public:
+	using GsCoordinateTransformation::Transformation;
 	/// \brief 对x数组和y数组以及Z数组分别转换
 	virtual bool Transformation(double* pX,double *pY,double *pZ,int nPointCount,int nPointOff);
 };
@@ -562,6 +568,7 @@ class GS_API GsBD09ToWGS84CoordinateTransformation:public GsGCJ02ToWGS84Coordina
 {
 	
 public:
+	using GsCoordinateTransformation::Transformation;
 	/// \brief 从转换精度构造
 	/// \param dblPrecision 反转的精确度，单位米
 	GsBD09ToWGS84CoordinateTransformation(double dblPrecision);

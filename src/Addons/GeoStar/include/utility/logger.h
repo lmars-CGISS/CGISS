@@ -24,6 +24,7 @@ class GS_API GsCustomLogOutput
 {
 public:
 	virtual bool OnLog(const char* log) = 0;
+	virtual void OnFlush(){};
 };
 
 /// \brief 将日志输出到文件
@@ -32,15 +33,17 @@ class GS_API GsFileCustomLogOutput:public GsCustomLogOutput
 	std::ofstream m_file;
 public:
 	virtual bool OnLog(const char* log);
+	virtual void OnFlush();
 	GsFileCustomLogOutput(const char* strFileName,bool bAppend = false);
 };
 
 /// \brief 创建日志
 class GS_API GsLogger
 {  
-	GsSafeObject<GsString> m_strLasterError;
-	void* m_pLog;
-	void* m_pHook;
+	GsSafeObject<GsString>	m_strLasterError;
+	GsString				m_strName;
+	GsCustomLogOutput*		m_pHook;
+	volatile	bool		m_AutoFlush;
 
 	volatile LOG_LEVEL m_nLevel; 
 	/// \brief 日志流操作
@@ -89,7 +92,13 @@ public:
 	virtual ~GsLogger(); 
 	/// \brief 日志操作后输出流是否刷新
 	///\return 返回true表示刷新，否则，不刷新
-	bool auto_flush();
+	bool AutoFlush();
+	
+	/// \brief 日志操作后输出流是否刷新
+	///\return 返回true表示刷新，否则，不刷新
+	void AutoFlush(bool b);
+
+
 	/// \brief 报告一段日志
 	void Log(LOG_LEVEL l,const char* log);	
 	/// \brief 缺省的日志对象

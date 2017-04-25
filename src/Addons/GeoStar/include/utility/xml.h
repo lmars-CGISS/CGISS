@@ -16,6 +16,17 @@ protected:
 public:
 	GsXmlReader();
 	virtual ~GsXmlReader();
+
+	/// \brief xml节点的属性
+	class  ElementAttribute
+	{
+	public:
+		virtual int AttributeCount()  = 0;
+		virtual const char* Name(int index)  = 0;
+		virtual const char* Value(int index)  = 0;
+		virtual const char** AttributePtr() = 0;
+	};
+
 	/// \brief 文档解析深度
 	int Depth();
 	/// \brief 设置文档解析深度
@@ -30,7 +41,7 @@ public:
 	virtual void OnEnd();
 
 	/// \brief 当元素开始时发生
-	virtual void OnElementBegin(const char* pEleName);
+	virtual void OnElementBegin(const char* pEleName,ElementAttribute* pAtt);
 	/// \brief 当元素结束时发生
 	virtual void OnElementEnd(const char* pEleName);
 
@@ -39,8 +50,6 @@ public:
 	/// \brief 当CData元素结束时发生
 	virtual void OnCDataEnd();
 
-	/// \brief 当读取一个属性时发生
-	virtual void OnElementAttribute(const char* pEleName,const char* strValue);
 	/// \brief 当读取注释时发生
 	virtual void OnComment(const char* strComment);
 	/// \brief 读取到ElementContent时发生

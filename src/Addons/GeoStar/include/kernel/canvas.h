@@ -357,7 +357,7 @@ class GS_API GsRandomGradsColor:public GsGradsColor
 	virtual void CreateColor();
 public:
 	GsRandomGradsColor(const GsColor& from,const GsColor& to);
-	virtual GsColor Color( int nIndex) = 0;
+	virtual GsColor Color( int nIndex);
 };
 
 
@@ -475,9 +475,9 @@ public:
 	/// \brief 获取字体名称
 	virtual Utility::GsString Font();
 
-	/// \brief 设置字体大小,单位像素
+	/// \brief 设置字体大小,单位磅
 	virtual void FontSize(float fSize);
-	/// \brief 设置字体大小,单位像素
+	/// \brief 设置字体大小,单位磅
 	virtual float FontSize();
 
 	/// \brief 字体式样
@@ -660,8 +660,8 @@ protected:
 	GsColor m_StartColor;
 	GsColor m_EndColor;
 	/// \brief 画刷的开始结束位置
-	GsRawPoint m_StartPoint;
-	GsRawPoint m_EndPoint;
+	Utility::GsPTF m_StartPoint;
+	Utility::GsPTF m_EndPoint;
 
 public:
 	/// \brief 默认构造画刷
@@ -679,13 +679,13 @@ public:
 	/// \brief 设置画刷的颜色
 	virtual void EndColor(const GsColor& c);
 	/// \brief 渐变的开始位置
-	virtual GsRawPoint StartPoint();
+	virtual Utility::GsPTF StartPoint();
 	/// \brief 设置渐变的开始位置
-	virtual void StartPoint(const GsRawPoint& c);
+	virtual void StartPoint(const Utility::GsPTF& c);
 	/// \brief 渐变的结束位置
-	virtual GsRawPoint EndPoint();
+	virtual Utility::GsPTF EndPoint();
 	/// \brief 设置渐变的结束位置
-	virtual void EndPoint(const GsRawPoint& c);
+	virtual void EndPoint(const Utility::GsPTF& c);
 };
 /// \brief GsLinearGradientBrushPtr
 GS_SMARTER_PTR(GsLinearGradientBrush);
@@ -698,7 +698,7 @@ protected:
 	GsColor m_StartColor;
 	GsColor m_EndColor;
 	/// \brief 辐射中心
-	GsRawPoint m_CenterPoint;
+	Utility::GsPTF m_CenterPoint;
 	/// \brief 辐射半径
 	float m_Radius;
 
@@ -719,9 +719,9 @@ public:
 	virtual void EndColor(const GsColor& c);
 	
 	/// \brief 辐射中心
-	virtual GsRawPoint CenterPoint();
+	virtual Utility::GsPTF CenterPoint();
 	/// \brief 设置辐射中心
-	virtual void CenterPoint(const GsRawPoint& p);
+	virtual void CenterPoint(const Utility::GsPTF& p);
 	/// \brief 辐射半径
 	virtual float Radius();
 	/// \brief 设置辐射半径
@@ -833,14 +833,14 @@ protected:
 	Utility::GsRectF     m_VisibleBound;
 	/// \brief 裁切范围
 	GsRegionPtr m_ptrClipRegion;
+	GsCanvas();
 public:
 	virtual ~GsCanvas();
-	GsCanvas();
 
 	/// \brief 获取绘制起算的原点
 	virtual Utility::GsPT RenderingOrigin();
 	/// \brief 设置绘制起算的原点
-	virtual void RenderingOrigin(const Utility::GsPT pt);
+	virtual void RenderingOrigin(const Utility::GsPT& pt);
 
 
 	/// \brief 获取仿射变换矩阵

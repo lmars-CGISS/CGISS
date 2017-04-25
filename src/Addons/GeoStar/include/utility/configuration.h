@@ -77,6 +77,9 @@ public:
 	/// \brief 判断配置是否发生了变化
 	bool IsDirty() const;
 	
+	/// \brief 清除数据变化标识 
+	void ClearDity();
+
 	/// \brief 获取根配置对象
 	GsConfig  Root() const ;
 	
@@ -184,6 +187,8 @@ public:
 	/// \brief 获取配置的xml节点
 	tinyxml2::XMLElement* Element()const{return m_pEle;}
 
+	/// \brief 交换两个节点的内容
+	GsConfig& Swap(GsConfig& other);
 };
 
 /// \brief 全局配置类

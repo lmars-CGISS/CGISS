@@ -281,9 +281,9 @@ public:
 	virtual ~GsImage();
 	/// \brief 拷贝
 	virtual bool CopyFrom(GsImage* pImage) { return false;};
-	/// \brief 设置宽度
+	/// \brief 获得宽度
 	virtual unsigned int Width() = 0;
-	/// \brief 设置高度
+	/// \brief 获得高度
 	virtual unsigned int Height() = 0;
 	
 	/// \brief 获取图像的字节数组，并非所有图像都能够成功
@@ -306,6 +306,7 @@ public:
 	
 	/// \brief 保存图像为JPEG格式的内存块。
 	virtual bool SaveJPEG(GsByteBuffer* pBuffer,int nQuality=75);
+	 
 
 	/// \brief 从文件载入生成图像
 	static GsSmarterPtr<GsImage> LoadFrom(const char* strFile);
@@ -313,7 +314,19 @@ public:
 	/// \brief 从内存块载入生成图像对象
 	static GsSmarterPtr<GsImage> LoadFrom(const unsigned char *pBlob,int nLen);
 };
+/// \brief GsImagePtr
 GS_SMARTER_PTR(GsImage);
+ 
+
+/// \brief 图像处理类
+class GS_API GsImageProcess
+{ 
+public:
+	virtual ~GsImageProcess(){}
+	/// \brief 返回位图影像的某行某列点像素地址
+	virtual int Process(int r, int c, unsigned  int* pixel) = 0;
+};
+
 
 /// \brief 内存中存储的简单位图对象
 class GS_API GsSimpleBitmap:public GsImage
@@ -330,31 +343,27 @@ public :
 	/// \brief 解码文件格式的图像
 	GsSimpleBitmap(const char* strFile); 
 	/// \brief 解码内存中的图像
-	GsSimpleBitmap(const unsigned char* blob,int nLen); 
-	/// \brief 保存图像为PNG格式文件
-	virtual bool SavePNG(const char* strFile);
-	
-	/// \brief 保存图像为PNG格式的内存块。
-	virtual bool SavePNG(GsByteBuffer* pBuffer);
-
-
+	GsSimpleBitmap(const unsigned char* blob,int nLen);  
 	/// \brief 析构函数
 	virtual ~GsSimpleBitmap();
 	/// \brief 拷贝
 	virtual bool CopyFrom( GsImage* pImage );
-	/// \brief 设置宽度
+	/// \brief 获得宽度
 	virtual unsigned int Width();
-	/// \brief 设置高度
+	/// \brief 获得高度
 	virtual unsigned int Height() ;
 	/// \brief 获取图像的字节数组，并非所有图像都能够成功
 	virtual const unsigned char* Bit() ;
 	
 	/// \brief 图像一行的字节长度
 	virtual unsigned int Stride();
-
+	
+	/// \brief 遍历影像中各个像素
+	virtual void ForEachPixel(GsImageProcess* pImageProcess, bool bParallel = false);
 };
+/// \brief GsSimpleBitmapPtr
 GS_SMARTER_PTR(GsSimpleBitmap);
- 
+
 
 /// \brief 基于NetPbm的PAM格式文件影像
 /// \details http://netpbm.sourceforge.net/
@@ -370,9 +379,9 @@ public:
 	GsPAMBitmap(const char* strFile);
 	GsPAMBitmap(const char* strFile,int w,int h);
 
-	/// \brief 设置宽度
+	/// \brief 获得宽度
 	virtual unsigned int Width();
-	/// \brief 设置高度
+	/// \brief 获得高度
 	virtual unsigned int Height() ;
 	/// \brief 获取图像的字节数组，并非所有图像都能够成功
 	virtual const unsigned char* Bit() ;
@@ -390,4 +399,60 @@ public:
 	virtual void Row(int r,const unsigned char* pRowData,int nLen);
 };
 GS_SMARTER_PTR(GsPAMBitmap);
+
+
+
+/// \brief 解析SVG为位图。
+class GS_API GsSVGImage:public Utility::GsImage
+{
+	float m_DPI;
+	float m_Scale;
+	void* m_pSVG;
+	std::string m_SVG; 
+	Utility::GsImagePtr m_ptrImage;
+	void CreateImage();
+	void DestroyHandle();
+	void CreateHandle();
+public:
+	/// \brief 根据SVG文件或者字符串构造位图
+	GsSVGImage(const char* svg,bool bFileName);
+	GsSVGImage();
+	
+	~GsSVGImage();
+	
+	/// \brief 获得宽度
+	virtual unsigned int Width();
+	/// \brief 获得高度
+	virtual unsigned int Height();
+	
+	/// \brief 获取图像的字节数组，并非所有图像都能够成功
+	virtual const unsigned char* Bit();
+
+	/// \brief 获取SVG的xml字符串
+	GsString SVG();
+
+	/// \brief 设置SVG字符串或者SVG文件
+	void SVG(const char* svg,bool bFileName);
+
+	/// \brief 是否是有效的SVG
+	bool IsValid();
+
+	/// \brief SVG图像的宽和高
+	GsSize SVGSize();
+
+	/// \brief 获取SVG绘制时的缩放比率
+	float SVGScale();
+
+	/// \brief 设置SVG绘制时的缩放比率
+	void SVGScale(float scale);
+
+	/// \brief 获取图像显示分辨率
+	float DPI();
+	
+	/// \brief 设置图像显示分辨率
+	void DPI(float dpi);
+	
+};
+/// \brief GsSVGImagePtr
+GS_SMARTER_PTR(GsSVGImage);
 UTILITY_ENDNS

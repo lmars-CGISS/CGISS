@@ -144,6 +144,9 @@ public:
 	/// \brief 从Base64字符串解码成为内存块
 	bool FromBase64(const char* strBase64);
 
+	/// \brief 判断字符串是否是一个base64编码的字符串
+	static bool IsBase64(const char* strBase64);
+
 };
 
 

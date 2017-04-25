@@ -19,10 +19,35 @@ public:
 	virtual void Unlock();
 };
 
+/// \brief 信号
+class GS_API GsSignaler
+{ 
+	void* m_pSingaler;
+public:
+	GsSignaler();
+	virtual ~GsSignaler(); 
+
+	/// \brief 设置信号
+	virtual void Signal();
+	 
+	/// \brief 等待信号
+	virtual void Wait();
+
+	/// \brief 等待信号或者超时
+	///\return 返回false则表示超时
+	virtual bool Wait(unsigned int milliseconds);
+
+};
+
 /// \brief 读写线程锁
 class GS_API  GsRWLock
 {
-	void* m_pRWLock;
+	GsLock  m_M;
+	GsSignaler m_S;
+    const unsigned int m_max_locks;
+    mutable unsigned int m_available_locks;
+    mutable bool m_write_lock_in_progress; 
+    mutable bool m_write_lock_active;
 public:
 	GsRWLock();
 	virtual ~GsRWLock();
@@ -41,27 +66,6 @@ public:
 	virtual void ReadUnlock();
 };
 
-/// \brief 信号
-class GS_API GsSignaler
-{
-	void* m_pMutex;
-	void* m_pSingaler;
-
-public:
-	GsSignaler();
-	virtual ~GsSignaler(); 
-
-	/// \brief 设置信号
-	virtual void Signal();
-	 
-	/// \brief 等待信号
-	virtual void Wait();
-
-	/// \brief 等待信号或者超时
-	///\return 返回false则表示超时
-	virtual bool Wait(unsigned int milliseconds);
-
-};
 
 /// \brief 自动加锁的对象
 class GS_API GsAutoLocker

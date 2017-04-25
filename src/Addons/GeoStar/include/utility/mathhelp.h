@@ -3,6 +3,9 @@
 #include <climits>
 #include <stdlib.h>
 
+//geomathd 去掉后很多宏定义和函数找不到 引用添加到此处
+#include <float.h>
+#include <math.h>
 UTILITY_NS  
 	
 /// \brief 数学相关的函数
@@ -44,6 +47,9 @@ public:
 
 	/// \brief 无效double
 	static double NaN();
+
+	/// \brief 获取圆周率PI
+	static double Pi();
 
 };
 UTILITY_ENDNS

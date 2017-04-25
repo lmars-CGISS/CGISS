@@ -10,7 +10,8 @@ class GS_API GsSimpleFillSymbol:public GsFillSymbol
 	GsSolidBrushPtr m_ptrBrush;
 	GsBrushStyle m_Style;
 protected:
-	virtual void OnDraw(GsGraphicsPath* pPath,SPATIALANALYSIS_NS::path* pGeoPath);
+
+	virtual void OnDraw(GsGraphicsPath* pPath,GsGeometryBlob * pBlob);
 
 	virtual void OnStartDrawing();
 	virtual void OnEndDrawing();
@@ -62,11 +63,11 @@ class GS_API GsPointFillSymbol:public GsFillSymbol
 	double m_dblPointAngle;
 
 protected:
-	virtual void OnDraw(GsGraphicsPath* pPath,SPATIALANALYSIS_NS::path* pGeoPath);
-	virtual void DrawRandomPoint(GsGraphicsPath* pPath,SPATIALANALYSIS_NS::path* pGeoPath);
+	virtual void OnDraw(GsGraphicsPath* pPath,GsGeometryBlob * pBlob);
+	virtual void DrawRandomPoint(GsGraphicsPath* pPath,geostar::gobjptr &pGeoPath);
 	virtual void OnStartDrawing();
 	virtual void OnEndDrawing();
-	virtual void DrawCentralPoint(GsGraphicsPath* pPath,SPATIALANALYSIS_NS::path* pGeoPath);
+	virtual void DrawCentralPoint(GsGraphicsPath* pPath,geostar::gobjptr &pGeoPath);
 protected:
 	
 	/// \brief 点符号生成位图
@@ -148,7 +149,7 @@ public:
 	/// \brief 线的偏移
 	void Offset(double off);
 protected:
-	virtual void OnDraw(GsGraphicsPath* pPath,SPATIALANALYSIS_NS::path* pGeoPath);
+	virtual void OnDraw(GsGraphicsPath* pPath,GsGeometryBlob *pBlob);
 
 	virtual void OnStartDrawing();
 	virtual void OnEndDrawing();
@@ -242,7 +243,7 @@ public:
 protected:
 	void InitProperty();
 
-	virtual void OnDraw(GsGraphicsPath* pPath,SPATIALANALYSIS_NS::path* pGeoPath);
+	virtual void OnDraw(GsGraphicsPath* pPath,GsGeometryBlob * pBlob);
 	/// \brief 当开始绘制的时候发生
 	virtual void OnStartDrawing();
 	/// \brief 当结束绘制时发生
@@ -323,12 +324,12 @@ public:
 	bool IsValid();
 
 protected: 
-	void StartAndEndPoint(SpatialAnalysis::envelope env_in, GsRawPoint& startPoint, GsRawPoint& endPoint);
-	void RectGradsFill(SpatialAnalysis::path* pPath);
+	void StartAndEndPoint(GsBox &env_in, GsRawPoint& startPoint, GsRawPoint& endPoint);
+	void RectGradsFill(geostar::gobjptr& pPath);
 
 	/// \brief 当绘制的时候发生
 	/// \details 子类通过覆盖此方法实现实际的绘制
-	virtual void OnDraw(SpatialAnalysis::path* pPath);
+	virtual void OnDraw(GsGeometryBlob * pBlob);
 
 
 	/// \brief 当开始绘制的时候发生
@@ -351,12 +352,18 @@ class GS_API GsBuildingFillSymbol:public GsFillSymbol
 	GsSimpleFillSymbolPtr m_ptrTopFillSym;
 public:
 	GsBuildingFillSymbol();
+
+	/// \brief 视角
 	int ViewAngle();
+	/// \brief 视角
 	void ViewAngle(int iAngle);
 
+	/// \brief 基础，必须要小于或者等于高度
 	int ExtrusionBase();
 
+	/// \brief 高度
 	int ExtrusionHeight();
+	/// \brief 高度
 	void ExtrusionHeight(int iHeight);
 
 	virtual GsSymbolType Type();	
@@ -374,7 +381,7 @@ public:
 	virtual void DrawTop(GsGeometry* pGeo);
 
 protected:
-	virtual void OnDraw(GsGraphicsPath* pPath,SPATIALANALYSIS_NS::path* pGeoPath);
+	virtual void OnDraw(GsGraphicsPath* pPath,GsGeometryBlob * pBlob);
 	/// \brief 当开始绘制的时候发生
 	virtual void OnStartDrawing();
 	/// \brief 当结束绘制时发生

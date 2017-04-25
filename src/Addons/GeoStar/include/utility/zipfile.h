@@ -56,7 +56,6 @@ class GS_API GsZipEntry
 	long long	m_Size;		
     /// \brief 文件的压缩大小
 	long long	m_CompSize;	
-    
 	/// \brief 解压文件时的读取句柄。
 	void* m_Handle;
 public:
@@ -96,10 +95,6 @@ public:
 
 	/// \brief 读取所有数据到这个源中
 	bool ReadTo(GsByteBuffer* source);
-
-	/// \brief 删除自身。
-	bool Delete();
-
 };
 /// \brief zip文件封装类。
 class GS_API GsZipFile
@@ -125,20 +120,29 @@ public:
 
 	/// \brief 向Zip文件中添加一个文件
 	bool Add(const char* name,const char* localfile);
-
-	/// \brief 向Zip文件中添加自定义源的文件。
-	bool Add(const char* name,GsZipSource* source);
-
+	
 	/// \brief 向Zip文件中内存块作为文件。
-	bool Add(const char* name,const char* blob,int nLen);
+	bool Add(const char* name,const unsigned char* blob,int nLen);
 
 };
 
-
+/// \brief Zlib压缩策略。
+enum GsZLibStrategy
+{
+	eDefaultStrategy = 0,
+	eFilteredStrategy = 1,
+	eHuffmanOnlyStrategy = 2,
+	eRLEStrategy = 3,
+	eFixedStrategy = 3,
+};
 /// \brief zlib功能封装
 class GS_API GsZLib
 {
 public:
+	
+	/// \brief 判断一段内存是否是Zlib压缩后的数据
+	static bool IsZlibCompressed(const unsigned char* source,unsigned int len);
+
 	/// \brief 压缩一段内存
 	/// \param nLevel 压缩级别0~9,  0标识不压缩，9标识最大压缩
 	static int Compress (const unsigned char *source, unsigned int sourceLen,
@@ -158,11 +162,23 @@ public:
 };
 
 /// \brief GZ压缩功能
-class GS_API GsGZFile
+class GS_API GsGZipFile
 {
 public:
-	GsGZFile(const char* gzfile);
-	~GsGZFile();
+	
+	GsGZipFile(const char* gzfile);
+	~GsGZipFile();
+	/// \brief 判断一段内存是否是GZip压缩后的数据
+	static bool IsGZipCompressed(const unsigned char* source,unsigned int len);
+
+	/// \brief 以GZIp格式压缩一段内存
+	/// \param nLevel 压缩级别0~9,  0标识不压缩，9标识最大压缩
+	static bool Compress(const unsigned char* source,unsigned int len,
+				GsByteBuffer* pBuffer,int nLevel = 6,
+				GsZLibStrategy eStrategy=eDefaultStrategy);
+	
+	/// \brief 解压一段GZip格式内存
+	static bool Decompress(const unsigned char* source,unsigned int len,GsByteBuffer* pBuffer);
 
 };
 

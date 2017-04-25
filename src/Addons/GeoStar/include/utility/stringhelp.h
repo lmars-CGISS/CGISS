@@ -36,7 +36,8 @@ public:
 	operator const char*() const;
 	operator GsString() const;
 private:
-	bool Init(const wchar_t* str,const char* codepage);  
+	bool Init(const wchar_t* str,const char* codepage);
+	bool Init(const wchar_t* str, GsCodePageID eCodePage);
 
 private:
 	GsCW2A(const GsCW2A&);
@@ -59,7 +60,8 @@ public:
 	operator const wchar_t*() const;
 	operator GsWString() const;
 private:
-	bool Init(const char* str,const char* codepage);  
+	bool Init(const char* str,const char* codepage);
+	bool Init(const char* str,GsCodePageID eCodePage);
 
 private:
 	GsCA2W(const GsCA2W&);
@@ -72,10 +74,6 @@ class GS_API GsEncoding
 {
 public:
 	GsEncoding();
-	/// \brief 判断字符串是否是utf8字符串。
-	///\param  str 要判断的字符串
-	///\return 返回输入字符串是否是utf8字符串
-	static bool IsUtf8(const char* str);
 
 	/// \brief 将本地字符串转换为utf8字符串
 	///\return 返回转换为utf8编码的字符串
@@ -100,6 +98,7 @@ public:
 	/// \brief 将Utf8的字符串转换为本地字符串
 	///\return 返回转换为本地编码的字符串。
 	static GsString ToLocal(const char* str);
+
 };
 
 /// \brief 将字符串转换为utf8字符串
@@ -129,14 +128,6 @@ public:
 };
 
 
-/// \brief 将生成utf8的字符串。
-/// \code{.cpp}
-/// std::string str = UTF8("12汉字abc");
-/// Fun(UTF8("12汉字abc"));
-/// void Fun(const char* str)
-/// {....}
-/// \endcode
-#define UTF8(A) ((A==NULL)?NULL:(GsEncoding::IsUtf8(A)?A:GsEncoding::ToUtf8(A).c_str()))
 
 /// \brief 将任意数据转化为字符串
 /// \details 
@@ -234,7 +225,11 @@ public:
 	///\param str 要匹配的字符串
 	static bool IsMatch(const char* pattern,const char* str);
 
-	
+	/// \brief 将字符串转化为大写
+	static GsString ToUpper (const char* str);
+
+	/// \brief 将字符串转化为小写
+	static GsString ToLower(const char* str);
 
 };
 UTILITY_ENDNS

@@ -2,7 +2,6 @@
 #include "../utility/preconfig.h"
 #include <utility.h> 
 #include "spatialreference.h"
-#include "../geomathd/geomath.h"
 
 //添加geomeathse引用 chijing 20170214
 #include "../geomathse/gobject.inl"
@@ -15,8 +14,6 @@
 KERNEL_NS    
 
 class GsGeometryCollection;
-/// \brief GsGeometryCollectionPtr
-GS_SMARTER_PTR(GsGeometryCollection);
 
 /// \brief 轻量级点对象
 struct GS_API GsRawPoint
@@ -37,47 +34,32 @@ struct GS_API GsRawPoint
 	/// \param rhs 要拷贝的对象
 	GsRawPoint(const GsRawPoint& rhs);
 
-	/// \brief 从geomathd的点构造
-	GsRawPoint(const SpatialAnalysis::point& rhs);
-
 	/// \brief 设置x、y坐标
 	/// \param x x坐标
 	/// \param y y坐标
 	void Set(double x,double y);
-
-	/// \brief geomath点重载操作符
-	operator SpatialAnalysis::point() const;
-
-	/// \brief geomath点重载操作符
-	GsRawPoint& operator =(const SpatialAnalysis::point& pt);
 	 
-	/// \brief 判断点是否相等的操作符
-	bool operator == (const SpatialAnalysis::point& rhs)const; 
 	/// \brief 判断点是否相等的操作符
 	bool operator == (const GsRawPoint& rhs)const; 
 
 	/// \brief 判断点是否不等的操作符
-	bool operator != (const SpatialAnalysis::point& rhs)const; 
-	/// \brief 判断点是否不等的操作符
 	bool operator != (const GsRawPoint& rhs)const;
 
-	
 	/// \brief 计算和另外一个点的距离的平方
 	double Distance2(const GsRawPoint& rhs)const;
-	/// \brief 计算和另外一个点的距离的平方
-	double Distance2(const SpatialAnalysis::point& rhs)const;
 
 };
 
 
 /// \brief 设定边界的情况
-enum enumSpatialRelation
+enum GsSpatialRelation
 {
 	/// \brief 没有内部与边界的限制
-	SpatialRelationExBoundary = 0,
+	eSpatialRelationExBoundary = 0,
 	/// \brief 几何对象的边界相交
-	SpatialRelationExClementini = 1,
-	SpatialRelationExProper = 2
+	eSpatialRelationExClementini = 1,
+	/// \brief 几何对象的边界可以不相交
+	eSpatialRelationExProper = 2
 };
 
 /// \brief 轻量级三维点对象
@@ -88,7 +70,6 @@ struct GS_API GsRawPoint3D:public GsRawPoint
 	GsRawPoint3D();
 	
 	/// \brief 从geomathd的点构造
-	GsRawPoint3D(const SpatialAnalysis::point& rhs);
 	GsRawPoint3D(double x,double y,double z = 0);
 	GsRawPoint3D(const GsRawPoint3D& rhs);
 	GsRawPoint3D(const GsRawPoint& rhs);
@@ -97,16 +78,13 @@ struct GS_API GsRawPoint3D:public GsRawPoint
 	bool operator == (const GsRawPoint3D& rhs)const;
 	bool operator != (const GsRawPoint3D& rhs)const;
 
-	GsRawPoint3D& operator =(const GsRawPoint& rhs);
 	/// \brief geomath点重载操作符
-	GsRawPoint3D& operator =(const SpatialAnalysis::point& pt);
-
+	GsRawPoint3D& operator =(const GsRawPoint& rhs);
 	
 	/// \brief 计算和另外一个点的距离的平方
-	double Distance2(const GsRawPoint3D& rhs)const;
-
+	double SteroDistance2(const GsRawPoint3D& rhs)const;
 };
- 
+
 /// \brief 轻量级矩形对象
 struct GS_API GsBox
 {
@@ -307,15 +285,6 @@ public:
 	/// \brief 坐标转换
 	/// \renturn 返回是否成功转换。
 	virtual bool Transform(GsCoordinateTransformation* pTrans);
-
-	
-	/// \brief 根据Geometry的数据直接生成用于空间分析的path对象
-	/// \return 返回生成path对象
-	virtual SpatialAnalysis::path_ptr MakePath();
-
-	/// \brief 设置空间分析的path对象，获取其坐标数据
-	virtual bool SetPath(SpatialAnalysis::path* pPath);
-
 	
 	/// \brief 判断是否有效
 	bool IsValid();
@@ -340,11 +309,6 @@ public:
 	/// \param pInter SE对象
 	/// \return 返回是否成功
 	bool GeoSEObject(geostar::geo_object* p);
-private:
-	/// \brief se 对象
-	geostar::gobjptr m_ptrGeoObject;
-	/// \brief se 算法和类厂对象
-	geostar::safe_ga m_Safe_ga;
 };
 
 /// \brief 几何对象关系结果
@@ -378,6 +342,7 @@ class GS_API GsGeometry:public Utility::GsRefObject
 protected:
 	/// \brief 几何数据内存块
 	mutable GsGeometryBlob m_OGS;
+	GsSpatialReferencePtr m_ptrSp;
 protected:
 	/// \brief 设置坐标串和解释串
 	/// \details OGS = Oracle Geometry Struct (Oracle几何对象结构）
@@ -392,29 +357,14 @@ protected:
 	//缺省构造
 	GsGeometry();
 
-
-	/// \brief 点穿线面
-	GsGeometryRelationResult IsPCrossLA(GsGeometry * pOther,double dblTol =  FLT_EPSILON);
-	/// \brief 线穿线面
-	GsGeometryRelationResult IsLCrossLA(GsGeometry * pOther,double dblTol =  FLT_EPSILON);
-	/// \brief 计算0维不同的部分
-	Utility::GsSmarterPtr<GsGeometry> DifferenceP (GsGeometry* pOther,double dblTol =  FLT_EPSILON);
-	/// \brief 计算1维不同的部分
-	Utility::GsSmarterPtr<GsGeometry> DifferenceL (GsGeometry* pOther,double dblTol =  FLT_EPSILON);
-	/// \brief 计算2维不同的部分
-	Utility::GsSmarterPtr<GsGeometry> DifferenceA (GsGeometry* pOther,double dblTol =  FLT_EPSILON);
-	/// \brief 计算线的端点
-	bool BoundaryL (GsGeometry* ptrGeo, std::vector<double>& vD);
-	/// \brief 计算面的边界
-	Utility::GsSmarterPtr<GsGeometry> BoundaryA(GsGeometry* ptrGeo);
 	/// \brief 计算面缓冲
 	geostar::gobjptr SingleBuffer(geostar::gobjptr gSrc,double dRadius,int narc, double dblTol =  FLT_EPSILON);
 	//\brief 判断是否为矩形节点
 	bool IsEnvelopPort(geostar::gobjptr& ptrEnv,geostar::gobjptr ptrPoint,double dblTol);
 	///\brief 切割点
-	void CutP(geostar::gobjptr& ptrThis, geostar::gobjptr& ptrCut, double dblTol, GsGeometryCollection** ppLeftGeo, GsGeometryCollection** ppRightGeo);
+	void CutP(geostar::gobjptr& ptrThis, geostar::gobjptr& ptrCut, double dblTol, GsGeometryCollection* ppLeftGeo, GsGeometryCollection* ppRightGeo);
 	///\brief 区分左边右边
-	void DifferentiatesLeftOrRight(geostar::gobjptr gSrc,std::vector<geostar::geo_object*> vecObjs,GsGeometryCollection** ppLeftGeo,GsGeometryCollection** ppRightGeo,double dblTol);
+	void DifferentiatesLeftOrRight(geostar::gobjptr& gSrc,std::vector<geostar::gobjptr>& vecObjs,GsGeometryCollection* ppLeftGeo,GsGeometryCollection* ppRightGeo,double dblTol);
 public:
 	virtual ~GsGeometry();
 
@@ -488,6 +438,13 @@ public:
 	/// \return	缓冲区多边形
 	virtual Utility::GsSmarterPtr<GsGeometry> Buffer (double dblRadius, int nArc,double dblTol =  FLT_EPSILON);
 
+	/// \brief	计算几何对象的缓冲区
+	/// \param	dblRadius	缓冲区半径
+	/// \param	nArc	 	缓冲区分析时的节点内插成半圆时内插折线线段的数目
+	/// \param eType		缓冲区端点类型
+	/// \return	缓冲区多边形
+	virtual Utility::GsSmarterPtr<GsGeometry> Buffer ( int nArc, double dblRadius,GsBufferJointType eType,double dblTol =  FLT_EPSILON);
+
 	/// \brief 计算和另外一个几何对象的相交的部分
 	virtual Utility::GsSmarterPtr<GsGeometry> Intersection (GsGeometry* pOther,double dblTol =  FLT_EPSILON);
 
@@ -509,18 +466,19 @@ public:
 	virtual Utility::GsSmarterPtr<GsGeometry> Simplify();
 
 	/// \brief 根据传入的分割线，将当前几何对象分割为左右两个几何对象集合
-	virtual void Cut(GsGeometry* pCutter, GsGeometryCollection** ppLeftGeo, GsGeometryCollection** ppRightGeo, double dblTol =  FLT_EPSILON);
+	virtual void Cut(GsGeometry* pCutter, GsGeometryCollection* ppLeftGeo, GsGeometryCollection* ppRightGeo, double dblTol =  FLT_EPSILON);
 
 	/// \brief 用传入的几何对当前几何对象进行剪切
-	virtual bool Clip(GsGeometry* pCliperGeo, bool bIncludeBoundary, double dblTol =  FLT_EPSILON);
+	virtual  Utility::GsSmarterPtr<GsGeometry> Clip(GsGeometry* pCliperGeo, bool bIncludeBoundary, double dblTol =  FLT_EPSILON);
 
 	/// \brief 创建并返回当前几何对象上距离输入点最近的一个点
 	virtual Utility::GsSmarterPtr<GsPoint> ReturnNearestPoint(GsPoint * pPoint, GsSegmentExtension extension, double dblTol =  FLT_EPSILON);
 
 	/// \brief 复制当前几何对象上距离输入点最近的一个点到pNearest
 	virtual void QueryNearestPoint(GsPoint * pPoint, GsSegmentExtension extension, GsPoint * pNearest, double dblTol =  FLT_EPSILON);
-
-
+	
+	/// \brief 判断geometry是否有效
+	virtual bool IsEmpty();
 
 	/// \brief 比较几何对象似乎否相等
 	virtual GsGeometryRelationResult IsEqual (GsGeometry * pOther,double dblTol =  FLT_EPSILON);
@@ -569,15 +527,19 @@ public:
 	/// \return	缓冲区多边形
 	virtual Utility::GsSmarterPtr<GsGeometryCollection> ConstructBuffers (double* dblRadius,int len, int nArc,double dblTol =  FLT_EPSILON);
 
-	//*********************************ISpatialRelation2**************************************************************
 	/// \brief 判断两个Geometry是否符合指定的空间关系
 	virtual GsGeometryRelationResult Relation (GsGeometry * pOther, char* strRelationDescription, double dblTol =  FLT_EPSILON);
-	/// \brief 几何对象包含另一几何对象
-	virtual GsGeometryRelationResult ContainsEx (GsGeometry * pOther, enum enumSpatialRelation SpatialRelationExEnum, double dblTol =  FLT_EPSILON);
-	/// \brief 几何对象被另一几何对象包含
-	virtual GsGeometryRelationResult WithinEx (GsGeometry * pOther, enum enumSpatialRelation SpatialRelationExEnum, double dblTol =  FLT_EPSILON);
-	//*********************************ISpatialRelation2**************************************************************
 
+	/// \brief 几何对象包含另一几何对象
+	virtual GsGeometryRelationResult IsContain (GsGeometry * pOther, enum GsSpatialRelation SpatialRelationExEnum, double dblTol =  FLT_EPSILON);
+
+	/// \brief 几何对象被另一几何对象包含
+	virtual GsGeometryRelationResult IsWithin (GsGeometry * pOther, enum GsSpatialRelation SpatialRelationExEnum, double dblTol =  FLT_EPSILON);
+
+	/// \brief 设置空间参考
+	void SpatialReference(GsSpatialReference *pSp);
+	/// \brief 获取空间参考
+	GsSpatialReference* SpatialReference();
 };
 /// \brief GsGeometryPtr
 GS_SMARTER_PTR(GsGeometry);
@@ -656,11 +618,11 @@ public:
 	/// \brief 从存储用途的字节序转换为可读几何内存块
 	/// \param pBlob 几何数据内存块
 	/// \param nLen 内存块长度
-	static void ConvertByteOrderFromStorageBlob(const unsigned char* pBlob,int nLen);
+	static void ConvertByteOrderFromStorageBlob(const unsigned char* pBlob,int nLen,Utility::GsEndian eEndian = Utility::eBigEndian);
 	// \brief 转换几何内存块为存储用途的字节序
 	/// \param pBlob 几何数据内存块
 	/// \param nLen 内存块长度
-	static void ConvertByteOrderToStorageBlob(const unsigned char* pBlob,int nLen);
+	static void ConvertByteOrderToStorageBlob(const unsigned char* pBlob,int nLen, Utility::GsEndian eEndian = Utility::eBigEndian);
 
 	// \brief 根据几何内存块以及字节序创建几何对象
 	// \details 如果传入字节序为存储用途字节序则会转换为当前系统的字节序
@@ -676,11 +638,9 @@ public:
 	// \brief 从oracle的坐标串和解释串构建Geometry对象
 	static GsGeometryPtr CreateGeometryFromOracle(int* pInter,int nInterLen,double* pCoord,int nCoordLen,int nDim);
 
-	// \brief 直接从空间分析的path对象创建为Geometry对象
-	static GsGeometryPtr CreateGeometryFromPath(SpatialAnalysis::path* path);
+	// \brief 直接从geometryse对象创建为Geometry对象
+	static GsGeometryPtr CreateGeometryFromGeoObject(geostar::geo_object* p);
 
-
-private:
 	// \brief 根据解释串获得几何类型
 	static GsGeometryType GeometryTypeFromInterpret(int* pInter,int nInterLen,double* pCoord,int nCoordLen,int nDim);
 };
@@ -1215,7 +1175,7 @@ public:
 	};
 public:
 	/// \brief 缺省构造
-	GsPath();
+	GsPath(int coordim = 2);
 	/// \brief 从内存中构造path
 	GsPath(const unsigned char* pBlob,int nLen);
 	
@@ -1386,8 +1346,13 @@ public:
 	/// \return 返回是否内插
 	virtual bool  Interpolate(double tol2);
 
+	/// \brief 得到长度
+	/// \return 返回Polyline长度
+	double Length();
 
-
+	/// \brief 得到斜率
+	/// \return 返回指定位置的斜率 k=y/x
+	virtual GsRawPoint TangAt(double parameter);
 };
 /// \brief GsPathPtr
 GS_SMARTER_PTR(GsPath);
@@ -1395,7 +1360,7 @@ GS_SMARTER_PTR(GsPath);
 /// \brief 单圈面
 class GS_API GsRing:public GsPath
 {
-	std::auto_ptr<SpatialAnalysis::path_index> m_RingIdx;
+	geostar::gobjptr					m_Spi;
 	double m_dblArea;
 public:
 	GsRing();
@@ -1689,7 +1654,7 @@ public:
 	bool IsMultiPolygon();
 
 	/// \brief 将复合多边分解为为多个简单多边形。
-	GsVector<GsGeometryCollectionPtr> ToSimplePolygon();
+	GsGeometryCollectionPtr ToSimplePolygon();
 
 	 
 	
@@ -1707,8 +1672,10 @@ protected:
 
 	/// \brief 是否需要重新整理
 	bool m_bNeedArrange;
-	
-	
+	/// \brief 组织所有geoobject
+	std::vector<geostar::gobjptr> SeparateRing();
+	/// \brief 查找gobj
+	geostar::gobjptr FindRing(geostar::gobjptr& obj);
 
 };
 /// \brief GsPolygonPtr
@@ -2195,25 +2162,35 @@ public:
 /// \brief GML格式写入
 class GS_API GsGMLOGCWriter:public GsOGCWriter
 { 
+protected:
 	std::stringstream m_ss;
 	int m_signtemp;
-protected:
-
 	/// \brief 开始写入一个Geometry的，由子类继承。
 	virtual void  BeginGeometry(GsOGCGeometryType eType, int nIndex, int nEleCount);
-
 	/// \brief 写入坐标。
 	virtual void WriteCoodinate(double* pCoord,int nCount,int nDim);
-
 	/// \brief 结束一个Geometry
 	virtual void EndGeometry();
 public:
 	/// \brief 获取写入的gml字符串
 	Utility::GsString GML();
 	GsGMLOGCWriter();
-	
 	/// \brief 重置Writer恢复到初始状态
 	virtual void Reset();
+};
+
+/// \brief GML格式写入
+class GS_API GsGML3OGCWriter:public GsGMLOGCWriter
+{ 
+protected:
+	/// \brief 开始写入一个Geometry的，由子类继承。
+	virtual void  BeginGeometry(GsOGCGeometryType eType, int nIndex, int nEleCount)override;
+		/// \brief 写入坐标。
+	virtual void WriteCoodinate(double* pCoord,int nCount,int nDim)override;
+	/// \brief 结束一个Geometry
+	virtual void EndGeometry()override;
+public:
+	GsGML3OGCWriter();
 };
 /// \brief KML格式写入
 class GS_API GsKMLOGCWriter:public GsOGCWriter
@@ -2259,5 +2236,70 @@ public:
 	virtual void Reset();
 };
 
+/// \brief 针对Geometry封装类，内部存储Geometry索引，加速控件操作比较效率
+class GS_API GsIndexGeometry:public Utility::GsRefObject
+{
+	/// \brief se 索引
+	geostar::gobjptr m_Spi;
+	/// \brief se 对象
+	geostar::gobjptr m_ptrObj;
+	/// \brief se 对象
+	geostar::safe_ga m_ga;
+private:
+	GsGeometryRelationResult QuerySpatial(geostar::geo_object*  ptrTar,int type);
+public:
+	/// \brief 初始化索引几何对象
+	GsIndexGeometry(const GsGeometry * pGeo,double dblTol =  FLT_EPSILON);
+	/// \brief 初始化索引几何对象
+	GsIndexGeometry(const geostar::geo_object * pObj,double dblTol =  FLT_EPSILON);
+	/// \brief 获得se几何对象
+	geostar::gobjptr ToSeObject();
+	/// \brief 比较几何对象是否相贴近
+	/// \image html Geometry_IsTouch.png "Geometry相贴近"
+	virtual GsGeometryRelationResult IsTouch(GsGeometry * pOther );
 
+	/// \brief 几何对象是否落入在传入几何对象内部。
+	/// \image html Geometry_IsWithin.png "Geometry在内部"
+	virtual GsGeometryRelationResult IsWithin(GsGeometry * pOther);
+
+	/// \brief 几何对象是否包含传入对象
+	/// \image html Geometry_IsContain.png "Geometry包含"
+	virtual GsGeometryRelationResult IsContain(GsGeometry * pOther);
+
+	/// \brief 几何对象和传入对象是否在线的语义上相穿
+	virtual GsGeometryRelationResult IsCross(GsGeometry * pOther);
+
+	/// \brief 几何对象和传入几何对象是否在线的语义上重叠
+	/// \image html Geometry_IsOverlap.png "Geometry相重叠"
+	virtual GsGeometryRelationResult IsOverlap(GsGeometry * pOther);
+
+	/// \brief 几何对象和传入几何对象是否相离
+	/// \image html Geometry_IsDisjoin.png "Geometry相离"
+	virtual GsGeometryRelationResult IsDisjoin(GsGeometry * pOther);
+
+	/// \brief 几何对象和传入几何对象是否相交
+	virtual GsGeometryRelationResult IsIntersect(GsGeometry * pOther);
+
+	/// \brief 计算和另外一个几何对象的相交的部分
+	virtual Utility::GsSmarterPtr<GsGeometry> Intersection (GsGeometry* pOther);
+
+	/// \brief 计算和另外一个几何对象的合并的结果
+	virtual Utility::GsSmarterPtr<GsGeometry> Union (GsGeometry* pOther);
+
+	/// \brief 计算和另外一个几何对象不同的部分
+	virtual Utility::GsSmarterPtr<GsGeometry> Difference (GsGeometry* pOther);
+	
+	/// \brief 计算和另外一个几何对象对称差
+	virtual Utility::GsSmarterPtr<GsGeometry> SymDifference (GsGeometry* pOther);
+	
+	/// \brief 计算和另外一个Geometry的距离
+	/// \image html Geometry_Distance.png "Geometry最短路径"
+	virtual double Distance (GsGeometry* pGeo);
+
+	/// \brief 用传入的几何对当前几何对象进行剪切
+	virtual  Utility::GsSmarterPtr<GsGeometry> Clip(GsGeometry* pCliperGeo, bool bIncludeBoundary);
+	
+	/// \brief 创建并返回当前几何对象上距离输入点最近的一个点
+	virtual Utility::GsSmarterPtr<GsPoint> ReturnNearestPoint(GsPoint * pPoint, GsSegmentExtension extension);
+};
 KERNEL_ENDNS
