@@ -1418,6 +1418,10 @@ public:
 	/// \brief 获取式样的内容
 	virtual bool Content(const char* contentname,Utility::GsByteBuffer* buff) = 0;
 
+
+	/// \brief 设置式样的内容
+	virtual bool Content(const char* contentname,const unsigned char* blob,int len) = 0;
+
 	/// \brief 指定范围内的字体产生为Protobuffer格式的栅格。
 	/// \param fontFamily 字体名称
 	/// \param style 字体风格(Regular、Bold等)
@@ -1470,6 +1474,8 @@ public:
 	GsStyleTablePtr OpenFromXml(const char *strXML,bool bIsFile = false);
 	/// \brief 从地图定义文件构造样式表实例
 	GsStyleTablePtr OpenFromMapDefine(const char *strFilePath, GsPyramid* pPyramid = 0);
+	/// \brief 构建一个空的样式表实例
+	GsStyleTablePtr CreateEmptyStyleTable();
 };
 /// \brief GsStyleTableFactoryPtr
 GS_SMARTER_PTR(GsStyleTableFactory);

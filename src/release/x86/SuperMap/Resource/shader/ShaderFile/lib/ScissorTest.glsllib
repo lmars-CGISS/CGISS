@@ -1,0 +1,19 @@
+uniform vec4 ScissorBox; //裁剪测试区域
+varying vec4 vPosition;
+
+// 判断点是否在矩形内,此矩形起点是左下角 符合OpenGL的习惯
+bool isPointInRectangle(vec2 point, vec4 region)
+{
+	return (point.x > region.x && point.x < region.z
+		&& point.y > region.y && point.y < region.w);
+}
+
+bool ScissorTest()
+{
+	vec2 xyPos = vPosition.xy / vPosition.w;		
+	if(isPointInRectangle(xyPos, ScissorBox))
+	{
+		return true;
+	}
+	return false;
+}

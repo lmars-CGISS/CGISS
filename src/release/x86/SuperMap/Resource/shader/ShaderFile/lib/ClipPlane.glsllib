@@ -1,0 +1,114 @@
+uniform int clip_mode;		  // 裁剪模式0为不裁剪，1为剪裁掉位于任意裁剪面后面的部分，2为剪裁掉位于所有裁剪面后面的部分，3为只保留裁剪线
+uniform int clip_plane_count; // 使用的裁剪面的个数
+uniform vec4 clip_planes[6];  // 裁剪面的参数
+uniform vec4 clip_line_color; // 裁剪边缘线的颜色
+
+varying vec4 clip_vertex;
+// 裁剪边缘的宽度
+const float lineWidth = 3.0;
+
+//! \brief 获取指定的点到该平面的距离值。
+// pos指定的点的位置
+// planeNormal平面的法向量
+// disToOrigin 平面到原点的距离
+float GetDistance(vec3 pos, vec3 planeNormal, float disToOrigin)
+{
+	return dot(planeNormal, pos) + disToOrigin;
+}
+
+//剪裁掉位于所有裁剪面后面的部分
+int ClipBehindAllPlane(float fBorderWidth)
+{
+	if(clip_plane_count == 0)
+	{
+		return 1;
+	}
+	int result = -1;
+	for(int i = 0; i < clip_plane_count; i++)
+	{
+		float distance = GetDistance(clip_vertex.xyz, clip_planes[i].xyz, clip_planes[i].w);
+		if(distance < 0.0)
+		{
+			return 1;
+		}
+		else if(distance < fBorderWidth)
+		{
+			result = 0;
+		}
+	}
+	return result;
+}
+
+//剪裁掉位于任意裁剪面后面的部分
+int ClipBehindAnyPlane(float fBorderWidth)
+{
+	if(clip_plane_count == 0)
+	{
+		return 1;
+	}
+	int result = 1;
+	for(int i = 0; i < clip_plane_count; i++)
+	{
+		float distance = GetDistance(clip_vertex.xyz, clip_planes[i].xyz, clip_planes[i].w);
+		if((distance + fBorderWidth) < 0.0)
+		{
+			return -1;
+		}
+		else if(distance < 0.0)
+		{
+			result = 0;
+		}
+	}
+	return result;
+}
+
+// 裁剪掉所有部分，只保留裁剪线
+int ClipAnythingButLine(float fBorderWidth)
+{
+	int result = -1;
+	for(int i = 0; i < clip_plane_count; i++)
+	{
+		float distance = GetDistance(clip_vertex.xyz, clip_planes[i].xyz, clip_planes[i].w);
+		if(distance < 0.0)
+		{
+			return -1;
+		}
+		else if(distance < fBorderWidth)
+		{
+			result = 0;
+		}
+	}
+	return result;
+}
+
+// 裁剪方法，返回为正为保留的像素，返回为负为丢弃的像素，返回为0为位于裁剪面边缘的像素
+int Clip()
+{
+	if(clip_mode == 0)
+	{
+		return 1;
+	}
+
+	float dxc = abs(dFdx(clip_vertex.x));
+	float dyc = abs(dFdy(clip_vertex.y));
+	float fBorderWidth = max(dxc, dyc) * lineWidth;
+
+	if(clip_line_color.a < 0.01)
+	{
+		fBorderWidth = 0.0;
+	}
+	
+	if(clip_mode == 1)
+	{
+		return ClipBehindAnyPlane(fBorderWidth);
+	}
+	else if(clip_mode == 2)
+	{
+		return ClipBehindAllPlane(fBorderWidth);
+	}
+	else if(clip_mode == 3)
+	{
+		return ClipAnythingButLine(fBorderWidth);
+	}
+	return 1;
+}

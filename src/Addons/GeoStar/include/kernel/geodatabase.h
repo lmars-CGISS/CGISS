@@ -134,8 +134,7 @@ enum GsFeatureType
 	eSimpleFeature,
 	//\brief 瓦片类
 	eAnnotationFeature,
-	//\brief 矢量瓦片
-	eVectorTileFeature,
+
 
 	/// \brief 影像瓦片
 	eImageTileFeature = 8,
@@ -153,8 +152,8 @@ enum GsFeatureType
 	ePlaceNameTileFeature = 13,
 	/// \brief 地势
 	eHypsographyTileFeature = 14,
-	/// \brief 矢量
-	eDlgTileFeature = 15,	
+	/// \brief 矢量瓦片
+	eDlgTileFeature = 23,	
 	
 	/// \brief 实现多时相瓦片数据集将级扩充的
 	eTemporalImageTileFeature = 1000,
@@ -1643,6 +1642,23 @@ public:
 		case eDataRoomFolder:
 			break;
 		}
+		return 0;
+	}
+
+	/// \brief 创建数据集目录
+	///\param strName 数据集目录的名称
+	///\param pSR 数据集目录的空间参考
+	///\return 如果名称存在则返回已经存在的数据集目录，否则返回新建的数据集目录对象或者为空
+	virtual Utility::GsSmarterPtr<GsDataRoomFolder> CreateDataRoomFolder(const char* strName,GsSpatialReference* pSR)
+	{
+		return 0;
+	}
+
+	/// \brief 打开数据集目录
+	///\param strName 数据集目录的名称
+	///\return 返回数据集目录的指针或者NULL
+	virtual Utility::GsSmarterPtr<GsDataRoomFolder> OpenDataRoomFolder(const char* strName)
+	{
 		return 0;
 	}
 };

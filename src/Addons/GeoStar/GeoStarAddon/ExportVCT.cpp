@@ -304,9 +304,11 @@ class CReadFeature:public gpkg::feature
 	WKBReader m_Reader;
 	VCTFeatureCode m_Code;
 	VCTID& m_ID;
+	bool m_bGeo;
 public:
 	CReadFeature(int nFieldCount,VCT_GEOMETRY_TYPE gType,int nGeoIndex,VCTFeatureCode &code,VCTID& ID):m_ID(ID)
 	{
+		m_bGeo = false;
 		m_nGeoIndex = nGeoIndex;
 		m_gType = gType;
 		m_Row.vecstrFieldValues.resize(nFieldCount);
@@ -328,6 +330,14 @@ public:
 
 	}
 public:
+	void Reset()
+	{
+		m_bGeo = false; 
+	}
+	bool IsValid()
+	{
+		return m_bGeo;
+	}
 	/// \brief 设置地物的fid
 	virtual void fid(long long id)
 	{
@@ -369,6 +379,9 @@ public:
 	/// \brief 设置geometry
 	virtual void geometry(gpkg::geo_package_binary* geo,int nlen)
 	{
+		if(NULL == geo) 
+			return;
+
 		unsigned char* wkb = geo->wkb_ptr();
 		m_Reader.Begin(wkb,nlen - geo->size());
 		OGCGeometryType eType = m_Reader.GeometryType(true);
@@ -378,16 +391,20 @@ public:
 		case eOGCMultiPoint:// 4 
 			m_Point.vecPoint.clear();
 			m_Reader.Read(m_Point);
+			m_bGeo = true;
 			break;
 		case eOGCLineString:// 2 
 		case eOGCMultiLineString:// 5 
 			m_Line.vecLineData.clear();
 			m_Reader.Read(m_Line);
+			m_bGeo = true;
 			break;
 		case eOGCPolygon:// 3 
 		case eOGCMultiPolygon:// 6 
+			
 			m_Polygon.vecPolygonElement.clear();
 			m_Reader.Read(m_Polygon);
+			m_bGeo = true;
 			break;
 		}
 	}
@@ -651,9 +668,14 @@ void ExportVCT::WriteTo(VCTWriter& w,gpkg::content& content,gpkg::database_ptr d
 	gpkg::symbol_reference symRef;
 	gpkg::symbol_table* pSyms = db->symbol_table();
 	gpkg::symbol sym;
-
+	fea.Reset();
 	while(ptrFeaClass->next(&fea))
 	{
+		if(!fea.IsValid())
+		{
+			fea.Reset();
+			continue;
+		}
 		//查询地物关联的符号。
 		if(pSymRef->query(content.table_name.c_str(),fea.fid()))
 		{
@@ -678,6 +700,7 @@ void ExportVCT::WriteTo(VCTWriter& w,gpkg::content& content,gpkg::database_ptr d
 		
 		nPos++;
 		pProgress->OnProgress(nPos,nMax,strTitle.c_str(),strContent.c_str());
+		fea.Reset();
 	}
 
 	//查询地物类的元数据
@@ -725,23 +748,19 @@ const char* ExportVCT::Execute(const char* strParameter,GIS::Progress * pProgres
 	strLog+=strOutFile;
 	pProgress->OnLog(strLog.c_str(),GIS::LogLevel::eInfo);
 	 
-	GeoStar::Utility::GsFile file(strInput.c_str());
+	GeoStar::Utility::GsFile file(GeoStar::Utility::GsUtf8(strInput.c_str()));
 	if(!file.Exists())
 	{
 		pProgress->OnLog("输入路径不存在。",GIS::LogLevel::eError);
 		return NULL;
 	}
 	
-	//获取最后的扩展名
-	string strExt = strOutFile.substr(strOutFile.length() - 4);
 	
 	//如果是以VCT为扩展名的文件则标识输出到到单个VCT文件中。
-	bool bSingleVCT = (stricmp(strExt.c_str(),".vct")==0);
+	bool bSingleVCT = GeoStar::Utility::GsStringHelp::EndWith( strOutFile.c_str(),".vct",true);
 
-	std::string strUtf8Path =	GeoStar::Utility::GsCW2A(GeoStar::Utility::GsCA2W(strInput.c_str()).m_WStr,
-								GeoStar::Utility::eCP_UTF8).m_Str;
 	//打开数据数据库。
-	gpkg::database_ptr db(new gpkg::database(strUtf8Path.c_str(),false));
+	gpkg::database_ptr db(new gpkg::database(file.FullPath().c_str(),false));
 	pProgress->OnLog("打开输出数据集",GIS::LogLevel::eInfo);
 	
 	//枚举所有的feature
@@ -762,12 +781,12 @@ const char* ExportVCT::Execute(const char* strParameter,GIS::Progress * pProgres
 		w.Finish();
 	}
 	else //如果非单个文件的话则每个地物类输出一个文件。
-	{
+	{ 
 		for(;it != vecContent.end();it++)
-		{
+		{ 
 			string strFileName = it->table_name.c_str();
 			strFileName+=".vct";
-			strFileName = GeoStar::Utility::GsFileSystem::Combine(strOutFile.c_str(),strFileName.c_str());
+			strFileName = GeoStar::Utility::GsFileSystem::Combine(GeoStar::Utility::GsUtf8( strOutFile.c_str()),strFileName.c_str());
 
 			VCTWriter w(strFileName.c_str());
 			m_StyleCache.Attach(&w);

@@ -1,0 +1,12 @@
+int clipResult = Clip();
+
+if(clipResult < 0)
+{
+	discard;
+	return;
+}
+else if(clipResult == 0)
+{
+	gl_FragColor = clip_line_color;
+	return;
+}

@@ -36,6 +36,9 @@
 		<Config Name="StorageType" Type="String">
 			<Value>eFolderType</Value>
 		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
+		</Config>
 	</Config>
 	<Config Name="3" Type="GISDataTranslate.Addon">
 		<Config Name="Name" Type="String">
@@ -52,6 +55,9 @@
 		</Config>
 		<Config Name="StorageType" Type="String">
 			<Value>eFolderType</Value>
+		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
 		</Config>
 	</Config>
 	<Config Name="4" Type="GISDataTranslate.Addon">
@@ -70,6 +76,9 @@
 		<Config Name="StorageType" Type="String">
 			<Value>eFolderType</Value>
 		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
+		</Config>
 	</Config>
 	<Config Name="5" Type="GISDataTranslate.Addon">
 		<Config Name="Name" Type="String">
@@ -86,6 +95,9 @@
 		</Config>
 		<Config Name="StorageType" Type="String">
 			<Value>eFileType</Value>
+		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
 		</Config>
 	</Config>
 	<Config Name="6" Type="GISDataTranslate.Addon">
@@ -104,6 +116,9 @@
 		<Config Name="StorageType" Type="String">
 			<Value>eFolderType</Value>
 		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
+		</Config>
 	</Config>
 	<Config Name="7" Type="GISDataTranslate.Addon">
 		<Config Name="Name" Type="String">
@@ -120,6 +135,9 @@
 		</Config>
 		<Config Name="StorageType" Type="String">
 			<Value>eFolderType</Value>
+		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
 		</Config>
 	</Config>
 	<Config Name="8" Type="GISDataTranslate.Addon">
@@ -138,6 +156,9 @@
 		<Config Name="StorageType" Type="String">
 			<Value>eFileType</Value>
 		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
+		</Config>
 	</Config>
 	<Config Name="9" Type="GISDataTranslate.Addon">
 		<Config Name="Name" Type="String">
@@ -154,6 +175,9 @@
 		</Config>
 		<Config Name="StorageType" Type="String">
 			<Value>eFileType</Value>
+		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
 		</Config>
 	</Config>
 	<Config Name="10" Type="GISDataTranslate.Addon">
@@ -172,6 +196,9 @@
 		<Config Name="StorageType" Type="String">
 			<Value>eFileType</Value>
 		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
+		</Config>
 	</Config>
 	<Config Name="11" Type="GISDataTranslate.Addon">
 		<Config Name="Name" Type="String">
@@ -188,6 +215,9 @@
 		</Config>
 		<Config Name="StorageType" Type="String">
 			<Value>eFileType</Value>
+		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
 		</Config>
 	</Config>
 	<Config Name="12" Type="GISDataTranslate.Addon">
@@ -206,6 +236,9 @@
 		<Config Name="StorageType" Type="String">
 			<Value>eFileType</Value>
 		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
+		</Config>
 	</Config>
 	<Config Name="13" Type="GISDataTranslate.Addon">
 		<Config Name="Name" Type="String">
@@ -222,6 +255,9 @@
 		</Config>
 		<Config Name="StorageType" Type="String">
 			<Value>eFileType</Value>
+		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
 		</Config>
 	</Config>
 	<Config Name="14" Type="GISDataTranslate.Addon">
@@ -240,6 +276,9 @@
 		<Config Name="StorageType" Type="String">
 			<Value>eFolderType</Value>
 		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
+		</Config>
 	</Config>
 	<Config Name="15" Type="GISDataTranslate.Addon">
 		<Config Name="Name" Type="String">
@@ -256,6 +295,9 @@
 		</Config>
 		<Config Name="StorageType" Type="String">
 			<Value>eFolderType</Value>
+		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
 		</Config>
 	</Config>
 	<Config Name="16" Type="GISDataTranslate.Addon">
@@ -274,6 +316,9 @@
 		<Config Name="StorageType" Type="String">
 			<Value>eFolderType</Value>
 		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
+		</Config>
 	</Config>
 	<Config Name="17" Type="GISDataTranslate.Addon">
 		<Config Name="Name" Type="String">
@@ -290,6 +335,9 @@
 		</Config>
 		<Config Name="StorageType" Type="String">
 			<Value>eFolderType</Value>
+		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
 		</Config>
 	</Config>
 	<Config Name="18" Type="GISDataTranslate.Addon">
@@ -308,6 +356,9 @@
 		<Config Name="StorageType" Type="String">
 			<Value>eFileType</Value>
 		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
+		</Config>
 	</Config>
 	<Config Name="19" Type="GISDataTranslate.Addon">
 		<Config Name="Name" Type="String">
@@ -324,6 +375,9 @@
 		</Config>
 		<Config Name="StorageType" Type="String">
 			<Value>eFolderType</Value>
+		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
 		</Config>
 	</Config>
 	<Config Name="20" Type="GISDataTranslate.Addon">
@@ -342,6 +396,9 @@
 		<Config Name="StorageType" Type="String">
 			<Value>eFolderType</Value>
 		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
+		</Config>
 	</Config>
 	<Config Name="21" Type="GISDataTranslate.Addon">
 		<Config Name="Name" Type="String">
@@ -358,6 +415,9 @@
 		</Config>
 		<Config Name="StorageType" Type="String">
 			<Value>eFolderType</Value>
+		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
 		</Config>
 	</Config>
 	<Config Name="22" Type="GISDataTranslate.Addon">
@@ -376,6 +436,9 @@
 		<Config Name="StorageType" Type="String">
 			<Value>eFileType</Value>
 		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
+		</Config>
 	</Config>
 	<Config Name="23" Type="GISDataTranslate.Addon">
 		<Config Name="Name" Type="String">
@@ -392,6 +455,49 @@
 		</Config>
 		<Config Name="StorageType" Type="String">
 			<Value>eFileType</Value>
+		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
+		</Config>
+	</Config>
+	<Config Name="24" Type="GISDataTranslate.Addon">
+		<Config Name="Name" Type="String">
+			<Value>SuperMap UDB输出</Value>
+		</Config>
+		<Config Name="Path" Type="String">
+			<Value>.\x86\SuperMap\SuperMapAdd.dll</Value>
+		</Config>
+		<Config Name="Function" Type="String">
+			<Value>ImportGPKGToUDB</Value>
+		</Config>
+		<Config Name="Type" Type="String">
+			<Value>eVectorWriter</Value>
+		</Config>
+		<Config Name="StorageType" Type="String">
+			<Value>eFolderType</Value>
+		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
+		</Config>
+	</Config>
+	<Config Name="25" Type="GISDataTranslate.Addon">
+		<Config Name="Name" Type="String">
+			<Value>SuperMap Vector UDB读取</Value>
+		</Config>
+		<Config Name="Path" Type="String">
+			<Value>.\x86\SuperMap\SuperMapAddon.dll</Value>
+		</Config>
+		<Config Name="Function" Type="String">
+			<Value>ImportVectorUDB</Value>
+		</Config>
+		<Config Name="Type" Type="String">
+			<Value>eVectorReader</Value>
+		</Config>
+		<Config Name="StorageType" Type="String">
+			<Value>eFileType</Value>
+		</Config>
+		<Config Name="Description" Type="String">
+			<Value/>
 		</Config>
 	</Config>
 </Config>

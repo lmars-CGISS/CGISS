@@ -144,7 +144,12 @@ namespace GISDataTranslate
                 if (m_bVector)
                     bIsStand = (string.Compare(ext, ".gpkg") == 0);
                 else
-                    bIsStand = System.IO.Directory.Exists(strStand);
+                {
+                    if (!strStand.EndsWith(".tif"))
+                        bIsStand = System.IO.Directory.Exists(strStand);
+                    else
+                        bIsStand = true;
+                }
                 if (!bIsStand)
                 {
                     MessageBox.Show("标准格式数据的路径不正确。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -166,7 +171,7 @@ namespace GISDataTranslate
         } 
         void OpenStandformat(TextBox box, bool bImport, bool bVector)
         {
-            if(!bVector || (checkBoxSubSingleton.Visible && checkBoxSubSingleton.Checked))
+            if(!bVector && (checkBoxSubSingleton.Visible && checkBoxSubSingleton.Checked))
             {
                 using (FolderBrowserDialog folder = new FolderBrowserDialog())
                 {

@@ -6,6 +6,8 @@
 #include "NetHelp.h"
 #include <map>
 #include "PEParser.h"
+#include <atlpath.h>
+
 //»º´æ²å¼þdllµÄÄ£¿é¾ä±ú
 std::map<CComBSTR,HMODULE> g_Modules;
 //Ëø
@@ -49,6 +51,10 @@ namespace GIS {
 			g_Lock.Unlock();
 			return pModule;
 		}
+		CPath path(bstrName);
+		path.RemoveFileSpec();
+		SetDllDirectory(path.m_strPath);
+
 		pModule = LoadLibrary(bstrName);
 		if(NULL ==  pModule)
 		{

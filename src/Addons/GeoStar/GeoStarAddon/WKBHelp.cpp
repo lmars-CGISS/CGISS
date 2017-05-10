@@ -157,6 +157,11 @@ bool WKBReader::Read(VCTPolygon& polygon)
 	{
 	case eOGCPolygon:
 		polygon.vecPolygonElement.resize(ReadT<int>());
+		if(polygon.vecPolygonElement.size()   >1)
+		{
+			int a=0;
+			a++;
+		}
 		for(int i =0;i<polygon.vecPolygonElement.size();i++)
 		{
 			Read(polygon.vecPolygonElement[i],ReadT<int>(),bHasZ);
@@ -168,13 +173,13 @@ bool WKBReader::Read(VCTPolygon& polygon)
 			int n = ReadT<int>();
 			for(int i = 0;i<n;i++)
 			{
+				int b = ReadT<char>();//字节序
+				int  nType = ReadT<int>();//geometrytype
 				int count = ReadT<int>();
 				polygon.vecPolygonElement.reserve(polygon.vecPolygonElement.size() + count);
 				for(int j =0;j< count;j++)
 				{
 					polygon.vecPolygonElement.push_back(VCTPolygonElement());
-					ReadT<char>();//字节序
-					ReadT<int>();//geometrytype
 					Read(polygon.vecPolygonElement.back(),ReadT<int>(),bHasZ);
 				}
 			}
@@ -548,11 +553,13 @@ bool WKBWriter::Write(GeoStar::Kernel::GsRing* pExt,GeoStar::Kernel::GsPolygon* 
 
 	//写入Polygon的数量
 	Write(int(ptrInter->Count() + 1));
+	Write(int(pExt->GeometryBlobPtr()->CoordinateLength() / m_nDim));
 	Write(pExt->GeometryBlobPtr()->CoordinateLength(),pExt->GeometryBlobPtr()->Coordinate());
 
 	for(int i =0;i<ptrInter->Count();i++)
 	{
 		GeoStar::Kernel::GsGeometryPtr ptrRing = ptrInter->Geometry(i);
+		Write(int(ptrRing->GeometryBlobPtr()->CoordinateLength() / m_nDim));
 		Write(ptrRing->GeometryBlobPtr()->CoordinateLength(),ptrRing->GeometryBlobPtr()->Coordinate());
 	}
 	return true;

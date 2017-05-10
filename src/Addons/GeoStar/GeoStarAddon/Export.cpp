@@ -52,7 +52,7 @@ const char* ExportFCS::Execute(const char* strParameter,GIS::Progress * pProgres
 
 	GeoStar::Kernel::GsGeoPackageGeoDatabaseFactory fac;
 	GeoStar::Kernel::GsConnectProperty conn;
-	conn.Server = strInput;
+	conn.Server = GeoStar::Utility::GsFile(GeoStar::Utility::GsUtf8(strInput.c_str()).Str().c_str()).FullPath();
 	//打开GeoPackage数据源
 	GeoStar::Kernel::GsGeoDatabasePtr ptrGPKDB = fac.Open(conn);
 	if(!ptrGPKDB)
@@ -63,7 +63,7 @@ const char* ExportFCS::Execute(const char* strParameter,GIS::Progress * pProgres
 	pProgress->OnLog("打开输入数据文件成功。",GIS::LogLevel::eInfo);
 
 	GeoStar::Kernel::GsSqliteGeoDatabaseFactory facSqlite;
-	conn.Server = strOutFile;
+	conn.Server = GeoStar::Utility::GsDir(GeoStar::Utility::GsUtf8( strOutFile.c_str()).Str().c_str()).FullPath();
 	//打开Sqlite数据源
 	GeoStar::Kernel::GsGeoDatabasePtr ptrFCSDB = facSqlite.Open(conn);
 	if(!ptrFCSDB)
@@ -95,6 +95,18 @@ ExportDOM::ExportDOM(void)
 ExportDOM::~ExportDOM(void)
 {
 } 
+//判断一个路径是否folder
+bool ExportDOM::IsFolder(const char* path)
+{
+	FILE* f = fopen(path,"rb");
+	if(f != NULL)
+	{
+		fclose(f);
+		return false;
+	}
+
+	return GeoStar::Utility::GsDir(GeoStar::Utility::GsUtf8( path).Str().c_str()).Exists();
+}
 /// \brief 执行插件
 const char* ExportDOM::Execute(const char* strParameter,GIS::Progress * pProgress)
 {
@@ -137,7 +149,15 @@ const char* ExportDOM::Execute(const char* strParameter,GIS::Progress * pProgres
 	KVParameter kvpoutput;
 	GeoStar::Kernel::GsFileGeoDatabaseFactory vFacInput;
 	GeoStar::Kernel::GsConnectProperty vConn;
-	vConn.Server = strInputFile;
+	std::vector<GeoStar::Utility::GsString> vecInputName;
+	if(IsFolder(strInputFile.c_str()))
+		vConn.Server = GeoStar::Utility::GsUtf8(strInputFile).Str();
+	else
+	{
+		GeoStar::Utility::GsFile file(GeoStar::Utility::GsUtf8(strInputFile.c_str()).Str().c_str());
+		vConn.Server = file.Parent().FullPath();
+		vecInputName.push_back(file.Name());
+	}
 	GeoStar::Kernel::GsGeoDatabasePtr ptrGDBInput = vFacInput.Open(vConn);
 	if(!ptrGDBInput)
 	{
@@ -146,7 +166,20 @@ const char* ExportDOM::Execute(const char* strParameter,GIS::Progress * pProgres
 	}
 	pProgress->OnLog("打开输入数据源成功",GIS::LogLevel::eInfo);
 
-	vConn.Server = strOuputFolder;
+	std::vector<GeoStar::Utility::GsString> vecOuputName;
+	
+	if(IsFolder(strOuputFolder.c_str()))
+		vConn.Server = GeoStar::Utility::GsUtf8(strOuputFolder.c_str()).Str();
+	else
+	{
+		GeoStar::Utility::GsFile file(GeoStar::Utility::GsUtf8(strOuputFolder.c_str()).Str().c_str());
+		vConn.Server = file.Parent().FullPath();
+		vecOuputName.push_back(file.Name());
+	}
+	//如果输入文件名不存在，则不指定输出文件名
+	if(vecInputName.empty())
+		vecOuputName.clear();
+
 	GeoStar::Kernel::GsGeoDatabasePtr ptrGDBOutput = vFacInput.Open(vConn);
 	if(!ptrGDBOutput)
 	{
@@ -157,6 +190,10 @@ const char* ExportDOM::Execute(const char* strParameter,GIS::Progress * pProgres
 
 	GsVector<GeoStar::Utility::GsString> vecNames;
 	ptrGDBInput->DataRoomNames(GeoStar::Kernel::eRasterClass,vecNames);
+	//如果存在输入文件名这只转换这个文件
+	if(!vecInputName.empty())
+		vecNames.swap(vecInputName);
+
 	GsVector<GeoStar::Utility::GsString>::iterator it =  vecNames.begin();
 	for(;it != vecNames.end();it++)
 	{
@@ -164,12 +201,24 @@ const char* ExportDOM::Execute(const char* strParameter,GIS::Progress * pProgres
 		if(!ptrRasterClass)
 			continue;
 		
+		//只转出geotiff的。
+		GeoStar::Utility::GsString strFormat = ptrRasterClass->Format();
+		if(stricmp(strFormat.c_str(),"GTiff") != 0)
+			continue;
+
 		strLog =  "准备转换";
 		strLog+=*it;
 		pProgress->OnLog(strLog.c_str(),GIS::LogLevel::eInfo);
-
-		GeoStar::Kernel::GsRasterClassPtr ptrRasterClassOut = ptrGDBOutput->CreateRasterClass(it->c_str(),
-			GeoStar::Kernel::GsRasterCreateableFormat::eGTiff,ptrRasterClass->RasterColumnInfo(),
+		std::string strName = *it;
+		if(!vecOuputName.empty())
+			strName = vecOuputName.front();
+		//if(GeoStar::Utility::GsStringHelp::EndWith(strName.c_str(),".tiff",true))
+		//	strName = GeoStar::Utility::GsStringHelp::Replace(strName.c_str(),".tiff",".png");
+		//if(GeoStar::Utility::GsStringHelp::EndWith(strName.c_str(),".tif",true))
+		//	strName = GeoStar::Utility::GsStringHelp::Replace(strName.c_str(),".tif",".png");
+				
+		GeoStar::Kernel::GsRasterClassPtr ptrRasterClassOut = ptrGDBOutput->CreateRasterClass(strName.c_str(),
+			GeoStar::Kernel::GsRasterCreateableFormat::eNSDTF_DOM,ptrRasterClass->RasterColumnInfo(),
 			ptrRasterClass->SpatialReference());
 
 		if(!ptrRasterClassOut)
@@ -180,6 +229,7 @@ const char* ExportDOM::Execute(const char* strParameter,GIS::Progress * pProgres
 			pProgress->OnLog(strLog.c_str(),GIS::LogLevel::eError);
 			continue;
 		}
+		
 		//总的像素数量。
 		__int64 nTotal = ptrRasterClass->Width() * ptrRasterClass->Height();
 		__int64 nNow = 0;
@@ -216,7 +266,15 @@ const char* ExportDOM::Execute(const char* strParameter,GIS::Progress * pProgres
 				ptrRasterClassOut->MetadataItem(itDomain->c_str(),itName->c_str(),strValue.c_str());
 			}
 		}
+		GeoStar::Utility::GsFile metaFile(GeoStar::Utility::GsFileSystem::Combine(ptrGDBInput->ConnectProperty().Server.c_str(),strName.c_str()).c_str());
+		metaFile.ChangeExtension("IOS19163.XML");
+		if(!metaFile.Exists()) continue;
 
+		GeoStar::Utility::GsFile metaFileTarget(GeoStar::Utility::GsFileSystem::Combine(ptrGDBOutput->ConnectProperty().Server.c_str(),strName.c_str()).c_str());
+		metaFileTarget.ChangeExtension("IOS19163.XML");
+		GeoStar::Utility::GsString strMeta = metaFile.ReadAll();
+		std::ofstream f(metaFileTarget.Path());
+		f<<strMeta;
 	}
 	return NULL;
 }

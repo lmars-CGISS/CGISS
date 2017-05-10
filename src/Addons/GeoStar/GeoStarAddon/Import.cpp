@@ -54,7 +54,7 @@ const char* ImportFCS::Execute(const char* strParameter,GIS::Progress * pProgres
 	KVParameter kvpoutput;
 	GeoStar::Kernel::GsSqliteGeoDatabaseFactory vSqliteFac;
 	GeoStar::Kernel::GsConnectProperty vConn;
-	vConn.Server = strInputFile;
+	vConn.Server = GeoStar::Utility::GsDir(GeoStar::Utility::GsUtf8(strInputFile.c_str()).Str().c_str()).FullPath();
 	 
 	//打开输入地物类
 	GeoStar::Kernel::GsGeoDatabasePtr ptrGDBInput =  vSqliteFac.Open(vConn);
@@ -68,7 +68,7 @@ const char* ImportFCS::Execute(const char* strParameter,GIS::Progress * pProgres
 
 	//打开输出地物类
 	GeoStar::Kernel::GsGeoPackageGeoDatabaseFactory vGPKGFac;
-	vConn.Server = strOuputFolder;
+	vConn.Server = GeoStar::Utility::GsFile(GeoStar::Utility::GsUtf8(strOuputFolder.c_str()).Str().c_str()).FullPath();
 	GeoStar::Kernel::GsGeoDatabasePtr ptrGDBOutput =  vGPKGFac.Open(vConn);
 	if(!ptrGDBOutput)
 	{
@@ -212,6 +212,17 @@ ImportDOM::ImportDOM(void)
 ImportDOM::~ImportDOM(void)
 {
 } 
+//判断一个路径是否folder
+bool ImportDOM::IsFolder(const char* path)
+{
+	FILE* f = fopen(path,"rb");
+	if(f != NULL)
+	{
+		fclose(f);
+		return false;
+	}
+	return GeoStar::Utility::GsDir(GeoStar::Utility::GsUtf8(path)).Exists();
+}
 /// \brief 执行插件
 const char* ImportDOM::Execute(const char* strParameter,GIS::Progress * pProgress)
 {
@@ -254,7 +265,16 @@ const char* ImportDOM::Execute(const char* strParameter,GIS::Progress * pProgres
 	KVParameter kvpoutput;
 	GeoStar::Kernel::GsFileGeoDatabaseFactory vFacInput;
 	GeoStar::Kernel::GsConnectProperty vConn;
-	vConn.Server = strInputFile;
+	std::vector<GeoStar::Utility::GsString> vecInputName;
+	if(IsFolder(strInputFile.c_str()))
+		vConn.Server = strInputFile;
+	else
+	{
+		GeoStar::Utility::GsFile file(GeoStar::Utility::GsUtf8(strInputFile.c_str()));
+		vConn.Server = file.Parent().FullPath();
+		vecInputName.push_back(file.Name());
+	}
+
 	GeoStar::Kernel::GsGeoDatabasePtr ptrGDBInput = vFacInput.Open(vConn);
 	if(!ptrGDBInput)
 	{
@@ -263,7 +283,21 @@ const char* ImportDOM::Execute(const char* strParameter,GIS::Progress * pProgres
 	}
 	pProgress->OnLog("打开输入数据源成功",GIS::LogLevel::eInfo);
 
-	vConn.Server = strOuputFolder;
+	std::vector<GeoStar::Utility::GsString> vecOuputName;
+	
+	if(IsFolder(strOuputFolder.c_str()))
+		vConn.Server = strOuputFolder;
+	else
+	{
+		GeoStar::Utility::GsFile file(GeoStar::Utility::GsUtf8(strOuputFolder.c_str()));
+		vConn.Server = file.Parent().FullPath();
+		vecOuputName.push_back(file.Name());
+	}
+
+	//如果输入文件名不存在，则不指定输出文件名
+	if(vecInputName.empty())
+		vecOuputName.clear();
+
 	GeoStar::Kernel::GsGeoDatabasePtr ptrGDBOutput = vFacInput.Open(vConn);
 	if(!ptrGDBOutput)
 	{
@@ -274,23 +308,26 @@ const char* ImportDOM::Execute(const char* strParameter,GIS::Progress * pProgres
 
 	GsVector<GeoStar::Utility::GsString> vecNames;
 	ptrGDBInput->DataRoomNames(GeoStar::Kernel::eRasterClass,vecNames);
+	//如果存在输入文件名这只转换这个文件
+	if(!vecInputName.empty())
+		vecNames.swap(vecInputName);
+	
 	GsVector<GeoStar::Utility::GsString>::iterator it =  vecNames.begin();
+
 	for(;it != vecNames.end();it++)
 	{
 		GeoStar::Kernel::GsRasterClassPtr ptrRasterClass = ptrGDBInput->OpenRasterClass(it->c_str());
 		if(!ptrRasterClass)
 			continue;
 
-		//只转出geotiff的。
-		GeoStar::Utility::GsString strFormat = ptrRasterClass->Format();
-		if(stricmp(strFormat.c_str(),"GTiff") != 0)
-			continue;
-
 		strLog =  "准备转换";
 		strLog+=*it;
 		pProgress->OnLog(strLog.c_str(),GIS::LogLevel::eInfo);
+		std::string strName = *it;
+		if(!vecOuputName.empty())
+			strName = vecOuputName.front();
 
-		GeoStar::Kernel::GsRasterClassPtr ptrRasterClassOut = ptrGDBOutput->CreateRasterClass(it->c_str(),
+		GeoStar::Kernel::GsRasterClassPtr ptrRasterClassOut = ptrGDBOutput->CreateRasterClass(strName.c_str(),
 			GeoStar::Kernel::GsRasterCreateableFormat::eGTiff,ptrRasterClass->RasterColumnInfo(),
 			ptrRasterClass->SpatialReference());
 
@@ -339,6 +376,15 @@ const char* ImportDOM::Execute(const char* strParameter,GIS::Progress * pProgres
 			}
 		}
 
+		GeoStar::Utility::GsFile metaFile(GeoStar::Utility::GsFileSystem::Combine(ptrGDBInput->ConnectProperty().Server.c_str(),strName.c_str()).c_str());
+		metaFile.ChangeExtension("IOS19163.XML");
+		if(!metaFile.Exists()) continue;
+
+		GeoStar::Utility::GsFile metaFileTarget(GeoStar::Utility::GsFileSystem::Combine(ptrGDBOutput->ConnectProperty().Server.c_str(),strName.c_str()).c_str());
+		metaFileTarget.ChangeExtension("IOS19163.XML");
+		GeoStar::Utility::GsString strMeta = metaFile.ReadAll();
+		std::ofstream f(metaFileTarget.Path());
+		f<<strMeta;
 	}
 	return NULL;
 }

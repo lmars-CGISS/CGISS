@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using GeoStar.Utility;
+using GeoStar.Utility; 
 
 namespace GISDataTranslate
 {
@@ -23,7 +23,8 @@ namespace GISDataTranslate
         static Dictionary<string, string> m_dicGroup = new Dictionary<string, string>();
         static Dictionary<string, ToolStripItem> m_dicGroupItem = new Dictionary<string, ToolStripItem>();
         void AddGroup(string strGroup, ToolStripItem vItemTool)
-        {
+        { 
+             
             m_dicGroup[vItemTool.Name] = strGroup;
             m_dicGroupItem[vItemTool.Name] = vItemTool;
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace GISDataTranslate
 {
@@ -41,6 +42,7 @@ namespace GISDataTranslate
         static void Main()
         {
             string strPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, IsX86() ? "x86" : "amd64");
+            SetDllDirectory(strPath);
             //根据程序的类型将64位或者32位的搜索路径添加到程序中。
             AppendPrivatePath(strPath);
 
@@ -60,5 +62,7 @@ namespace GISDataTranslate
             path = String.Format(@"{0}.dll", path);
             return System.Reflection.Assembly.LoadFrom(path);  
         }
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        static extern bool SetDllDirectory(string lpPathName);
     }
 }

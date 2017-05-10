@@ -17,6 +17,7 @@ public:
 //µº»ÁDOM
 class ExportDOM:public GIS::AddonBase
 {
+	bool IsFolder(const char* path);
 public:
 	ExportDOM(void);
 	virtual ~ExportDOM(void); 

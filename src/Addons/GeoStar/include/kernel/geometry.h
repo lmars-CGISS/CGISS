@@ -1943,7 +1943,7 @@ public:
 	GsWKBOGCReader(Utility::GsByteBuffer* pBuffer); 
 	GsWKBOGCReader(const unsigned char* pBuffer,int nLen); 
 	/// \brief 重新设置一段新的WKB数据用于解析Geometry
-	void Begin(const unsigned char* pBuffer,int nLen);
+	bool Begin(const unsigned char* pBuffer,int nLen);
 	
 	/// \brief 读取生成一个几何对象。
 	virtual GsGeometryPtr Read();

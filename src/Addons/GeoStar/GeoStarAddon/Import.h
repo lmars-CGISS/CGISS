@@ -24,6 +24,9 @@ public:
 //导如DOM
 class ImportDOM:public GIS::AddonBase
 {
+	
+	//判断一个路径是否folder
+	bool IsFolder(const char* path);
 public:
 	ImportDOM(void);
 	virtual ~ImportDOM(void); 

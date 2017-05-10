@@ -1,0 +1,65 @@
+为了解决glsl代码共用的问题，在glsl代码中引入了include标签
+如：
+#include <lib/ClipPlane.glsllib>
+void main()
+{
+	if(!Clip())
+	{
+		discard;
+		return;
+	}
+	gl_FragColor = gl_Color
+}
+
+其中<>内部的是..\Resource\shader文件下的一个子文件路径。比如这个例子中引用的是..\Resource\shader\lib\ClipPlane.glsllib这个文件。可以将多个着色器都会用到的一段代码提取成一个方法，放到这个引用文件中去，这样就不需要重复的写这段代码了。这个例子中，把Clip()方法写到了ClipPlane.glsllib文件中。当然这个文件不只可以写方法，也可以声明uniform、varying这些变量，可以把它看成一段没有main函数的普通的glsl代码。在编译着色器之前，我们的程序会把“#include <...>”的部分替换为这个文件中的内容。
+
+被引用的文件也需要打包到大文件中去，这里提供一段打包代码供参考，这段代码把"F:/trunk/Builds/Win_Solution_vc11/Bin_Unicode/Resource/shader/"路径下所有后缀为.glsl和.glsllib打包到大文件中。
+
+	UGString str = _U("F:/trunk/Builds/Win_Solution_vc11/Bin_Unicode/Resource/shader/");
+	UGCacheFile cacheFile;	
+	UGString cacheFilePath = str + _U("shader.sc");
+	cacheFile.Open(cacheFilePath, _U("3DRET"));
+
+	UGFileStream fs;
+	UGByteArray context;
+
+	UGArray<UGString> arrShaderFile;
+	UGFile::ListFiles(arrShaderFile, str, _U("*.glsl"));
+
+	for (UGint i = 0; i < arrShaderFile.GetSize(); i++)
+	{
+		UGString strDest = arrShaderFile[i];
+		context.RemoveAll();
+		fs.Open(str + strDest, UGStreamLoad);
+		fs.LoadByteArray(context);
+		fs.Close();
+		UGuint dwDestLen = UGCompress::CompressBound(context.GetSize());
+		UGbyte* pvDestBuffer = new UGbyte[context.GetSize()];
+		UGCompress::Zip(pvDestBuffer, dwDestLen, (UGbyte*)context.GetData(), context.GetSize());
+		UGuint dwSrcLen = context.GetSize();
+		context.RemoveAll();
+		context.Add(dwSrcLen);
+		context.Add(pvDestBuffer, dwDestLen);
+		cacheFile.AddFile(context, strDest);
+	}
+
+	arrShaderFile.RemoveAll();
+	UGFile::ListFiles(arrShaderFile, str, _U("*.glsllib"));
+
+	for (UGint i = 0; i < arrShaderFile.GetSize(); i++)
+	{
+		UGString strDest = arrShaderFile[i];
+		context.RemoveAll();
+		fs.Open(str + strDest, UGStreamLoad);
+		fs.LoadByteArray(context);
+		fs.Close();
+		UGuint dwDestLen = UGCompress::CompressBound(context.GetSize());
+		UGbyte* pvDestBuffer = new UGbyte[context.GetSize()];
+		UGCompress::Zip(pvDestBuffer, dwDestLen, (UGbyte*)context.GetData(), context.GetSize());
+		UGuint dwSrcLen = context.GetSize();
+		context.RemoveAll();
+		context.Add(dwSrcLen);
+		context.Add(pvDestBuffer, dwDestLen);
+		UGString strLibFile = _U("lib/") + strDest;
+		cacheFile.AddFile(context, strLibFile);
+	}

@@ -27,6 +27,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_04A9376F07554B44A350E98A275A131D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_051C1E5C76F74C298A9A246A7536DDEF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -46,6 +52,18 @@
         "Entry"
         {
         "MsmKey" = "8:_1274335BEC6945E4A851BBB1B67FC019"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_132DEF10D1E045399C9EB656FEF309FC"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1638BF8E21DC479F82EE41F6A525BC7F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -171,7 +189,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_34FB721090784185956EA28565B54584"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_3514263B486048EE9402B22774F6F5BF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_35D7350811284921BE30221F7BCF369C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -219,6 +249,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_3EBAEAB8DB2042258B1A008558746513"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_41F110B1B63E443E9C4C683E0B1FABE0"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -244,6 +280,12 @@
         "Entry"
         {
         "MsmKey" = "8:_4A336F56AF624A01B5A8E2A06E2FA8A0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4AA8171E4DD045E5B8681DD381C2D23B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -285,6 +327,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_537E7FA8838244F38691D01C08685576"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_56E8AC6EE95941A2838B38C492D7E39F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_57D2FC1B3BFA429C931813761579C8DC"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -309,6 +363,24 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_5E240073A88C43E4ACE69F82CEAC7565"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_60ED8727F98C41599191F31BBAD25632"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6189CBB8E72441E9B964D4DB02334ECB"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_64579677E8DE44ABB62DAE9CBC6898FC"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -322,6 +394,18 @@
         "Entry"
         {
         "MsmKey" = "8:_6AFBCB2674984C3FB66652E773DEFE0F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6EC3F3110CA74F3CBE3CA84CCE4D3E89"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6F900FE4C85743A0ABF6BD09D89C18B9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -351,7 +435,25 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_782BFBC975B244CBB6D8E3730AB60115"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_789C0520D6B64341A3046885223B7A61"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7D83EB1BD8D44CDC8AC434080356A696"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7F53311270114AFD909006DFA1B16BA4"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -453,6 +555,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_A735F63E534645DBAB496231E8BB9C14"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_A7A6154B62E6485F90236651306A8723"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -478,6 +586,12 @@
         "Entry"
         {
         "MsmKey" = "8:_AFE7243197B5459D9F9799E6DBD78721"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B0CF23C49CE9422B82B0B2EF18EB3849"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -555,6 +669,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_BDD3077E14924AE4AE2F5F014168BFB4"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_BF054DFB4B354381AEFAA6B3B04DC6BE"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -627,6 +747,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_CF838BE7FBC14D6584F50182893F13AD"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_D051AE60876047B49642D943403D319B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -634,6 +760,18 @@
         "Entry"
         {
         "MsmKey" = "8:_D333A1AE847245E2AA1466A2FB509CB5"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D3D7A5B7723649C0AE1E1B48D98C3FD3"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D40CF737A01A43919BF870E07DCECD26"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -657,7 +795,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_D9022E8E131D48B780A6042300218A00"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_DC29E980CB3E4226B2BEA93EB13AF5E9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_DDA519E9A8AE472DB4378EA918C924D1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -670,6 +820,18 @@
         "Entry"
         {
         "MsmKey" = "8:_DF5A263365334F20B5683F760006B84E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_DF6E1A64E73E4B0EB08D208F231B2A9A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E0229E7DDBAC48909C909D55FADE83D5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -705,7 +867,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_E5CDFD8414344C3F8CDA7464BD48A97D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_E6093F0FD12E403C861F98A4C921D7A8"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E6635F71F947464CBFD1489781073478"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -741,6 +915,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_EBB38A23361B46FF90CA09F5990BC332"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_EBD11A22B8574DD5A43C38F5E21457CD"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_F090F3752FC842CD9C52843B8F988148"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -759,7 +945,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_F51416C8521840D9B031C33DA2C44DB9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_FB4140D6C45E42CD8340DDCCB102DF56"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FC36FE15874448119FE24060FEDF910F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -790,13 +988,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_B9DE1994650A418D965166B17369D791"
+        "OwnerKey" = "8:_9A66601E4CB64764A67D04DFC09753FE"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_9A66601E4CB64764A67D04DFC09753FE"
+        "OwnerKey" = "8:_B9DE1994650A418D965166B17369D791"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -949,6 +1147,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_04A9376F07554B44A350E98A275A131D"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuEngine.dll"
+            "TargetName" = "8:SuEngine.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_051C1E5C76F74C298A9A246A7536DDEF"
             {
             "SourcePath" = "8:..\\res\\ImportRaster.png"
@@ -1015,6 +1233,46 @@
             "TargetName" = "8:数据库.png"
             "Tag" = "8:"
             "Folder" = "8:_946B777AA814446F97B1CB9E12BF990A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_132DEF10D1E045399C9EB656FEF309FC"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuAlgorithm.dll"
+            "TargetName" = "8:SuAlgorithm.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1638BF8E21DC479F82EE41F6A525BC7F"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuFileParser.dll"
+            "TargetName" = "8:SuFileParser.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1429,12 +1687,52 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_34FB721090784185956EA28565B54584"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuStream.lib"
+            "TargetName" = "8:SuStream.lib"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3514263B486048EE9402B22774F6F5BF"
             {
             "SourcePath" = "8:..\\release\\x86\\geoway\\hdf5dll.dll"
             "TargetName" = "8:hdf5dll.dll"
             "Tag" = "8:"
             "Folder" = "8:_946EA544C85E4B63A7A42FD1A21684E5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_35D7350811284921BE30221F7BCF369C"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuTopoBase.dll"
+            "TargetName" = "8:SuTopoBase.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1493,7 +1791,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:GISDataTranslate, Version=1.0.0.818, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:GISDataTranslate, Version=1.0.0.981, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_38B3B03842FE450AAECA6D8C938E0351"
@@ -1600,6 +1898,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3EBAEAB8DB2042258B1A008558746513"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\sqlite3.lib"
+            "TargetName" = "8:sqlite3.lib"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_41F110B1B63E443E9C4C683E0B1FABE0"
             {
             "SourcePath" = "8:..\\res\\disk.ico"
@@ -1686,6 +2004,26 @@
             "TargetName" = "8:Close32.png"
             "Tag" = "8:"
             "Folder" = "8:_946B777AA814446F97B1CB9E12BF990A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4AA8171E4DD045E5B8681DD381C2D23B"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuTopoBuilder.dll"
+            "TargetName" = "8:SuTopoBuilder.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1820,6 +2158,46 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_537E7FA8838244F38691D01C08685576"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\xerces-c_3_1.dll"
+            "TargetName" = "8:xerces-c_3_1.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_56E8AC6EE95941A2838B38C492D7E39F"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuToolkit.dll"
+            "TargetName" = "8:SuToolkit.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_57D2FC1B3BFA429C931813761579C8DC"
             {
             "SourcePath" = "8:..\\release\\x86\\geoway\\zlib1.dll"
@@ -1900,6 +2278,66 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5E240073A88C43E4ACE69F82CEAC7565"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuToolkit.lib"
+            "TargetName" = "8:SuToolkit.lib"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_60ED8727F98C41599191F31BBAD25632"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuProjection.dll"
+            "TargetName" = "8:SuProjection.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6189CBB8E72441E9B964D4DB02334ECB"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuGeometryCAD.geo"
+            "TargetName" = "8:SuGeometryCAD.geo"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_64579677E8DE44ABB62DAE9CBC6898FC"
             {
             "SourcePath" = "8:..\\res\\exit.png"
@@ -1946,6 +2384,46 @@
             "TargetName" = "8:西安1980坐标系(3度带).txt"
             "Tag" = "8:"
             "Folder" = "8:_498F1C9672814A1599E134DFB67AAF1E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6EC3F3110CA74F3CBE3CA84CCE4D3E89"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuElement.dll"
+            "TargetName" = "8:SuElement.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6F900FE4C85743A0ABF6BD09D89C18B9"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuperMapAdd.dll"
+            "TargetName" = "8:SuperMapAdd.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2040,12 +2518,72 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_782BFBC975B244CBB6D8E3730AB60115"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuStream.dll"
+            "TargetName" = "8:SuStream.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_789C0520D6B64341A3046885223B7A61"
             {
             "SourcePath" = "8:..\\data\\coordinatesystem\\State Plane Nad 1927.txt"
             "TargetName" = "8:State Plane Nad 1927.txt"
             "Tag" = "8:"
             "Folder" = "8:_498F1C9672814A1599E134DFB67AAF1E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7D83EB1BD8D44CDC8AC434080356A696"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuChartToolkit.dll"
+            "TargetName" = "8:SuChartToolkit.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7F53311270114AFD909006DFA1B16BA4"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuNetToolkit.dll"
+            "TargetName" = "8:SuNetToolkit.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2244,7 +2782,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:GeoStar.Kernel, Version=1.0.6320.16076, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:GeoStar.Kernel, Version=1.0.6331.28964, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_9A66601E4CB64764A67D04DFC09753FE"
@@ -2391,6 +2929,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A735F63E534645DBAB496231E8BB9C14"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuChartBase.dll"
+            "TargetName" = "8:SuChartBase.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A7A6154B62E6485F90236651306A8723"
             {
             "SourcePath" = "8:..\\data\\coordinatesystem\\EPSG.txt"
@@ -2477,6 +3035,26 @@
             "TargetName" = "8:CadastralParcelNew32.png"
             "Tag" = "8:"
             "Folder" = "8:_946B777AA814446F97B1CB9E12BF990A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B0CF23C49CE9422B82B0B2EF18EB3849"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\xerces-c_3.exp"
+            "TargetName" = "8:xerces-c_3.exp"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2635,7 +3213,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:AddonContainer, Version=1.0.6320.16262, Culture=neutral, processorArchitecture=x86"
+            "AssemblyAsmDisplayName" = "8:AddonContainer, Version=1.0.6331.27502, Culture=neutral, processorArchitecture=x86"
                 "ScatterAssemblies"
                 {
                     "_B9DE1994650A418D965166B17369D791"
@@ -2728,6 +3306,26 @@
             "TargetName" = "8:openjp2.dll"
             "Tag" = "8:"
             "Folder" = "8:_946EA544C85E4B63A7A42FD1A21684E5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BDD3077E14924AE4AE2F5F014168BFB4"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuGeoOperation.dll"
+            "TargetName" = "8:SuGeoOperation.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2982,6 +3580,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CF838BE7FBC14D6584F50182893F13AD"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\gdal201.dll"
+            "TargetName" = "8:gdal201.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D051AE60876047B49642D943403D319B"
             {
             "SourcePath" = "8:..\\release\\x86\\geoway\\szip.dll"
@@ -3008,6 +3626,46 @@
             "TargetName" = "8:cross_r.cur"
             "Tag" = "8:"
             "Folder" = "8:_946B777AA814446F97B1CB9E12BF990A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D3D7A5B7723649C0AE1E1B48D98C3FD3"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\sqlite3.dll"
+            "TargetName" = "8:sqlite3.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D40CF737A01A43919BF870E07DCECD26"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuSpatialQuery.dll"
+            "TargetName" = "8:SuSpatialQuery.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3082,12 +3740,52 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D9022E8E131D48B780A6042300218A00"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuBase3D.dll"
+            "TargetName" = "8:SuBase3D.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DC29E980CB3E4226B2BEA93EB13AF5E9"
             {
             "SourcePath" = "8:..\\res\\ExportVector.png"
             "TargetName" = "8:ExportVector.png"
             "Tag" = "8:"
             "Folder" = "8:_946B777AA814446F97B1CB9E12BF990A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DDA519E9A8AE472DB4378EA918C924D1"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuSpatialIndex.dll"
+            "TargetName" = "8:SuSpatialIndex.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3128,6 +3826,46 @@
             "TargetName" = "8:config.xml"
             "Tag" = "8:"
             "Folder" = "8:_6423642C00DA4BC8A3B913D07031DCDA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DF6E1A64E73E4B0EB08D208F231B2A9A"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\nodes.gpkg"
+            "TargetName" = "8:nodes.gpkg"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E0229E7DDBAC48909C909D55FADE83D5"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuDataCheck.dll"
+            "TargetName" = "8:SuDataCheck.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3242,12 +3980,52 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E5CDFD8414344C3F8CDA7464BD48A97D"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\ieSimpleRaster.dll"
+            "TargetName" = "8:ieSimpleRaster.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E6093F0FD12E403C861F98A4C921D7A8"
             {
             "SourcePath" = "8:..\\data\\coordinatesystem\\Geographic Coordinate Systems (地理坐标系统).txt"
             "TargetName" = "8:Geographic Coordinate Systems (地理坐标系统).txt"
             "Tag" = "8:"
             "Folder" = "8:_498F1C9672814A1599E134DFB67AAF1E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E6635F71F947464CBFD1489781073478"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuOGDC.dll"
+            "TargetName" = "8:SuOGDC.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3362,6 +4140,46 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EBB38A23361B46FF90CA09F5990BC332"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuBase.dll"
+            "TargetName" = "8:SuBase.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EBD11A22B8574DD5A43C38F5E21457CD"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuGeometry.dll"
+            "TargetName" = "8:SuGeometry.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F090F3752FC842CD9C52843B8F988148"
             {
             "SourcePath" = "8:..\\res\\MapDocumentPackageFile32.png"
@@ -3422,12 +4240,52 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F51416C8521840D9B031C33DA2C44DB9"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuDataExchange.dll"
+            "TargetName" = "8:SuDataExchange.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FB4140D6C45E42CD8340DDCCB102DF56"
             {
             "SourcePath" = "8:..\\release\\x86\\geoway\\gdal111.dll"
             "TargetName" = "8:gdal111.dll"
             "Tag" = "8:"
             "Folder" = "8:_946EA544C85E4B63A7A42FD1A21684E5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FC36FE15874448119FE24060FEDF910F"
+            {
+            "SourcePath" = "8:..\\release\\x86\\SuperMap\\SuCompactFile.dll"
+            "TargetName" = "8:SuCompactFile.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_946C590C5F32468FAAD13C5F2BC9923A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -3576,6 +4434,17 @@
                                     "Condition" = "8:"
                                     "Transitive" = "11:FALSE"
                                     "Property" = "8:_C6B2371C639649988DC178CD5B2DC93C"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_946C590C5F32468FAAD13C5F2BC9923A"
+                                    {
+                                    "Name" = "8:SuperMap"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_EA65270D4E3B4E428B4F6424479C09F0"
                                         "Folders"
                                         {
                                         }

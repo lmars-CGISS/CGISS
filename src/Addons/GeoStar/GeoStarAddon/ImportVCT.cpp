@@ -1165,14 +1165,13 @@ const char* ImportVCT::Execute(const char* strParameter,GIS::Progress * pProgres
 	strLog+=strOuputFolder;
 	pProgress->OnLog(strLog.c_str(),GIS::LogLevel::eInfo);
 
-	bool bNew = GeoStar::Utility::GsFile(strOuputFolder.c_str()).Exists()?false:true;
-	std::string strUtf8Path =	GeoStar::Utility::GsCW2A(GeoStar::Utility::GsCA2W(strOuputFolder.c_str()).m_WStr,
-								GeoStar::Utility::eCP_UTF8).m_Str;
+	GeoStar::Utility::GsFile OutputFile(GeoStar::Utility::GsUtf8( strOuputFolder.c_str()));
+	bool bNew = !OutputFile.Exists();
 	//打开数据数据库。
-	gpkg::database_ptr db(new gpkg::database(strUtf8Path.c_str(),bNew));
+	gpkg::database_ptr db(new gpkg::database(OutputFile.FullPath().c_str(),bNew));
 	pProgress->OnLog("打开输出数据集",GIS::LogLevel::eInfo);
 
-	GeoStar::Utility::GsDir dir(strInputFile.c_str());
+	GeoStar::Utility::GsDir dir(GeoStar::Utility::GsUtf8(strInputFile.c_str()));
 	GsVector<GeoStar::Utility::GsFile> vec =  dir.Files("*.vct");
 	if(vec.empty())
 	{

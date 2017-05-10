@@ -87,7 +87,8 @@ namespace GISDataTranslate
             {
                 using (FolderBrowserDialog f = new FolderBrowserDialog())
                 {
-                    if (f.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                    System.Windows.Forms.DialogResult r = f.ShowDialog();
+                    if (r != System.Windows.Forms.DialogResult.OK)
                         return;
                     textBoxServer.Text = f.SelectedPath;
                 }

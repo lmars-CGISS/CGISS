@@ -385,6 +385,9 @@
         <member name="D:GeoStar.Kernel.GsStyleTableFactoryPtr">
 \brief GsStyleTableFactoryPtr
 </member>
+        <member name="M:GeoStar.Kernel.GsStyleTableFactory.CreateEmptyStyleTable">
+\brief 构建一个空的样式表实例
+</member>
         <member name="M:GeoStar.Kernel.GsStyleTableFactory.OpenFromMapDefine(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,GeoStar.Kernel.GsPyramid*)">
 \brief 从地图定义文件构造样式表实例
 </member>
@@ -436,6 +439,9 @@
 \param nEndCode 字符结束编号
 \param buff 返回的内存块
 \returns 返回执行是否成功 
+</member>
+        <member name="M:GeoStar.Kernel.GsStyleTable.Content(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.Byte!System.Runtime.CompilerServices.IsConst*,System.Int32)">
+\brief 设置式样的内容
 </member>
         <member name="M:GeoStar.Kernel.GsStyleTable.Content(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,GeoStar.Utility.GsByteBuffer*)">
 \brief 获取式样的内容
@@ -2987,7 +2993,7 @@ ${Col}代表瓦片列
 \brief 实现多时相瓦片数据集将级扩充的
 </member>
         <member name="F:eDlgTileFeature">
-\brief 矢量
+\brief 矢量瓦片
 </member>
         <member name="F:eHypsographyTileFeature">
 \brief 地势
@@ -7993,7 +7999,7 @@ GsSpatialReferencePtr ptrSR = new GsSpatialReference(4326);
 \return 返回目录是否存在
 </member>
         <member name="M:GeoStar.Utility.GsDir.FullPath">
-\brief 目录的完整路径
+\brief 目录的完整路径（UTF-8）
 \return 返回目录的完整路径
 </member>
         <member name="M:GeoStar.Utility.GsDir.Name">
@@ -8071,7 +8077,7 @@ GsSpatialReferencePtr ptrSR = new GsSpatialReference(4326);
 \return 返回文件是否存在
 </member>
         <member name="M:GeoStar.Utility.GsFile.FullPath">
-\brief 获取文件完整路径
+\brief 获取文件完整路径（UTF-8）
 \return 返回文件的完整路径
 </member>
         <member name="M:GeoStar.Utility.GsFile.Name(System.Boolean)">
@@ -8403,6 +8409,134 @@ GsSpatialReferencePtr ptrSR = new GsSpatialReference(4326);
         <member name="T:GeoStar.Utility.GsStopWatch">
 \brief 高精度计时器
 </member>
+        <member name="M:GeoStar.Utility.GsDateTime.TryParse(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,GeoStar.Utility.GsDateTime*!System.Runtime.CompilerServices.IsImplicitlyDereferenced)">
+\brief 解析字符串时间为时间数据
+</member>
+        <member name="M:GeoStar.Utility.GsDateTime.ToString(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+\brief 按照格式转换为字符串
+\details 参考strftime
+http://www.cplusplus.com/reference/ctime/strftime/
+</member>
+        <member name="M:GeoStar.Utility.GsDateTime.ToString">
+\brief 转换字符串
+\details 格式 %Y-%m-%d %H:%M:%S
+</member>
+        <member name="M:GeoStar.Utility.GsDateTime.ToShortTimeString">
+\brief 转换短时间字符串
+\details 格式 %H:%M
+</member>
+        <member name="M:GeoStar.Utility.GsDateTime.ToShortDateString">
+\brief 转换短日期字符串
+\details 格式 %Y/%m/%d
+</member>
+        <member name="M:GeoStar.Utility.GsDateTime.ToLongTimeString">
+\brief 转换为长时间字符串
+\details 格式 %H:%M:%S
+</member>
+        <member name="M:GeoStar.Utility.GsDateTime.ToLongDateString">
+\brief 转换为长日期字符串
+\details 格式 %Y-%m-%d
+</member>
+        <member name="M:GeoStar.Utility.GsDateTime.DayOfWeek">
+\brief 获取星期几
+</member>
+        <member name="M:GeoStar.Utility.GsDateTime.Second">
+\brief 获取秒
+</member>
+        <member name="M:GeoStar.Utility.GsDateTime.Minute">
+\brief 获取分
+</member>
+        <member name="M:GeoStar.Utility.GsDateTime.Hour">
+\brief 获取小时
+</member>
+        <member name="M:GeoStar.Utility.GsDateTime.Day">
+\brief 获取日
+</member>
+        <member name="M:GeoStar.Utility.GsDateTime.Month">
+\brief 获取月
+</member>
+        <member name="M:GeoStar.Utility.GsDateTime.Year">
+\brief 获取年
+</member>
+        <member name="M:GeoStar.Utility.GsDateTime.Now">
+\brief 今日
+</member>
+        <member name="M:GeoStar.Utility.GsDateTime.MakeDateTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+\brief 根据年月日时分秒构造
+\param year  四位年yyyy
+\param mon  月[1~12]
+\param day  日[1~31]
+\param min  分[0~59]
+\param sec  秒[0~59]
+</member>
+        <member name="M:GeoStar.Utility.GsDateTime.#ctor(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+\brief 根据年月日时分秒构造
+\param year  四位年yyyy
+\param mon  月[1~12]
+\param day  日[1~31]
+\param min  分[0~59]
+\param sec  秒[0~59]
+</member>
+        <member name="M:GeoStar.Utility.GsDateTime.#ctor(System.Int64)">
+\brief 从1970.1.1日经过的秒构造时间
+</member>
+        <member name="M:GeoStar.Utility.GsDateTime.#ctor(GeoStar.Utility.GsDateTime!System.Runtime.CompilerServices.IsConst*!System.Runtime.CompilerServices.IsImplicitlyDereferenced)">
+\brief 拷贝构造
+</member>
+        <member name="M:GeoStar.Utility.GsDateTime.#ctor">
+\brief 缺省构造，当前时间
+</member>
+        <member name="T:GeoStar.Utility.GsDateTime">
+\brief 日期
+</member>
+        <member name="T:GeoStar.Utility.GsWeekDay">
+\brief 星期
+</member>
+        <member name="F:eSaturday">
+\brief 星期六
+</member>
+        <member name="F:eFriday">
+\brief 星期五
+</member>
+        <member name="F:eThursday">
+\brief 星期四
+</member>
+        <member name="F:eWednesday">
+\brief 星期三
+</member>
+        <member name="F:eTuesday">
+\brief 星期二
+</member>
+        <member name="F:eMonday">
+\brief 星期一
+</member>
+        <member name="F:eSunday">
+\brief 星期天
+</member>
+        <member name="M:GeoStar.Utility.GsTimeSpan.Seconds">
+\brief 时间间隔的秒数
+</member>
+        <member name="M:GeoStar.Utility.GsTimeSpan.TotalSeconds">
+\brief 时间间隔的总秒数
+</member>
+        <member name="M:GeoStar.Utility.GsTimeSpan.Minutes">
+\brief 时间间隔的分钟数
+</member>
+        <member name="M:GeoStar.Utility.GsTimeSpan.TotalMinutes">
+\brief 时间间隔的总分钟数
+</member>
+        <member name="M:GeoStar.Utility.GsTimeSpan.Hours">
+\brief 时间间隔的小时数
+</member>
+        <member name="M:GeoStar.Utility.GsTimeSpan.TotalHours">
+\brief 时间间隔的总小时数
+</member>
+        <member name="M:GeoStar.Utility.GsTimeSpan.Days">
+\brief 时间间隔的天数
+</member>
+        <member name="T:GeoStar.Utility.GsTimeSpan">
+\brief 时间间隔
+</member>
         <member name="M:GeoStar.Utility.GsThreadPool.Shutdown">
 \brief 关闭线程池
 \return 返回执行是否成功
@@ -8693,7 +8827,7 @@ GsSpatialReferencePtr ptrSR = new GsSpatialReference(4326);
         <member name="M:GeoStar.Utility.GsAny.op_Implicit~GeoStar.Utility.GsRefObject*">
 \brief 类型转换
 </member>
-        <member name="M:GeoStar.Utility.GsAny.op_Implicit~System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte*">
+        <member name="M:GeoStar.Utility.GsAny.op_Implicit~System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*">
 \brief 类型转换
 </member>
         <member name="M:GeoStar.Utility.GsAny.op_Implicit~System.Double">
@@ -8795,7 +8929,7 @@ GsSpatialReferencePtr ptrSR = new GsSpatialReference(4326);
         <member name="M:GeoStar.Utility.GsAny.#ctor(System.UInt64)">
 \brief 无符号64位的构造函数
 </member>
-        <member name="M:GeoStar.Utility.GsAny.#ctor(System.Int64)">
+        <member name="M:GeoStar.Utility.GsAny.#ctor(System.Int64,System.Boolean)">
 \brief 64位的构造函数
 </member>
         <member name="M:GeoStar.Utility.GsAny.#ctor(System.UInt32)">
@@ -8827,6 +8961,9 @@ GsSpatialReferencePtr ptrSR = new GsSpatialReference(4326);
 </member>
         <member name="T:GeoStar.Utility.GsVarType">
 \brief GsAny对象的数据类型
+</member>
+        <member name="F:eDateTime">
+\brief 时间日期类型
 </member>
         <member name="F:eBlob">
 \brief 二进制数据
@@ -9033,6 +9170,120 @@ GsSpatialReferencePtr ptrSR = new GsSpatialReference(4326);
 </member>
         <member name="T:GeoStar.Utility.GsCodePageID">
 \brief 编码id
+</member>
+        <member name="M:GeoStar.Utility.GsRegexp.Replace(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.Int32,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.Int32,System.Int32,System.Int32,GeoStar.Utility.GsMatchResult*,GeoStar.Utility.GsRegexpContext*)">
+\brief 替换
+</member>
+        <member name="M:GeoStar.Utility.GsRegexp.Replace(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.Int32,System.Int32,GeoStar.Utility.GsMatchResult*,GeoStar.Utility.GsRegexpContext*)">
+\brief 替换
+</member>
+        <member name="M:GeoStar.Utility.GsRegexp.PrepareMatch(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.Int32)">
+\brief 准备匹配生成上下文
+</member>
+        <member name="M:GeoStar.Utility.GsRegexp.PrepareMatch(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+\brief 准备匹配生成上下文
+</member>
+        <member name="M:GeoStar.Utility.GsRegexp.NamedGroupNumber(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+\brief 根据分组的名称获得分组的索引
+</member>
+        <member name="M:GeoStar.Utility.GsRegexp.Match(GeoStar.Utility.GsRegexpContext*)">
+\brief 根据上下文匹配
+</member>
+        <member name="M:GeoStar.Utility.GsRegexp.Match(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.Int32)">
+\brief 从指定开始位置查找
+</member>
+        <member name="M:GeoStar.Utility.GsRegexp.Match(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+\brief 匹配
+</member>
+        <member name="M:GeoStar.Utility.GsRegexp.MatchExact(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+\brief 精确匹配
+</member>
+        <member name="M:GeoStar.Utility.GsRegexp.Compile(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,GeoStar.Utility.GsRegexFlags)">
+\brief 重新设置正则表达式
+</member>
+        <member name="M:GeoStar.Utility.GsRegexp.Pattern">
+\brief 模式定义字符串
+</member>
+        <member name="M:GeoStar.Utility.GsRegexp.Description(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+\brief 正则表达式的描述
+</member>
+        <member name="M:GeoStar.Utility.GsRegexp.Description">
+\brief 正则表达式的描述
+</member>
+        <member name="M:GeoStar.Utility.GsRegexp.#ctor(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,GeoStar.Utility.GsRegexFlags)">
+\brief 从正则表达式和标识构造
+</member>
+        <member name="M:GeoStar.Utility.GsRegexp.#ctor">
+\brief 缺省构造
+</member>
+        <member name="T:GeoStar.Utility.GsRegexp">
+\brief 正则表达式
+</member>
+        <member name="M:GeoStar.Utility.GsMatchResult.op_Implicit~System.Boolean">
+\brief 是否匹配
+</member>
+        <member name="M:GeoStar.Utility.GsMatchResult.op_Assign(GeoStar.Utility.GsMatchResult!System.Runtime.CompilerServices.IsConst*!System.Runtime.CompilerServices.IsImplicitlyDereferenced)">
+\brief 赋值操作
+</member>
+        <member name="M:GeoStar.Utility.GsMatchResult.#ctor(GeoStar.Utility.GsRegexpContext*,System.Int32)">
+\brief 从上下文构造
+</member>
+        <member name="M:GeoStar.Utility.GsMatchResult.#ctor(System.Int32!System.Runtime.CompilerServices.IsConst*,System.Int32)">
+\brief 从匹配结果数组构造
+</member>
+        <member name="M:GeoStar.Utility.GsMatchResult.#ctor(GeoStar.Utility.GsMatchResult!System.Runtime.CompilerServices.IsConst*!System.Runtime.CompilerServices.IsImplicitlyDereferenced)">
+\brief 拷贝构造
+</member>
+        <member name="M:GeoStar.Utility.GsMatchResult.GroupEnd(System.Int32)">
+\brief 第N个组的结束位置
+</member>
+        <member name="M:GeoStar.Utility.GsMatchResult.GroupStart(System.Int32)">
+\brief 第N个组的开始位置
+</member>
+        <member name="M:GeoStar.Utility.GsMatchResult.MaxGroupNumber">
+\brief 最大组数量
+</member>
+        <member name="M:GeoStar.Utility.GsMatchResult.End">
+\brief 结束的位置
+</member>
+        <member name="M:GeoStar.Utility.GsMatchResult.Start">
+\brief 开始的位置
+</member>
+        <member name="M:GeoStar.Utility.GsMatchResult.IsMatched">
+\brief 是否成功匹配
+</member>
+        <member name="T:GeoStar.Utility.GsMatchResult">
+\brief 正则表达式匹配结果
+</member>
+        <member name="M:GeoStar.Utility.GsRegexpContext.ReleaseContext(GeoStar.Utility.GsRegexpContext*)">
+\brief 释放上下文对象
+</member>
+        <member name="T:GeoStar.Utility.GsRegexpContext">
+\brief 正则表达上下文
+</member>
+        <member name="T:GeoStar.Utility.GsRegexFlags">
+\brief 正则表达式标识
+</member>
+        <member name="F:eExtended">
+\brief 扩展
+</member>
+        <member name="F:eRightToLeft">
+\brief 从右到做匹配
+</member>
+        <member name="F:eIgnorecase">
+\brief 忽略大小写
+</member>
+        <member name="F:eGlobal">
+\brief 全局
+</member>
+        <member name="F:eMultiline">
+\brief 多行
+</member>
+        <member name="F:eSingleline">
+\brief 单行
+</member>
+        <member name="F:eNoFlag">
+\brief 无标识
 </member>
         <member name="M:GeoStar.Utility.GsMath.Pi">
 \brief 获取圆周率PI

@@ -6,7 +6,12 @@ struct geo_object;
 
 typedef const char* string_t;
 
-//reader定义的回调函数 
+//\brief reader定义的回调函数 
+//\param user 用户定义的参数
+//\param i 要读取的第i个对象
+//\return 返回的结果
+//\details 这个回掉函数，可以帮助用户实现geo_reader接口,参考geo_factory::new_reader
+//\details 参数i从1开始，如果i=0表示要释放geo_reader对象，用户代码应该释放user中的资源
 typedef geostar::geo_object* (*reader_callback)(void* user,unsigned int i);
 
 //writer定义的回调函数
@@ -30,7 +35,7 @@ struct geo_object
     virtual bool i4_set(int i,int v)=0;             //设置属性
 };
 
-//geo_reader的读取接口
+//\brief geo_reader的读取接口
 struct geo_reader : geo_object
 {
     virtual geo_object* read()=0;
@@ -39,7 +44,11 @@ struct geo_reader : geo_object
 //geo_reader的读取接口
 struct geo_writer : geo_object
 {
-    virtual void write(geo_object*)=0;
+    //\brief xxxx
+    //\details  
+    //\param in xxxxx
+
+    virtual void write(geo_object* in)=0;
 };
 
 //读写接口

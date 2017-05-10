@@ -1,0 +1,24 @@
+// 透明过滤，nType为类型，0-不过滤，1-alpha小于1.0过滤，2-alpha=1.0过滤
+void AlphaTest(float nType, float fAlphaValue)
+{
+	if(nType < 0.5)
+	{
+		return;
+	}
+	
+	if(nType < 1.5)
+	{
+		if(fAlphaValue < 1.0)
+		{
+			discard;
+		}
+	}
+	else
+	{
+		if(fAlphaValue < 1.0)
+		{
+			return;
+		}
+		discard;
+	}
+}
