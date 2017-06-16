@@ -1,7 +1,4 @@
-# CGISS
-Chinese Geographic information-Storage Specification
 
-地理空间数据交换工具
 # CGISS
 CGISS是Chinese Geographic information-Storage Specification的简称，是一种地理空间数据交换工具。地理空间数据交换与共享软件是一款工具性软件，其工作目的是以矢量和栅格数据交换标准格式为中心，常见GIS格式以及国内GIS厂商的GIS数据格式之间的相互转换。地理空间数据交换与共享软件采用插件式框架实现多种GIS数据格式的支持，同时也支持通过插件扩展支持更多的GIS数据格式。
 ## 项目背景
