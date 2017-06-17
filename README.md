@@ -21,5 +21,5 @@ CGISS是Chinese Geographic information-Storage Specification的简称，是一�
 ## 框架
 
 <div align="center">
-![](https://ooo.0o0.ooo/2017/06/17/59452d1d09e41.png)
+![] (https://ooo.0o0.ooo/2017/06/17/59452d1d09e41.png)
 </div>
