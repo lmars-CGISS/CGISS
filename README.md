@@ -8,6 +8,7 @@ CGISS是Chinese Geographic information-Storage Specification的简称，是一�
 <center>
 ![](https://ooo.0o0.ooo/2017/06/17/59452d1d09e41.png)
 </center>
+
 ## 项目平台及用户群
 * 项目平台为Windows7 以及以上版本32位、64位操作系统
 * 地理空间数据交换与共享软件的用户群体为国内各GIS厂商，以及各GIS厂商的使用客户，及GIS软件开发人员以及专业GIS数据处理人员
