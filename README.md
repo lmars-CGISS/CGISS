@@ -19,6 +19,7 @@ CGISS是Chinese Geographic information-Storage Specification的简称，是一�
 * 功能插件的管理功能，功能插件的注册、删除等
 * 支持全图漫游，放大缩小，以及批量转换
 ## 框架
-<div align="center">
+
+<center>
 ![](https://ooo.0o0.ooo/2017/06/17/59452d1d09e41.png)
-</div>
+</center>
