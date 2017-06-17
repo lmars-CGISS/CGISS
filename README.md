@@ -5,9 +5,10 @@ CGISS是Chinese Geographic information-Storage Specification的简称，是一�
 * 开发支持国内外常用地理空间数据格式与存储标准的数据交换软件，有助于保障国家地理信息安全，促进地理信息产业的发展。
 ## 框架
 
-<center>
+<div align = center>
 ![](https://ooo.0o0.ooo/2017/06/17/59452d1d09e41.png)
-</center>
+
+</div>
 
 ## 项目平台及用户群
 * 项目平台为Windows7 以及以上版本32位、64位操作系统
